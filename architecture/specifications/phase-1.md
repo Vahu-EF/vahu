@@ -1,14 +1,29 @@
 # Phase 1 specification — Core Engineering
 
-- **Status:** Planned; not authorized to start
+- **Status:** In Progress — P1-14 first slice; owner acceptance pending
 - **Depends on:** accepted Phase 0 foundation
-- **Owner approval:** required before implementation
+- **Owner approval:** P1-14 implementation authorized 2026-11-06; standard content acceptance pending
 
 ## Goal
 
 Create the universal, technology-independent engineering standards that a VAHU
 project can adopt. Phase 1 is content and validation work, not a broad CLI
 feature release.
+
+## Implementation status
+
+P1-14 is the only authorized Phase 1 work package. It is implemented as a
+[draft standard](../../packages/framework/core/engineering-decisions.md) and
+becomes binding only after the project owner records acceptance.
+
+| ID                 | Status                          | Canonical page                                                                  |
+| ------------------ | ------------------------------- | ------------------------------------------------------------------------------- |
+| P1-14              | Draft; owner acceptance pending | [Engineering decisions](../../packages/framework/core/engineering-decisions.md) |
+| P1-01–P1-13, P1-15 | Not started                     | None                                                                            |
+
+The first slice adds the P1-14 page, the ADR and standard templates, the
+decision index update, and status updates. It adds no runtime code, CLI command,
+schema, validator, adapter, or technology profile.
 
 ## Work packages
 
@@ -32,7 +47,8 @@ feature release.
 
 ## Suggested order
 
-1. P1-14 and P1-01 establish decision ownership and principles.
+1. P1-14 establishes decision ownership and the standard-page format. P1-01
+   starts only after P1-14 is accepted.
 2. P1-03, P1-04, P1-05, P1-06, and P1-07 establish day-to-day code rules.
 3. P1-08, P1-09, and P1-10 establish interface, data, and evidence rules.
 4. P1-11, P1-12, and P1-13 make review and security explicit.
