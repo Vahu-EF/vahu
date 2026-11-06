@@ -1,0 +1,8 @@
+blank_issues_enabled: true
+contact_links:
+  - name: Security policy
+    url: https://github.com/Vahu-EF/vahu/blob/main/SECURITY.md
+    about: Read this before reporting a vulnerability. Do not open a public security issue.
+  - name: Contribution guide
+    url: https://github.com/Vahu-EF/vahu/blob/main/CONTRIBUTING.md
+    about: Read the local checks and repository rules before opening a pull request.

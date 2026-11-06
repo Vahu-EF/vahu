@@ -1,0 +1,49 @@
+{
+  "schemaVersion": "1.0.0",
+  "vahu": {
+    "version": "0.1.0"
+  },
+  "project": {
+    "name": "Example Mobile",
+    "slug": "example-mobile",
+    "description": "A mobile application example.",
+    "purpose": "Demonstrate a UI project with a design system and pending brand assets.",
+    "targetUsers": ["customers"],
+    "type": "mobile-application",
+    "languages": ["en"],
+    "scope": "Phase 0 example",
+    "constraints": ["Android first."]
+  },
+  "identity": {
+    "status": "approved"
+  },
+  "brand": {
+    "status": "pending",
+    "notes": "Logo production is pending; the UI design system is already approved."
+  },
+  "designSystem": {
+    "status": "approved",
+    "source": "existing",
+    "path": "docs/design-system.md"
+  },
+  "repositories": {
+    "strategy": "monorepo"
+  },
+  "technology": {
+    "backend": [],
+    "frontend": [],
+    "mobile": ["flutter"],
+    "database": [],
+    "infrastructure": [],
+    "testing": ["flutter-test"],
+    "deployment": []
+  },
+  "agents": {
+    "enabled": ["generic"],
+    "configuration": {}
+  },
+  "readiness": {
+    "status": "incomplete",
+    "notes": ["Example only; project onboarding is not complete."]
+  }
+}

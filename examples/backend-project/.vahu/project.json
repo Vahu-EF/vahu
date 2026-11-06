@@ -1,0 +1,48 @@
+{
+  "schemaVersion": "1.0.0",
+  "vahu": {
+    "version": "0.1.0"
+  },
+  "project": {
+    "name": "Example Backend",
+    "slug": "example-backend",
+    "description": "A backend service with a database.",
+    "purpose": "Demonstrate a backend-oriented VAHU configuration.",
+    "targetUsers": ["application teams"],
+    "type": "backend-service",
+    "languages": ["en"],
+    "scope": "Phase 0 example",
+    "constraints": ["No public UI in this example."]
+  },
+  "identity": {
+    "status": "approved"
+  },
+  "brand": {
+    "status": "not-applicable"
+  },
+  "designSystem": {
+    "status": "not-applicable",
+    "source": "none"
+  },
+  "repositories": {
+    "strategy": "monorepo",
+    "notes": "The service and its integration tests share one repository."
+  },
+  "technology": {
+    "backend": ["node"],
+    "frontend": [],
+    "mobile": [],
+    "database": ["postgresql"],
+    "infrastructure": ["docker"],
+    "testing": ["vitest"],
+    "deployment": ["github-actions"]
+  },
+  "agents": {
+    "enabled": ["generic"],
+    "configuration": {}
+  },
+  "readiness": {
+    "status": "incomplete",
+    "notes": ["Example only; project onboarding is not complete."]
+  }
+}

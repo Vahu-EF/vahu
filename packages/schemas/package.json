@@ -1,0 +1,41 @@
+{
+  "name": "@vahu-ef/schemas",
+  "version": "0.1.0",
+  "description": "Versioned configuration schemas and validation contracts for VAHU.",
+  "license": "Apache-2.0",
+  "type": "module",
+  "homepage": "https://github.com/Vahu-EF/vahu/tree/main/packages/schemas",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Vahu-EF/vahu.git",
+    "directory": "packages/schemas"
+  },
+  "bugs": {
+    "url": "https://github.com/Vahu-EF/vahu/issues"
+  },
+  "sideEffects": false,
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "main": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "types": "./dist/index.d.ts",
+      "import": "./dist/index.js"
+    }
+  },
+  "files": [
+    "dist",
+    "project.schema.json"
+  ],
+  "scripts": {
+    "build": "tsup src/index.ts --format esm --dts --clean",
+    "typecheck": "tsc -p tsconfig.json --noEmit",
+    "schema:generate": "tsx scripts/generate-json-schema.ts"
+  },
+  "dependencies": {
+    "zod": "^4.6.7"
+  }
+}

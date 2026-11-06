@@ -1,0 +1,45 @@
+{
+  "name": "vahu",
+  "version": "0.1.0",
+  "description": "The command-line interface for the VAHU engineering framework.",
+  "license": "Apache-2.0",
+  "type": "module",
+  "homepage": "https://github.com/Vahu-EF/vahu/tree/main/apps/cli",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Vahu-EF/vahu.git",
+    "directory": "apps/cli"
+  },
+  "bugs": {
+    "url": "https://github.com/Vahu-EF/vahu/issues"
+  },
+  "keywords": [
+    "vahu",
+    "engineering",
+    "framework",
+    "cli",
+    "agents"
+  ],
+  "publishConfig": {
+    "access": "public",
+    "provenance": true
+  },
+  "bin": {
+    "vahu": "./dist/index.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "engines": {
+    "node": ">=22.0.0"
+  },
+  "scripts": {
+    "build": "tsup src/index.ts --format esm --clean",
+    "dev": "tsx src/index.ts",
+    "typecheck": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "@vahu-ef/core": "workspace:*",
+    "commander": "^15.0.0"
+  }
+}

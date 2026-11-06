@@ -1,0 +1,8 @@
+# CODEOWNERS
+#
+# Add repository maintainers or a team with write access before enabling required
+# code-owner review. A pattern with no real GitHub user or team would make the
+# review rule unusable.
+#
+# Example after the organization creates a maintainers team:
+# * @Vahu-EF/maintainers

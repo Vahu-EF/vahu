@@ -1,0 +1,52 @@
+{
+  "schemaVersion": "1.0.0",
+  "vahu": {
+    "version": "0.1.0"
+  },
+  "project": {
+    "name": "Example Web",
+    "slug": "example-web",
+    "description": "A web application example.",
+    "purpose": "Demonstrate a UI project with the required design-system approval.",
+    "targetUsers": ["customers"],
+    "type": "web-application",
+    "languages": ["en"],
+    "scope": "Phase 0 example",
+    "constraints": []
+  },
+  "identity": {
+    "status": "approved"
+  },
+  "brand": {
+    "status": "approved",
+    "assets": {
+      "colors": ["#171714"],
+      "typography": ["system-ui"]
+    }
+  },
+  "designSystem": {
+    "status": "approved",
+    "source": "existing",
+    "path": "docs/design-system.md"
+  },
+  "repositories": {
+    "strategy": "monorepo"
+  },
+  "technology": {
+    "backend": [],
+    "frontend": ["react"],
+    "mobile": [],
+    "database": [],
+    "infrastructure": [],
+    "testing": ["vitest"],
+    "deployment": ["github-pages"]
+  },
+  "agents": {
+    "enabled": ["generic"],
+    "configuration": {}
+  },
+  "readiness": {
+    "status": "incomplete",
+    "notes": ["Example only; project onboarding is not complete."]
+  }
+}

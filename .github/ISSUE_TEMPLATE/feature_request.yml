@@ -1,0 +1,45 @@
+name: Feature proposal
+description: Propose a framework, CLI, documentation, or tooling capability.
+title: 'feat: '
+labels: ['enhancement']
+body:
+  - type: markdown
+    attributes:
+      value: |
+        VAHU is in Phase 0. Explain the problem first. Large product, architecture, brand, or design changes need explicit owner approval.
+  - type: textarea
+    id: problem
+    attributes:
+      label: Problem
+      description: What engineering or project problem should this solve?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed approach
+      description: Keep it as small as possible. Name alternatives if they matter.
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - Framework content
+        - CLI
+        - Configuration schema
+        - Agent adapter
+        - Technology profile
+        - Templates
+        - Documentation
+        - CI/CD or security
+        - Website
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: status
+    attributes:
+      label: Phase and approval
+      description: Which phase should own this, and which decision needs human approval?

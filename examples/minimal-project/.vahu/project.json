@@ -1,0 +1,47 @@
+{
+  "schemaVersion": "1.0.0",
+  "vahu": {
+    "version": "0.1.0"
+  },
+  "project": {
+    "name": "Minimal API",
+    "slug": "minimal-api",
+    "description": "A minimal backend service used as a VAHU example.",
+    "purpose": "Show the smallest valid project configuration.",
+    "targetUsers": ["developers"],
+    "type": "backend-service",
+    "languages": ["en"],
+    "scope": "Phase 0 example",
+    "constraints": []
+  },
+  "identity": {
+    "status": "approved"
+  },
+  "brand": {
+    "status": "not-applicable"
+  },
+  "designSystem": {
+    "status": "not-applicable",
+    "source": "none"
+  },
+  "repositories": {
+    "strategy": "monorepo"
+  },
+  "technology": {
+    "backend": ["node"],
+    "frontend": [],
+    "mobile": [],
+    "database": [],
+    "infrastructure": [],
+    "testing": ["vitest"],
+    "deployment": []
+  },
+  "agents": {
+    "enabled": ["generic"],
+    "configuration": {}
+  },
+  "readiness": {
+    "status": "incomplete",
+    "notes": ["Example only; project onboarding is not complete."]
+  }
+}
