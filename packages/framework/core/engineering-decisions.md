@@ -1,10 +1,10 @@
 # P1-14 — Engineering decisions
 
 - **Standard ID:** P1-14
-- **Status:** Draft
+- **Status:** Accepted
 - **Owner:** VAHU maintainers
 - **Approver:** VAHU project owner
-- **Approval:** Pending. This page becomes `Accepted` only after the approver records acceptance below.
+- **Approval:** Approved by VAHU project owner on 2026-11-06.
 - **Version:** 0.1.0
 - **Applies to:** VAHU core standards, architecture decisions, framework content, and contributions to this repository.
 - **Related:** [Phase 1 specification](../../../architecture/specifications/phase-1.md), [ADR index](../../../architecture/decisions/README.md), [ADR template](../../../templates/documentation/adr.md), [standard template](../../../templates/documentation/standard.md)
@@ -284,7 +284,7 @@ time-bound. An exception is not a silent edit to the rule.
 
 ## Verification
 
-This draft is verified by review against the
+This standard is verified by review against the
 [standard template](../../../templates/documentation/standard.md) and the
 [ADR template](../../../templates/documentation/adr.md). The repository gate is:
 
@@ -310,12 +310,12 @@ The following checks are planned for P1-15 and are not implemented yet:
 
 ## Change history
 
-| Version | Date       | Change                                      |
-| ------- | ---------- | ------------------------------------------- |
-| 0.1.0   | 2026-11-06 | Initial draft for the P1-14 implementation. |
+| Version | Date       | Change                                        |
+| ------- | ---------- | --------------------------------------------- |
+| 0.1.0   | 2026-11-06 | Initial draft; accepted by the project owner. |
 
 ## Approval record
 
-| Version | Status | Approver           | Date |
-| ------- | ------ | ------------------ | ---- |
-| 0.1.0   | Draft  | VAHU project owner | —    |
+| Version | Status   | Approver           | Date       |
+| ------- | -------- | ------------------ | ---------- |
+| 0.1.0   | Accepted | VAHU project owner | 2026-11-06 |

@@ -1,8 +1,8 @@
 # Phase 1 specification — Core Engineering
 
-- **Status:** In Progress — P1-14 first slice; owner acceptance pending
+- **Status:** In Progress — P1-14 accepted; P1-01 not started
 - **Depends on:** accepted Phase 0 foundation
-- **Owner approval:** P1-14 implementation authorized 2026-11-06; standard content acceptance pending
+- **Owner approval:** P1-14 accepted by the project owner on 2026-11-06
 
 ## Goal
 
@@ -12,14 +12,12 @@ feature release.
 
 ## Implementation status
 
-P1-14 is the only authorized Phase 1 work package. It is implemented as a
-[draft standard](../../packages/framework/core/engineering-decisions.md) and
-becomes binding only after the project owner records acceptance.
+P1-14 is accepted and binding. P1-01 and later packages are not started.
 
-| ID                 | Status                          | Canonical page                                                                  |
-| ------------------ | ------------------------------- | ------------------------------------------------------------------------------- |
-| P1-14              | Draft; owner acceptance pending | [Engineering decisions](../../packages/framework/core/engineering-decisions.md) |
-| P1-01–P1-13, P1-15 | Not started                     | None                                                                            |
+| ID                 | Status      | Canonical page                                                                  |
+| ------------------ | ----------- | ------------------------------------------------------------------------------- |
+| P1-14              | Accepted    | [Engineering decisions](../../packages/framework/core/engineering-decisions.md) |
+| P1-01–P1-13, P1-15 | Not started | None                                                                            |
 
 The first slice adds the P1-14 page, the ADR and standard templates, the
 decision index update, and status updates. It adds no runtime code, CLI command,
@@ -48,7 +46,7 @@ schema, validator, adapter, or technology profile.
 ## Suggested order
 
 1. P1-14 establishes decision ownership and the standard-page format. P1-01
-   starts only after P1-14 is accepted.
+   may start now that P1-14 is accepted.
 2. P1-03, P1-04, P1-05, P1-06, and P1-07 establish day-to-day code rules.
 3. P1-08, P1-09, and P1-10 establish interface, data, and evidence rules.
 4. P1-11, P1-12, and P1-13 make review and security explicit.
