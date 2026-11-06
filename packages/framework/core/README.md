@@ -1,9 +1,13 @@
 # Core engineering content
 
-Status: **Planned**.
+Status: **In Progress**.
 
-This module will hold technology-independent engineering standards. The Phase 1
-scope is described in [the foundation document](../../../VAHU.md). Do not add
-stack-specific rules here; those belong in `technology-profiles/`.
+The first standard is [P1-14: Engineering decisions](engineering-decisions.md).
+It defines the decision-record process and the standard-page format. P1-14 is
+currently a **draft** and becomes binding only after the project owner records
+acceptance.
 
-Phase 1 must not begin until Phase 0 is approved.
+The remaining core standards are still planned. The Phase 1 scope is described
+in [the foundation document](../../../VAHU.md) and the
+[Phase 1 specification](../../../architecture/specifications/phase-1.md).
+Do not add stack-specific rules here; those belong in `technology-profiles/`.
