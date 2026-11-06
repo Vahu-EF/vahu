@@ -47,7 +47,7 @@ The core principles are:
 | Project configuration schema   | Implemented | Versioned Zod schema and JSON Schema for `.vahu/project.json`                   |
 | CLI foundation                 | Implemented | `vahu --version`, `--help`, `doctor`, and `validate`                            |
 | Validation and readiness rules | Implemented | Identity, design-system, brand, repository, technology, and readiness checks    |
-| Core engineering standards     | In Progress | P1-14 and P1-01 accepted; remaining standards are planned                       |
+| Core engineering standards     | In Progress | P1-14 and P1-01 accepted; P1-03 draft; remaining standards planned              |
 | Technology profiles            | Planned     | One canonical location reserved under `packages/framework/technology-profiles/` |
 | Agent adapters                 | Planned     | Adapter folders and contracts only; no adapter is claimed                       |
 | Project onboarding wizard      | Planned     | Not implemented                                                                 |
@@ -227,6 +227,8 @@ Phase 1 is in progress. [P1-14: Engineering
 decisions](packages/framework/core/engineering-decisions.md) was accepted on
 2026-11-06 and is binding. [P1-01: Architecture
 principles](packages/framework/core/architecture-principles.md) was accepted on
-2026-11-06 and is binding. P1-02 and the remaining Phase 1 packages have not
+2026-11-06 and is binding. [P1-03: Code
+quality](packages/framework/core/code-quality.md) is a draft and awaits owner
+acceptance. P1-02, P1-04, and the remaining Phase 1 packages have not
 started. Technology profiles, full onboarding, agent adapters, release
 artifacts, and the production website remain future work.

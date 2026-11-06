@@ -1,8 +1,8 @@
 # Phase 1 specification — Core Engineering
 
-- **Status:** In Progress — P1-01 accepted; P1-02 not started
+- **Status:** In Progress — P1-03 draft; owner acceptance pending
 - **Depends on:** accepted Phase 0 foundation
-- **Owner approval:** P1-14 and P1-01 accepted on 2026-11-06
+- **Owner approval:** P1-14 and P1-01 accepted 2026-11-06; P1-03 content acceptance pending
 
 ## Goal
 
@@ -12,17 +12,18 @@ feature release.
 
 ## Implementation status
 
-P1-14 and P1-01 are accepted and binding. P1-02 and later packages are not
-started.
+P1-14 and P1-01 are accepted and binding. P1-03 is a draft and awaits owner
+acceptance. P1-02, P1-04 through P1-13, and P1-15 are not started.
 
-| ID                 | Status      | Canonical page                                                                      |
-| ------------------ | ----------- | ----------------------------------------------------------------------------------- |
-| P1-14              | Accepted    | [Engineering decisions](../../packages/framework/core/engineering-decisions.md)     |
-| P1-01              | Accepted    | [Architecture principles](../../packages/framework/core/architecture-principles.md) |
-| P1-02–P1-13, P1-15 | Not started | None                                                                                |
+| ID                        | Status      | Canonical page                                                                      |
+| ------------------------- | ----------- | ----------------------------------------------------------------------------------- |
+| P1-14                     | Accepted    | [Engineering decisions](../../packages/framework/core/engineering-decisions.md)     |
+| P1-01                     | Accepted    | [Architecture principles](../../packages/framework/core/architecture-principles.md) |
+| P1-03                     | Draft       | [Code quality](../../packages/framework/core/code-quality.md)                       |
+| P1-02, P1-04–P1-13, P1-15 | Not started | None                                                                                |
 
-The P1-14 and P1-01 slices are complete. Both add no runtime code, CLI command,
-schema, validator, adapter, or technology profile.
+The P1-14 and P1-01 slices are complete. P1-03 is the active draft. All three add
+no runtime code, CLI command, schema, validator, adapter, or technology profile.
 
 ## Work packages
 
@@ -47,7 +48,7 @@ schema, validator, adapter, or technology profile.
 ## Suggested order
 
 1. P1-14 and P1-01 establish decision ownership, the standard-page format, and
-   core architecture principles. P1-03 is next.
+   core architecture principles. P1-03 is next and is currently a draft.
 2. P1-03, P1-04, P1-05, P1-06, and P1-07 establish day-to-day code rules.
 3. P1-08, P1-09, and P1-10 establish interface, data, and evidence rules.
 4. P1-11, P1-12, and P1-13 make review and security explicit.

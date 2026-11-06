@@ -9,6 +9,9 @@ accepted by the project owner on 2026-11-06 and is binding.
 The next standard is [P1-01: Architecture principles](architecture-principles.md).
 It was accepted by the project owner on 2026-11-06 and is binding.
 
+The current draft is [P1-03: Code quality](code-quality.md). It awaits owner
+acceptance.
+
 The remaining core standards are still planned. The Phase 1 scope is described
 in [the foundation document](../../../VAHU.md) and the
 [Phase 1 specification](../../../architecture/specifications/phase-1.md).
