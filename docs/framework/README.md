@@ -5,7 +5,7 @@ mostly Markdown, JSON, and YAML so people can use it without installing the CLI.
 
 | Area                   | Status      | Purpose                                                 |
 | ---------------------- | ----------- | ------------------------------------------------------- |
-| `core/`                | In Progress | Universal standards; P1-14 and P1-01 accepted           |
+| `core/`                | In Progress | Universal standards; P1-14/P1-01 accepted, P1-03 draft  |
 | `agents/`              | Planned     | Agent-neutral instructions, rules, skills, and commands |
 | `technology-profiles/` | Planned     | Canonical stack-specific profiles                       |
 | `workflows/`           | Planned     | Planning, implementation, review, and release workflows |
@@ -17,7 +17,8 @@ mostly Markdown, JSON, and YAML so people can use it without installing the CLI.
 Phase 0 created the boundaries. Phase 1 has P1-14 and P1-01 accepted:
 [engineering decisions](../../packages/framework/core/engineering-decisions.md)
 and [architecture principles](../../packages/framework/core/architecture-principles.md).
-Both are binding.
+Both are binding. P1-03 is a [draft](../../packages/framework/core/code-quality.md)
+and awaits owner acceptance.
 
 Do not describe a planned module as available. Framework content must not
 import CLI code. If a rule needs executable validation, put the reusable logic

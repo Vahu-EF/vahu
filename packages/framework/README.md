@@ -5,7 +5,7 @@ CLI and must not import CLI code.
 
 | Area                   | Status      | Scope                                                   |
 | ---------------------- | ----------- | ------------------------------------------------------- |
-| `core/`                | In Progress | Universal standards; P1-14 and P1-01 accepted           |
+| `core/`                | In Progress | Universal standards; P1-14/P1-01 accepted, P1-03 draft  |
 | `agents/`              | Planned     | Agent-neutral instructions, rules, skills, and commands |
 | `technology-profiles/` | Planned     | The only canonical profile tree                         |
 | `workflows/`           | Planned     | Planning, implementation, review, and release workflows |
@@ -16,5 +16,6 @@ CLI and must not import CLI code.
 
 Phase 0 established the boundaries. Phase 1 has accepted P1-14 and P1-01:
 [engineering decisions](core/engineering-decisions.md) and
-[architecture principles](core/architecture-principles.md). The other modules
-remain planned and are not claimed as complete.
+[architecture principles](core/architecture-principles.md). P1-03 is a
+[code-quality draft](core/code-quality.md). The other modules remain planned and
+are not claimed as complete.
