@@ -1,10 +1,10 @@
 # P1-01 — Architecture principles
 
 - **Standard ID:** P1-01
-- **Status:** Draft
+- **Status:** Accepted
 - **Owner:** VAHU maintainers
 - **Approver:** VAHU project owner
-- **Approval:** Pending. This page becomes `Accepted` only after the approver records acceptance.
+- **Approval:** Approved by VAHU project owner on 2026-11-06.
 - **Version:** 0.1.0
 - **Applies to:** Architecture decisions and changes in VAHU projects, including modules, packages, services, repositories, APIs, data stores, and shared libraries.
 - **Related:** [P1-14: Engineering decisions](engineering-decisions.md), [Phase 1 specification](../../../architecture/specifications/phase-1.md), [ADR-0001](../../../architecture/decisions/ADR-0001-monorepo-boundaries.md), [ADR-0004](../../../architecture/decisions/ADR-0004-agent-adapter-boundary.md), [standard template](../../../templates/documentation/standard.md)
@@ -131,7 +131,7 @@ migration plan. Do not hide an exception in code or review comments.
 
 ## Verification
 
-This draft is verified by architecture review and pull-request review against
+This standard is verified by architecture review and pull-request review against
 the rules above. The repository gate is:
 
 ```bash
@@ -154,6 +154,12 @@ The following checks are planned for P1-15 and are not implemented yet:
 
 ## Change history
 
-| Version | Date       | Change                                      |
-| ------- | ---------- | ------------------------------------------- |
-| 0.1.0   | 2026-11-06 | Initial draft for the P1-01 implementation. |
+| Version | Date       | Change                                        |
+| ------- | ---------- | --------------------------------------------- |
+| 0.1.0   | 2026-11-06 | Initial draft; accepted by the project owner. |
+
+## Approval record
+
+| Version | Status   | Approver           | Date       |
+| ------- | -------- | ------------------ | ---------- |
+| 0.1.0   | Accepted | VAHU project owner | 2026-11-06 |
