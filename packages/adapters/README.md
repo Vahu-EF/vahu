@@ -1,17 +1,22 @@
 # Agent adapters
 
-Status: **Planned**.
+Status: **Generic adapter implemented; provider adapters planned.**
 
-Adapters translate VAHU’s agent-neutral content into a target agent’s supported
-format. An adapter must document supported features, unsupported features, file
-conventions, compatibility, and validation.
+Adapters translate VAHU's canonical agent definitions into a target agent's
+supported format. An adapter must document supported features, unsupported
+features, file conventions, compatibility, and validation.
 
-| Folder         | Target                        | Status  |
-| -------------- | ----------------------------- | ------- |
-| `generic/`     | Generic Markdown instructions | Planned |
-| `codex/`       | OpenAI Codex                  | Planned |
-| `claude-code/` | Claude Code                   | Planned |
-| `gemini/`      | Gemini CLI                    | Planned |
+| Adapter       | Target                    | Status      |
+| ------------- | ------------------------- | ----------- |
+| `generic`     | Provider-neutral Markdown | Implemented |
+| `codex`       | OpenAI Codex              | Planned     |
+| `claude-code` | Claude Code               | Planned     |
+| `gemini`      | Gemini CLI                | Planned     |
 
-No target is tested or supported in Phase 0. Do not generate adapter output and
-call it compatible without verification.
+The package exports the `AgentAdapter` interface, `genericAdapter`, and
+`renderGeneric`. Rendering is deterministic and writes no files; generation and
+synchronization arrive with the engine that previews diffs and preserves user
+content.
+
+No provider adapter is implemented or compatibility-tested. Do not generate
+adapter output and call it compatible without verification.
