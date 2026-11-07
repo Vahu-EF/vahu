@@ -22,12 +22,27 @@ export {
 } from './content.js';
 export {
   agentNameSchema,
+  configIssuesFromError,
   parseProjectConfig,
+  PREVIOUS_SCHEMA_VERSION,
   projectConfigSchema,
+  projectConfigV1_0_0Schema,
+  projectLifecycleSchema,
   projectTypeSchema,
+  repositoryLocationSchema,
+  SCHEMA_VERSION,
   type AgentName,
   type ConfigIssue,
   type ParseProjectConfigResult,
   type ProjectConfig,
+  type ProjectConfigV1_0_0,
+  type ProjectLifecycle,
   type ProjectType,
+  type RepositoryLocation,
 } from './project.js';
+export {
+  migrateProjectConfig,
+  SUPPORTED_SCHEMA_VERSIONS,
+  type MigrationResult,
+  type SchemaVersion,
+} from './migrations.js';

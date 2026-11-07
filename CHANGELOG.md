@@ -8,6 +8,18 @@ All notable changes to VAHU are recorded here. The format follows
 
 ### Added
 
+- Project configuration schema `1.1.0`, adding `project.longDescription`,
+  `project.lifecycle`, `project.nonGoals`, and `repositories.locations`
+  additively; `project.schema.json` regenerated.
+- `migrateProjectConfig` in `@vahu-ef/schemas`: validates a `1.0.0` file before
+  migrating, adds only the defaulted collections, and rejects unsupported
+  versions. `loadProjectConfig` reports `migratedFrom`, and `validate` adds the
+  non-blocking `SCHEMA_1_0_0_NOT_MIGRATED` recommendation.
+- `vahu migrate`, which previews a schema migration and rewrites only with
+  `--write`.
+- `vahu init` captures long description, lifecycle, non-goals, and repository
+  locations (flags and prompts), and writes schema `1.1.0`.
+- Examples migrated to schema `1.1.0`.
 - `vahu init` captures Project Identity interactively or through flags and writes
   a schema-valid `.vahu/project.json` without recording an approval.
 - `vahu identity` shows the identity and its approval status;
@@ -17,16 +29,20 @@ All notable changes to VAHU are recorded here. The format follows
 - Onboarding logic in `@vahu-ef/core` (`buildProjectConfig`, `mergeIdentity`,
   `approveIdentity`, `changedConfigPaths`, `suggestSlug`) with 15 tests, plus 3
   tests for safe writes and 6 CLI tests for the flow.
-- `architecture/specifications/phase-2.md` records the stage status, the field
-  mapping, and the Stage 1 fields that need a schema 1.1.0 decision.
+- `architecture/specifications/phase-2.md` records the stage status and the field
+  mapping for every Stage 1 roadmap item.
+
+### Accepted
+
+- ADR-0007 (schema 1.1.0 for Project Identity), accepted by the VAHU project
+  owner on 2026-11-07.
 
 ### Not included
 
 - Brand, design system, design approval, technology selection, repository
   strategy, engineering foundation, and readiness onboarding stages.
-- Long description, lifecycle, repository locations, and non-goals capture; the
-  accepted schema has no fields for them, so they need a decision record and a
-  versioned schema change.
+- Automatic schema upgrades: a `1.0.0` file is read and reported, and is only
+  rewritten by `vahu migrate --write`.
 
 ## Unreleased — Phase 1 standards
 

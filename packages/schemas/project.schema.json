@@ -8,7 +8,7 @@
     },
     "schemaVersion": {
       "type": "string",
-      "const": "1.0.0"
+      "const": "1.1.0"
     },
     "vahu": {
       "type": "object",
@@ -79,6 +79,22 @@
             "type": "string",
             "minLength": 1
           }
+        },
+        "longDescription": {
+          "type": "string",
+          "minLength": 1
+        },
+        "lifecycle": {
+          "type": "string",
+          "enum": ["planned", "active", "maintenance", "archived"]
+        },
+        "nonGoals": {
+          "default": [],
+          "type": "array",
+          "items": {
+            "type": "string",
+            "minLength": 1
+          }
         }
       },
       "required": [
@@ -90,7 +106,8 @@
         "type",
         "languages",
         "scope",
-        "constraints"
+        "constraints",
+        "nonGoals"
       ],
       "additionalProperties": false
     },
@@ -193,9 +210,40 @@
         "notes": {
           "type": "string",
           "minLength": 1
+        },
+        "locations": {
+          "default": [],
+          "type": "array",
+          "items": {
+            "type": "object",
+            "properties": {
+              "name": {
+                "type": "string",
+                "minLength": 1
+              },
+              "role": {
+                "type": "string",
+                "enum": ["primary", "package", "service", "documentation", "other"]
+              },
+              "path": {
+                "type": "string",
+                "minLength": 1
+              },
+              "url": {
+                "type": "string",
+                "format": "uri"
+              },
+              "owner": {
+                "type": "string",
+                "minLength": 1
+              }
+            },
+            "required": ["name"],
+            "additionalProperties": false
+          }
         }
       },
-      "required": ["strategy"],
+      "required": ["strategy", "locations"],
       "additionalProperties": false
     },
     "technology": {

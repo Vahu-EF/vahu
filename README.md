@@ -45,7 +45,7 @@ The core principles are:
 | Capability                     | Status      | What exists now                                                                 |
 | ------------------------------ | ----------- | ------------------------------------------------------------------------------- |
 | Framework foundation           | Implemented | `VAHU.md`, monorepo boundaries, documentation skeleton, architectural decisions |
-| Project configuration schema   | Implemented | Versioned Zod schema and JSON Schema for `.vahu/project.json`                   |
+| Project configuration schema   | Implemented | Versioned Zod schema and JSON Schema; `1.1.0` reads `1.0.0` via migration       |
 | CLI foundation                 | Implemented | `vahu --version`, `--help`, `doctor`, `validate`, `init`, and `identity`        |
 | Validation and readiness rules | Implemented | Identity, design-system, brand, repository, technology, and readiness checks    |
 | Core engineering standards     | Implemented | 15 Phase 1 standards, all accepted                                              |
@@ -146,14 +146,16 @@ vahu validate [--path <directory>] [--json]
 vahu init [--path <directory>] [flags] [--yes] [--force]
 vahu identity [--path <directory>] [--json]
 vahu identity approve [--path <directory>] --by "Your Name"
+vahu migrate [--path <directory>] [--write]
 ```
 
 `doctor` checks the local environment and project configuration. `validate`
 checks `.vahu/project.json` and the readiness rules. `init` captures Project
 Identity and writes the configuration, and `identity approve` records the
-explicit approval that `validate` requires. Commands from the long-term CLI
-roadmap, such as `design`, `profile`, `readiness`, `agents`, and `docs`, are
-**not implemented** yet.
+explicit approval that `validate` requires. `migrate` reads a `1.0.0`
+configuration and rewrites it at the current schema version only when asked.
+Commands from the long-term CLI roadmap, such as `design`, `profile`,
+`readiness`, `agents`, and `docs`, are **not implemented** yet.
 
 ## Project configuration
 
@@ -178,7 +180,9 @@ Important onboarding rules implemented in Phase 0:
 - A UI project needs an approved design system.
 - A backend-only project can mark brand assets as `not-applicable`.
 - Unknown configuration fields are rejected to catch typos.
-- The schema version is explicit and must be migrated deliberately.
+- The schema version is explicit and must be migrated deliberately: `1.0.0`
+  files are read through an in-memory migration, and `vahu migrate --write`
+  records the new version.
 
 The `example.invalid` schema URL in the historical foundation document is a
 placeholder. No public schema URL is claimed during Phase 0; the local schema
@@ -242,9 +246,8 @@ Architecture principles](packages/framework/core/architecture-principles.md) on
 `pnpm validate:standards` check, which runs in `pnpm check` and CI.
 
 Phase 2 (Project Identity & Onboarding) is in progress: Stage 1 is implemented
-and recorded in [the Phase 2
-specification](architecture/specifications/phase-2.md), including the Stage 1
-fields that need a versioned schema change.
+against configuration schema `1.1.0` and recorded in [the Phase 2
+specification](architecture/specifications/phase-2.md).
 
 The phase plan for Phases 1–9 is in [the
 roadmap](architecture/specifications/roadmap.md), with the current state table,

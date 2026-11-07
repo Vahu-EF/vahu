@@ -34,6 +34,7 @@ export {
   changedConfigPaths,
   DEFAULT_VAHU_VERSION,
   mergeIdentity,
+  PROJECT_LIFECYCLES,
   PROJECT_TYPES,
   suggestSlug,
   validateAnswers,

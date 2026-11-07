@@ -24,18 +24,26 @@ Re-running `vahu init` prefills the answers from the existing file, prints a
 preview of what changes, and returns the identity to `pending` because the earlier
 approval no longer describes the project.
 
-Sections the onboarding stage does not capture are written with honest starting
-values rather than guesses: brand is `not-applicable`, the design system is
-`not-started`, repositories default to `monorepo` with no invented locations, and
-technology lists are empty. Long descriptions, lifecycle, repository locations,
-and non-goals have no field in schema `1.0.0`; adding them needs a decision
-record and a versioned schema change.
+It captures the long description, lifecycle, non-goals, and repository locations
+as well as the required fields. Sections it does not capture are written with
+honest starting values rather than guesses: brand is `not-applicable`, the design
+system is `not-started`, repositories default to `monorepo` strategy with no
+invented locations, and technology lists are empty.
 
 ## Versioning
 
-`schemaVersion` is currently `1.0.0`. A different version is rejected until a
-migration is implemented. The configuration also records the framework version
-in `vahu.version`.
+`schemaVersion` is currently `1.1.0`. It added `project.longDescription`,
+`project.lifecycle`, `project.nonGoals`, and `repositories.locations` to `1.0.0`
+without renaming, removing, or re-typing a field
+([ADR-0007](../../architecture/decisions/ADR-0007-project-identity-schema-1-1-0.md)).
+
+The configuration also records the framework version in `vahu.version`.
+
+A `1.0.0` file is still read: it is validated against the `1.0.0` schema, then
+migrated in memory, and `vahu validate` adds a `SCHEMA_1_0_0_NOT_MIGRATED`
+recommendation rather than an error. `vahu migrate --write` rewrites the file as
+`1.1.0`, adding only `project.nonGoals: []` and `repositories.locations: []`. An
+unsupported version is rejected with the supported list.
 
 Unknown fields are rejected. This is deliberate: a typo such as `desginSystem`
 must fail loudly rather than be ignored.
@@ -44,7 +52,7 @@ must fail loudly rather than be ignored.
 
 ```json
 {
-  "schemaVersion": "1.0.0",
+  "schemaVersion": "1.1.0",
   "vahu": { "version": "0.1.0" },
   "project": {
     "name": "Example API",
@@ -55,12 +63,16 @@ must fail loudly rather than be ignored.
     "type": "backend-service",
     "languages": ["en"],
     "scope": "Phase 0 example",
-    "constraints": []
+    "constraints": [],
+    "nonGoals": ["Not a general-purpose CRM"]
   },
   "identity": { "status": "approved" },
   "brand": { "status": "not-applicable" },
   "designSystem": { "status": "not-applicable", "source": "none" },
-  "repositories": { "strategy": "monorepo" },
+  "repositories": {
+    "strategy": "monorepo",
+    "locations": [{ "name": "api", "path": "apps/api", "role": "service" }]
+  },
   "technology": {
     "backend": ["node"],
     "frontend": [],

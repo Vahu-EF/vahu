@@ -16,9 +16,9 @@ function runCli(args: string[], cwd = repoRoot) {
   });
 }
 
-function validConfig() {
+function validConfig(version: '1.0.0' | '1.1.0' = '1.1.0') {
   return {
-    schemaVersion: '1.0.0',
+    schemaVersion: version,
     vahu: { version: '0.1.0' },
     project: {
       name: 'CLI Test',
@@ -30,11 +30,15 @@ function validConfig() {
       languages: ['en'],
       scope: 'Test fixture',
       constraints: [],
+      ...(version === '1.1.0' ? { nonGoals: [] } : {}),
     },
     identity: { status: 'approved' },
     brand: { status: 'not-applicable' },
     designSystem: { status: 'not-applicable', source: 'none' },
-    repositories: { strategy: 'monorepo' },
+    repositories: {
+      strategy: 'monorepo',
+      ...(version === '1.1.0' ? { locations: [] } : {}),
+    },
     technology: {
       backend: ['node'],
       frontend: [],
@@ -150,6 +154,57 @@ describe('vahu CLI', () => {
     expect(await readFile(join(directory, '.vahu/project.json'), 'utf8')).toBe(original);
   });
 
+  it('captures the schema 1.1.0 identity fields', async () => {
+    const directory = await emptyDirectory();
+
+    const result = runCli([
+      ...initArgs(directory),
+      '--long-description',
+      'A longer explanation of the service.',
+      '--lifecycle',
+      'active',
+      '--non-goals',
+      'Not a marketplace',
+      '--repository',
+      'api=apps/api',
+    ]);
+
+    expect(result.status).toBe(0);
+    const config = await readConfig(directory);
+    expect(config.schemaVersion).toBe('1.1.0');
+    expect(config.project.longDescription).toBe('A longer explanation of the service.');
+    expect(config.project.lifecycle).toBe('active');
+    expect(config.project.nonGoals).toEqual(['Not a marketplace']);
+    expect(config.repositories.locations).toEqual([{ name: 'api', path: 'apps/api' }]);
+  });
+
+  it('previews a schema migration without writing until asked', async () => {
+    const directory = await createProject(validConfig('1.0.0'));
+
+    const preview = runCli(['migrate', '--path', directory]);
+
+    expect(preview.status).toBe(0);
+    expect(preview.stdout).toContain('Read-only');
+    expect((await readConfig(directory)).schemaVersion).toBe('1.0.0');
+
+    const written = runCli(['migrate', '--path', directory, '--write']);
+
+    expect(written.status).toBe(0);
+    const config = await readConfig(directory);
+    expect(config.schemaVersion).toBe('1.1.0');
+    expect(config.project.nonGoals).toEqual([]);
+    expect(runCli(['validate', '--path', directory]).status).toBe(0);
+  });
+
+  it('reports a configuration that is already current', async () => {
+    const directory = await createProject(validConfig());
+
+    const result = runCli(['migrate', '--path', directory]);
+
+    expect(result.status).toBe(0);
+    expect(result.stdout).toContain('already uses schema 1.1.0');
+  });
+
   it('requires explicit answers when no interactive terminal exists', async () => {
     const directory = await emptyDirectory();
 
@@ -196,10 +251,19 @@ async function emptyDirectory(): Promise<string> {
   return directory;
 }
 
-async function readConfig(directory: string): Promise<{
-  project: { slug: string };
+interface TestConfig {
+  schemaVersion: string;
+  project: {
+    slug: string;
+    lifecycle?: string;
+    longDescription?: string;
+    nonGoals: string[];
+  };
   identity: { status: string };
-}> {
+  repositories: { locations: { name: string; path?: string; url?: string }[] };
+}
+
+async function readConfig(directory: string): Promise<TestConfig> {
   const source = await readFile(join(directory, '.vahu/project.json'), 'utf8');
-  return JSON.parse(source) as { project: { slug: string }; identity: { status: string } };
+  return JSON.parse(source) as TestConfig;
 }

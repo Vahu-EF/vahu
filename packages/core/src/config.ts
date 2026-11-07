@@ -1,7 +1,13 @@
 import { existsSync } from 'node:fs';
 import { mkdir, readFile, writeFile } from 'node:fs/promises';
 import { dirname, resolve } from 'node:path';
-import { parseProjectConfig, type ConfigIssue, type ProjectConfig } from '@vahu-ef/schemas';
+import {
+  migrateProjectConfig,
+  SCHEMA_VERSION,
+  type ConfigIssue,
+  type ProjectConfig,
+  type SchemaVersion,
+} from '@vahu-ef/schemas';
 
 export const PROJECT_CONFIG_RELATIVE_PATH = '.vahu/project.json';
 
@@ -10,7 +16,12 @@ export type ConfigLoadResult =
   | { status: 'unreadable'; configPath: string; message: string }
   | { status: 'invalid-json'; configPath: string; message: string }
   | { status: 'invalid-schema'; configPath: string; issues: ConfigIssue[] }
-  | { status: 'valid'; configPath: string; config: ProjectConfig };
+  | {
+      status: 'valid';
+      configPath: string;
+      config: ProjectConfig;
+      migratedFrom?: Exclude<SchemaVersion, typeof SCHEMA_VERSION>;
+    };
 
 export function projectConfigPath(cwd: string): string {
   return resolve(cwd, PROJECT_CONFIG_RELATIVE_PATH);
@@ -71,12 +82,17 @@ export async function loadProjectConfig(cwd: string): Promise<ConfigLoadResult> 
     };
   }
 
-  const parsed = parseProjectConfig(input);
-  if (!parsed.ok) {
-    return { status: 'invalid-schema', configPath, issues: parsed.issues };
+  const migrated = migrateProjectConfig(input);
+  if (!migrated.ok) {
+    return { status: 'invalid-schema', configPath, issues: migrated.issues };
   }
 
-  return { status: 'valid', configPath, config: parsed.data };
+  return {
+    status: 'valid',
+    configPath,
+    config: migrated.config,
+    ...(migrated.from === SCHEMA_VERSION ? {} : { migratedFrom: migrated.from }),
+  };
 }
 
 function isNodeError(error: unknown): error is NodeJS.ErrnoException {

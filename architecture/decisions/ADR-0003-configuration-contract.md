@@ -33,3 +33,10 @@ a migration path; silently accepting a different version is not allowed.
 - A schema version bump requires an explicit migration and release note.
 - The `example.invalid` reference in `VAHU.md` remains a documented placeholder,
   not a silently invented production URL.
+
+## Notes
+
+[ADR-0007](ADR-0007-project-identity-schema-1-1-0.md) added schema `1.1.0` as a
+backward-compatible extension with a `1.0.0` migration. The version quoted in
+the decision above is the version at the time of acceptance; the contract,
+ownership, and migration rules in this record still apply.

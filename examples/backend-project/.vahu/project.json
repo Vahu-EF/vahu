@@ -1,5 +1,5 @@
 {
-  "schemaVersion": "1.0.0",
+  "schemaVersion": "1.1.0",
   "vahu": {
     "version": "0.1.0"
   },
@@ -12,7 +12,8 @@
     "type": "backend-service",
     "languages": ["en"],
     "scope": "Phase 0 example",
-    "constraints": ["No public UI in this example."]
+    "constraints": ["No public UI in this example."],
+    "nonGoals": []
   },
   "identity": {
     "status": "approved"
@@ -26,7 +27,8 @@
   },
   "repositories": {
     "strategy": "monorepo",
-    "notes": "The service and its integration tests share one repository."
+    "notes": "The service and its integration tests share one repository.",
+    "locations": []
   },
   "technology": {
     "backend": ["node"],
