@@ -50,7 +50,19 @@ This roadmap is a proposal. The user must approve each phase before implementati
 
 Do not combine phases merely to finish faster. A phase may be split into smaller milestones if implementation scope or agent context limits require it.
 
-## 3.1 Current implementation state
+## 3.1 Phase approvals
+
+A phase starts only after the project owner approves it. This table is the
+record; an agent may not add an approval row on the owner's behalf.
+
+| Phase | Approval                             | Date       | Record                         |
+| ----- | ------------------------------------ | ---------- | ------------------------------ |
+| 0     | Approved and complete                | 2026-11-06 | [`phase-0.md`](phase-0.md)     |
+| 1     | Approved and complete                | 2026-11-07 | [`phase-1.md`](phase-1.md)     |
+| 2     | Approved; implementation not started | 2026-11-07 | This document, Phase 2 section |
+| 3–9   | Not approved                         | —          | This document                  |
+
+## 3.2 Current implementation state
 
 This roadmap was written before Phase 1 began. The repository moved first on the
 standards content, which this document previously treated as only part of
@@ -64,7 +76,8 @@ roadmap owns the content model that wraps it.
 | Phase 1 standards content                        | 15 work packages accepted (2026-11-06 and 2026-11-07) | [`phase-1.md`](phase-1.md)                                      |
 | Phase 1 content metadata, composition, discovery | Draft contract implemented                            | [`CONTENT_MODEL.md`](../../packages/framework/CONTENT_MODEL.md) |
 | Phase 1 structural validation                    | Standard pages, content model, decision index         | `pnpm validate:standards`                                       |
-| Phases 2–9                                       | Not started                                           | This document                                                   |
+| Phase 2                                          | Approved 2026-11-07; implementation not started       | This document                                                   |
+| Phases 3–9                                       | Not started; not approved                             | This document                                                   |
 
 Read this table before assigning any phase. Do not re-implement content that
 already exists, and do not assume the metadata model is settled.
@@ -234,6 +247,13 @@ start from scratch.
 ---
 
 # Phase 2 — Project Identity & Onboarding
+
+## Status
+
+Approved by the VAHU project owner on 2026-11-07. Implementation has not started.
+The scope below is the approved scope: it is the contract for this phase until a
+`phase-2.md` specification replaces it, and nothing outside it is in scope
+without a new approval.
 
 ## Objective
 
@@ -1036,10 +1056,11 @@ Recommended sequence:
 1. ~~Complete and review Phase 0.~~ Done; see [`phase-0.md`](phase-0.md).
 2. ~~Approve Phase 1.~~ Done for the standards content; P1-14 and P1-01 are
    accepted.
-3. Record owner acceptance for the remaining Phase 1 drafts. Phase 1b and 1c are
-   implemented; see [`phase-1.md`](phase-1.md) for the completion report.
-4. Approve Phase 2.
-5. Continue sequentially, adjusting priorities only with explicit user approval.
+3. ~~Record owner acceptance for the Phase 1 drafts.~~ Done 2026-11-07; see
+   [`phase-1.md`](phase-1.md) for the completion report.
+4. ~~Approve Phase 2.~~ Done 2026-11-07; implementation may begin.
+5. Implement and review Phase 2, then request approval for Phase 3. Adjust
+   priorities only with explicit user approval.
 
 Some work can be developed in parallel after its contracts are stable. For example, documentation examples and adapter fixtures may be prepared in parallel. However, do not parallelize work that depends on unresolved schemas, architecture, or approval decisions.
 
@@ -1086,15 +1107,16 @@ Use the following template when assigning an individual phase to a coding agent:
 
 # 8. Immediate Next Steps
 
-Phase 0 is complete and Phase 1 is in progress. The next steps are:
+Phases 0 and 1 are complete and Phase 2 is approved but not started. The next
+steps are:
 
 1. ~~Approve the Phase 1 standards.~~ Done: P1-14 and P1-01 on 2026-11-06, the
    other 13 on 2026-11-07.
-2. Review the Phase 1b content model contract and composition rules.
-3. Schedule the per-standard checks that remain planned; none is claimed as
+2. ~~Authorize Phase 2.~~ Approved by the project owner on 2026-11-07.
+3. Assign Phase 2 and stop at its boundary. Its scope is the Phase 2 section
+   above; a `phase-2.md` specification is written when the phase is assigned.
+4. Schedule the per-standard checks that remain planned; none is claimed as
    implemented.
-4. Review the Phase 1 acceptance criteria in [`phase-1.md`](phase-1.md) before
-   authorizing Phase 2.
 
 **Do not start Phase 2 until Phase 1 is accepted.**
 
