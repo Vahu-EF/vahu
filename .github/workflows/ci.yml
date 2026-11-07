@@ -47,6 +47,9 @@ jobs:
       - name: Build
         run: pnpm build
 
+      - name: Pack and verify release candidates
+        run: pnpm release:pack
+
       - name: Validate workspace boundaries
         run: pnpm validate:workspace
 

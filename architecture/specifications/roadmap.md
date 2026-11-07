@@ -5,10 +5,10 @@
 **Organization:** https://github.com/Vahu-EF  
 **Repository:** https://github.com/Vahu-EF/vahu  
 **Tagline:** Build Better Software, With Better Agents.  
-**Document status:** Phases 0–5 complete; Phases 6–7 in progress; Phases 8–9 not approved
+**Document status:** Phases 0–5 complete; Phases 6–8 in progress; Phase 9 not approved
 **Scope:** Phases 1–9. Phase 0 is recorded in [`phase-0.md`](phase-0.md) and the
 foundation document [`VAHU.md`](../../VAHU.md).  
-**Companion specifications:** [`phase-0.md`](phase-0.md), [`phase-1.md`](phase-1.md), [`phase-2.md`](phase-2.md), [`phase-3.md`](phase-3.md), [`phase-4.md`](phase-4.md), [`phase-5.md`](phase-5.md), [`phase-6.md`](phase-6.md), [`phase-7.md`](phase-7.md)
+**Companion specifications:** [`phase-0.md`](phase-0.md), [`phase-1.md`](phase-1.md), [`phase-2.md`](phase-2.md), [`phase-3.md`](phase-3.md), [`phase-4.md`](phase-4.md), [`phase-5.md`](phase-5.md), [`phase-6.md`](phase-6.md), [`phase-7.md`](phase-7.md), [`phase-8.md`](phase-8.md)
 
 ---
 
@@ -65,7 +65,8 @@ record; an agent may not add an approval row on the owner's behalf.
 | 5     | Approved; workflow and quality-gate contracts implemented      | 2026-11-07 | [`phase-5.md`](phase-5.md) |
 | 6     | Approved; first read-only project and profile CLI increment    | 2026-11-07 | [`phase-6.md`](phase-6.md) |
 | 7     | Approved; first public docs and website milestone              | 2026-11-07 | [`phase-7.md`](phase-7.md) |
-| 8–9   | Not approved                                                   | —          | This document              |
+| 8     | Approved; verified release-candidate milestone                 | 2026-11-07 | [`phase-8.md`](phase-8.md) |
+| 9     | Not approved                                                   | —          | This document              |
 
 ## 3.2 Current implementation state
 
@@ -87,7 +88,8 @@ roadmap owns the content model that wraps it.
 | Phase 5                                          | Approved 2026-11-07; workflow contracts and evaluator implemented  | [`phase-5.md`](phase-5.md)                                      |
 | Phase 6                                          | Approved 2026-11-07; first four read-only CLI commands implemented | [`phase-6.md`](phase-6.md)                                      |
 | Phase 7                                          | Approved 2026-11-07; public docs and website first milestone       | [`phase-7.md`](phase-7.md)                                      |
-| Phases 8–9                                       | Not started; not approved                                          | This document                                                   |
+| Phase 8                                          | Approved 2026-11-07; verified candidates, nothing published        | [`phase-8.md`](phase-8.md)                                      |
+| Phase 9                                          | Not started; not approved                                          | This document                                                   |
 
 Read this table before assigning any phase. Do not re-implement content that
 already exists, and do not assume the metadata model is settled.
@@ -859,6 +861,13 @@ Examples must be small, realistic, and validated in CI.
 
 # Phase 8 — Release, Distribution & Compatibility
 
+## Status
+
+Approved by the VAHU project owner on 2026-11-07. The first milestone (verified
+release candidates and the compatibility policy) is implemented;
+[`phase-8.md`](phase-8.md) records what is checked and what remains. Publication,
+standalone executables, and signing are not implemented and not authorized.
+
 ## Objective
 
 Establish a trustworthy release process for npm packages and standalone GitHub Release binaries.
@@ -1117,18 +1126,17 @@ Use the following template when assigning an individual phase to a coding agent:
 
 # 8. Immediate Next Steps
 
-Phases 0 and 1 are complete and Phase 2 is approved but not started. The next
-steps are:
+Phases 0–5 are complete. Phases 6, 7, and 8 are approved and partially
+implemented; their specifications record what each increment covers. Phase 9 is
+not approved. The next steps are:
 
-1. ~~Approve the Phase 1 standards.~~ Done: P1-14 and P1-01 on 2026-11-06, the
-   other 13 on 2026-11-07.
-2. ~~Authorize Phase 2.~~ Approved by the project owner on 2026-11-07.
-3. Assign Phase 2 and stop at its boundary. Its scope is the Phase 2 section
-   above; a `phase-2.md` specification is written when the phase is assigned.
-4. Schedule the per-standard checks that remain planned; none is claimed as
-   implemented.
+1. Finish the remaining approved increments in Phases 6–8: profile mutation,
+   agent commands, workflow execution, standalone executables, and publication.
+2. Obtain a separate, explicit release approval before publishing any package or
+   creating a GitHub Release.
+3. Request approval for Phase 9 before starting hardening work.
 
-**Do not start Phase 2 until Phase 1 is accepted.**
+**Do not publish packages or create releases without explicit authorization.**
 
 Earlier revisions of this document told agents not to start Phase 1 during
 Phase 0. That instruction is satisfied and no longer applies.

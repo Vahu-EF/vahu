@@ -2,6 +2,7 @@
   "name": "vahu-monorepo",
   "version": "0.0.0",
   "private": true,
+  "type": "module",
   "description": "VAHU — an agent-agnostic engineering framework for AI-assisted software development.",
   "license": "Apache-2.0",
   "packageManager": "pnpm@12.3.4",
@@ -23,6 +24,8 @@
     "validate:standards": "node scripts/validation/validate-standards.mjs",
     "validate:profiles": "node scripts/validation/validate-profiles.mjs",
     "validate:workflows": "node scripts/validation/validate-workflows.mjs",
+    "release:pack": "tsx scripts/release/validate-artifacts.ts --pack",
+    "release:validate": "tsx scripts/release/validate-artifacts.ts",
     "check": "pnpm format:check && pnpm lint && pnpm typecheck && pnpm test && pnpm build && pnpm validate:workspace && pnpm validate:standards && pnpm validate:profiles && pnpm validate:workflows"
   },
   "devDependencies": {

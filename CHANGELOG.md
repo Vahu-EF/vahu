@@ -4,6 +4,27 @@ All notable changes to VAHU are recorded here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and versioning follows
 [Semantic Versioning](https://semver.org/).
 
+## Unreleased — Phase 8 release candidates and compatibility
+
+### Added
+
+- `pnpm release:pack` and `pnpm release:validate`: pack the approved packages and
+  inspect each tarball for the package set, manifest identity, required files,
+  existing entry points, released dependency ranges, internal version agreement,
+  and forbidden source or environment content.
+- SHA-256 `SHA256SUMS` output compatible with `sha256sum -c`, plus unit tests that
+  build synthetic tarballs and prove each rule fails when it should.
+- The manual release workflow now packs through the validator, verifies the
+  checksum manifest, and uploads only the tarballs and checksums. It still does
+  not publish.
+- `docs/contributing/versioning-and-compatibility.md`, ADR-0013, and
+  `architecture/specifications/phase-8.md`.
+
+### Not included
+
+- npm publication, provenance attestation, GitHub Releases, standalone
+  executables, signing, or cross-platform candidate verification.
+
 ## Unreleased — Phase 7 documentation, website, and examples
 
 ### Added

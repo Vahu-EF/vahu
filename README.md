@@ -10,7 +10,7 @@ adapters for different AI coding agents.
 VAHU is not a prompt collection and it is not tied to one AI provider. The
 framework content must remain useful without the CLI.
 
-> **Status:** Phases 1–5 complete; Phases 6–7 in progress. This repository is being
+> **Status:** Phases 1–5 complete; Phases 6–8 in progress. This repository is being
 > actively developed. There is no npm release or GitHub Release yet.
 
 ## Why VAHU exists
@@ -55,6 +55,7 @@ The core principles are:
 | Engineering workflows          | In Progress | 14 lifecycle definitions, 13 gates, and a non-executing evidence evaluator              |
 | Full documentation engine      | Planned     | Not implemented                                                                         |
 | Website                        | In Progress | Updated static overview and quick start; Pages is not published                         |
+| Release verification           | In Progress | Verified npm candidates with checksums; nothing published                               |
 
 ## Architecture overview
 
@@ -249,8 +250,11 @@ The planned branch workflow is:
 - short-lived feature branches for changes;
 - pull requests with passing checks.
 
-Phase 0 does not publish packages or create releases. Release preparation is
-documented in [the release guide](docs/contributing/release-preparation.md).
+No package is published and no release exists. Verified candidates come from
+`pnpm release:pack`; the process is documented in
+[the release guide](docs/contributing/release-preparation.md) and the
+compatibility promises in
+[versioning and compatibility](docs/contributing/versioning-and-compatibility.md).
 
 ## License
 
@@ -279,9 +283,13 @@ specification](architecture/specifications/phase-6.md). Phase 7 (Documentation,
 Website & Examples) has begun with a public overview, updated guides, and
 validated example configurations; the [Phase 7
 specification](architecture/specifications/phase-7.md) records what remains.
+Phase 8 (Release, Distribution & Compatibility) has verified npm candidates,
+checksums, and a compatibility policy; the [Phase 8
+specification](architecture/specifications/phase-8.md) records what is not
+implemented.
 
 The phase plan for Phases 1–9 is in [the
 roadmap](architecture/specifications/roadmap.md), with the current state table,
 content-model scope, and remaining phases. Provider-specific agent adapters,
-workflow execution, the remaining Phase 6 CLI commands, release artifacts, and
-the production website remain future work.
+workflow execution, the remaining Phase 6 CLI commands, publication, standalone
+executables, and the production website remain future work.
