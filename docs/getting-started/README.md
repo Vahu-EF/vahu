@@ -24,6 +24,8 @@ pnpm dev -- --version
 pnpm dev -- --help
 pnpm dev -- doctor
 pnpm dev -- validate --path examples/backend-project
+pnpm dev -- project inspect --path examples/backend-project
+pnpm dev -- profile list
 ```
 
 ## Build and run the CLI artifact
@@ -34,7 +36,7 @@ node apps/cli/dist/index.js --version
 node apps/cli/dist/index.js validate --path examples/backend-project
 ```
 
-The package name is `vahu`, but it is **not published to npm** in Phase 0.
+The package name is `vahu`, but it is **not published to npm**. The built CLI bundles the three canonical technology profiles so `profile list` works from another working directory.
 
 ## Validate a project
 
@@ -49,8 +51,16 @@ vahu validate --path /path/to/project
 A blocking issue exits with status `1`. Warnings are reported but do not block a
 configuration that is otherwise valid.
 
-## What is not available
+## Example projects
 
-The onboarding wizard, project generation, technology-profile installation,
-agent adapters, documentation generation, and release publishing are planned.
-Do not treat the CLI roadmap in `VAHU.md` as a list of implemented commands.
+Five small example configurations are committed under `examples/`. The CLI test
+suite validates every `examples/*/.vahu/project.json` on each test run. They are
+configuration examples, not production applications.
+
+## Current limits
+
+`project inspect/status` and `profile list/validate` are read-only. Profile
+selection/mutation, provider-specific adapters, agent synchronization,
+workflow execution, generated documentation, and release publishing are not
+implemented. See the [CLI reference](../cli/README.md) and the
+[Phase 6 specification](../../architecture/specifications/phase-6.md).

@@ -1,7 +1,8 @@
 # VAHU website
 
-A small, dependency-free static site prepared for GitHub Pages. It is separate
-from the CLI runtime and does not import any framework package.
+A dependency-free static overview prepared for GitHub Pages. It is separate
+from the CLI runtime; canonical detailed documentation remains in Markdown
+under `docs/`, `architecture/`, and `examples/`.
 
 ## Commands
 
@@ -14,7 +15,9 @@ The build copies `src/` and `public/` into `dist/` and adds `.nojekyll`.
 
 ## Publication status
 
-The site is **not published**. To enable it later:
+The site is **not published**. The Phase 7 first milestone updates the overview
+and links to the maintained documentation; it does not publish Pages. To enable
+it later:
 
 1. Open the repository on GitHub.
 2. Go to **Settings → Pages**.

@@ -1,4 +1,4 @@
-import { mkdtemp, mkdir, readFile, rm, writeFile } from 'node:fs/promises';
+import { access, mkdtemp, mkdir, readFile, readdir, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { spawnSync } from 'node:child_process';
@@ -110,6 +110,29 @@ describe('vahu CLI', () => {
     const result = runCli(['validate', '--path', directory]);
     expect(result.status).toBe(1);
     expect(result.stdout).toContain('ERROR');
+  });
+
+  it('validates every committed example project configuration', async () => {
+    const examplesRoot = join(repoRoot, 'examples');
+    const examples = (await readdir(examplesRoot, { withFileTypes: true }))
+      .filter((entry) => entry.isDirectory())
+      .map((entry) => entry.name)
+      .sort();
+    const projects = [] as string[];
+    for (const example of examples) {
+      try {
+        await access(join(examplesRoot, example, '.vahu/project.json'));
+        projects.push(example);
+      } catch {
+        // Documentation-only example directories aren't project fixtures.
+      }
+    }
+
+    expect(projects.length).toBeGreaterThanOrEqual(5);
+    for (const example of projects) {
+      const result = runCli(['validate', '--path', join(examplesRoot, example)]);
+      expect(result.status, `${example}: ${result.stdout}\n${result.stderr}`).toBe(0);
+    }
   });
 
   it('initializes a configuration with a pending identity', async () => {

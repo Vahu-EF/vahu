@@ -7,18 +7,21 @@ The [content model](../../packages/framework/CONTENT_MODEL.md) defines the
 metadata, discovery, dependency, and composition contract for framework
 content. `pnpm validate:standards` enforces it.
 
-| Area                   | Status   | Purpose                                                 |
-| ---------------------- | -------- | ------------------------------------------------------- |
-| `core/`                | Accepted | 15 universal standards, all accepted                    |
-| `agents/`              | Planned  | Agent-neutral instructions, rules, skills, and commands |
-| `technology-profiles/` | Planned  | Canonical stack-specific profiles                       |
-| `workflows/`           | Planned  | Planning, implementation, review, and release workflows |
-| `documentation/`       | Planned  | Documentation and ADR conventions                       |
-| `quality/`             | Planned  | Testing, static analysis, and review gates              |
-| `security/`            | Planned  | Security baselines and review guidance                  |
-| `cicd/`                | Planned  | CI/CD conventions and reusable templates                |
+| Area                   | Status      | Purpose                                                                          |
+| ---------------------- | ----------- | -------------------------------------------------------------------------------- |
+| `core/`                | Accepted    | 15 universal standards, all accepted                                             |
+| `agents/`              | In Progress | Canonical agent definitions and a generic Markdown renderer; no provider adapter |
+| `technology-profiles/` | In Progress | Validated JSON format and three initial profiles                                 |
+| `workflows/`           | In Progress | Fourteen lifecycle workflows and thirteen gates; no command runner               |
+| `documentation/`       | Planned     | Documentation and ADR conventions                                                |
+| `quality/`             | Planned     | Additional reusable testing and review standards                                 |
+| `security/`            | Planned     | Additional security-baseline content                                             |
+| `cicd/`                | Planned     | CI/CD conventions and reusable templates                                         |
 
-Phase 0 created the boundaries. Phase 1 is complete: all 15 standards in
+Phases 0–6 established the workspace, accepted standards, onboarding,
+provider-neutral agent definitions, technology profiles, workflows/gates, and
+initial read-only CLI reports. Their coverage remains partial where each phase
+specification says so. Phase 1 is complete: all 15 standards in
 [the core index](../../packages/framework/core/README.md) are accepted and
 binding, including
 [engineering decisions](../../packages/framework/core/engineering-decisions.md)
