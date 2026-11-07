@@ -34,7 +34,7 @@
     "node": ">=22.0.0"
   },
   "scripts": {
-    "build": "tsup src/index.ts --format esm --clean",
+    "build": "tsup src/index.ts --format esm --clean && node scripts/copy-profile-catalog.mjs",
     "dev": "tsx src/index.ts",
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },

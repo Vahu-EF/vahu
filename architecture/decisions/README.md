@@ -10,9 +10,12 @@ New records start from the [ADR template](../../templates/documentation/adr.md).
 | [ADR-0003](ADR-0003-configuration-contract.md)                    | Keep one versioned project configuration contract in `packages/schemas`  | Accepted |
 | [ADR-0004](ADR-0004-agent-adapter-boundary.md)                    | Keep agent content neutral and put translations behind adapters          | Accepted |
 | [ADR-0005](ADR-0005-apache-license.md)                            | Use Apache License 2.0 without asserting an unconfirmed copyright holder | Accepted |
-| [ADR-0006](ADR-0006-content-metadata-contract.md)                 | Extend the P1-14 page header into a validated content metadata contract  | Proposed |     | [ADR-0007](ADR-0007-project-identity-schema-1-1-0.md) | Extend the configuration to schema 1.1.0 for Project Identity | Accepted |     | [ADR-0008](ADR-0008-canonical-agent-definition-contract.md) | Define a provider-neutral canonical agent contract | Accepted |
+| [ADR-0006](ADR-0006-content-metadata-contract.md)                 | Extend the P1-14 page header into a validated content metadata contract  | Proposed |
+| [ADR-0007](ADR-0007-project-identity-schema-1-1-0.md)             | Extend the configuration to schema 1.1.0 for Project Identity            | Accepted |
+| [ADR-0008](ADR-0008-canonical-agent-definition-contract.md)       | Define a provider-neutral canonical agent contract                       | Accepted |
 | [ADR-0009](ADR-0009-technology-profile-contract.md)               | Define technology profiles as validated JSON with explicit composition   | Accepted |
 | [ADR-0010](ADR-0010-agent-neutral-workflows-and-gate-evidence.md) | Define agent-neutral workflows and evidence-based quality gates          | Accepted |
+| [ADR-0011](ADR-0011-cli-read-only-reports.md)                     | Version read-only CLI report contracts                                   | Accepted |
 
 ## Lifecycle
 
