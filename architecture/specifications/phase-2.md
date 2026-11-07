@@ -1,6 +1,6 @@
 # Phase 2 specification — Project Identity & Onboarding
 
-- **Status:** In Progress — Stage 1 implemented; Stages 2–8 not started
+- **Status:** In Progress — Stages 1, 2, 4, 5, 7, 8 implemented; Stages 3 and 6 partial
 - **Depends on:** Phase 0 foundation, accepted Phase 1 standards, approved Phase 2 scope
 - **Owner approval:** Phase 2 approved by the VAHU project owner on 2026-11-07
 - **Canonical for:** the onboarding implementation contract
@@ -21,16 +21,16 @@ and what remains.
 
 ## Stage status
 
-| Stage | Name                   | State                                                        |
-| ----- | ---------------------- | ------------------------------------------------------------ |
-| 1     | Project Identity       | Implemented; every roadmap field is captured                 |
-| 2     | Brand identity         | Not started                                                  |
-| 3     | Design system          | Not started                                                  |
-| 4     | Design approval        | Not started; the readiness rule exists from Phase 0          |
-| 5     | Technology selection   | Not started                                                  |
-| 6     | Repository strategy    | Not started; the configuration accepts a strategy and notes  |
-| 7     | Engineering foundation | Not started                                                  |
-| 8     | Project readiness      | Not started as a report; Phase 0 readiness rules still apply |
+| Stage | Name                   | State                                                            |
+| ----- | ---------------------- | ---------------------------------------------------------------- |
+| 1     | Project Identity       | Implemented; every roadmap field is captured                     |
+| 2     | Brand identity         | Implemented: capture, statuses, assets, and reasons              |
+| 3     | Design system          | Partial: recording and approval, no token analysis or generation |
+| 4     | Design approval        | Implemented: approval needs a source and a path                  |
+| 5     | Technology selection   | Implemented: per-area selection, no profile catalog yet          |
+| 6     | Repository strategy    | Partial: strategy, notes, locations; ownership not captured      |
+| 7     | Engineering foundation | Implemented as inspection; detected facts are not stored         |
+| 8     | Project readiness      | Implemented: report and opt-in record of status and time         |
 
 ## Stage 1 — Project Identity
 
@@ -117,17 +117,96 @@ half-finished identity can be completed later or corrected without a draft file.
 There is no separate partial-onboarding state to keep in sync with the
 configuration.
 
+## Stages 2–8 — other onboarding stages
+
+Every command below requires an existing, schema-valid configuration. Each one
+prints the section it writes and the paths it changed, and writes through
+`saveProjectConfig` with an explicit overwrite because the change is the command's
+purpose.
+
+### Stage 2 — Brand identity
+
+```bash
+vahu brand --status not-applicable --notes "Internal service with no public brand."
+vahu brand --status approved --logo assets/logo.svg --colors "#0b5fff" --typography "Inter"
+```
+
+`not-applicable` requires a recorded reason, and `approved` requires at least one
+asset reference, so a project cannot claim a brand it has not supplied. The
+command records references only; it never invents meanings, colors, or claims.
+
+### Stages 3 and 4 — Design system and approval
+
+```bash
+vahu design --status pending-approval --source existing --path docs/design-system.md
+vahu design approve
+```
+
+Approval is refused unless the design system has an `existing` or `generated`
+source **and** a path, which is the same condition the readiness rules check.
+Marking it `not-applicable` clears the source and path.
+
+This is partial against the roadmap: token inspection, gap analysis, and
+proposing a new design system are not implemented, and no design system is ever
+marked approved automatically.
+
+### Stage 5 — Technology selection
+
+```bash
+vahu technology --area backend --add "node, postgresql"
+vahu technology --area backend --remove "node"
+```
+
+Selection is per area and does not assume a stack. The technology-profile catalog
+belongs to Phase 4; for now a value is a recorded name, not a validated profile.
+
+### Stage 6 — Repository strategy
+
+```bash
+vahu repositories --strategy hybrid --notes "API and docs live apart." \
+  --location api=. --location docs=https://github.com/example/docs
+```
+
+Strategy, notes, and locations are captured. The schema also stores an optional
+`owner` per location, but no command sets it yet, so repository ownership is the
+one Stage 6 item still missing from the CLI.
+
+### Stage 7 — Engineering foundation
+
+```bash
+vahu foundation --path .
+```
+
+Inspects `package.json` scripts and package manager, lockfiles, CI workflows,
+documentation locations, and an environment example. Everything printed is
+labelled as detected from files, and nothing is written: storing foundation facts
+would need a schema version of its own.
+
+### Stage 8 — Project readiness
+
+```bash
+vahu readiness
+vahu readiness --record
+```
+
+The report prints blocking issues and recommendations with their codes. `--record`
+stores the computed status and the check time; it cannot make a project ready,
+because the status is derived from the same rules. The command exits with status
+`1` while a blocking issue remains.
+
 ## Validation
 
 The stage is covered by automated tests:
 
-| Area                                   | Test file                                         |
-| -------------------------------------- | ------------------------------------------------- |
-| Slug derivation and answers            | `packages/core/src/onboarding.test.ts` (18 tests) |
-| Safe writes, reading, and migration    | `packages/core/src/config.test.ts` (6 tests)      |
-| Schema and migration                   | `packages/schemas/src/project.test.ts` (14 tests) |
-| Readiness and migration recommendation | `packages/core/src/validate.test.ts` (8 tests)    |
-| Init, approval, migration, and gate    | `apps/cli/tests/cli.test.ts` (14 tests)           |
+| Area                                               | Test file                                         |
+| -------------------------------------------------- | ------------------------------------------------- |
+| Slug derivation and answers                        | `packages/core/src/onboarding.test.ts` (18 tests) |
+| Safe writes, reading, and migration                | `packages/core/src/config.test.ts` (6 tests)      |
+| Schema and migration                               | `packages/schemas/src/project.test.ts` (14 tests) |
+| Readiness and migration recommendation             | `packages/core/src/validate.test.ts` (8 tests)    |
+| Init, approval, migration, and gate                | `apps/cli/tests/cli.test.ts` (20 tests)           |
+| Brand, design, technology, repositories, readiness | `packages/core/src/stages.test.ts` (12 tests)     |
+| Foundation detection                               | `packages/core/src/foundation.test.ts` (3 tests)  |
 
 The interactive flow was also exercised once through a real terminal: every
 prompt accepted a value or its default, the preview printed, the file was
@@ -136,20 +215,27 @@ approve` cleared it. Interactive behaviour is not covered by an automated test.
 
 ## Acceptance
 
-| Criterion                                          | State   | Evidence                                                   |
-| -------------------------------------------------- | ------- | ---------------------------------------------------------- |
-| Identity is captured through a guided flow         | Met     | `vahu init`, interactive and flag-driven                   |
-| Identity is a valid `.vahu/project.json`           | Met     | `buildProjectConfig` runs the schema parser                |
-| Nothing is approved on the user's behalf           | Met     | `init` writes `pending`; approval needs `--by`             |
-| No file is overwritten without preview and consent | Met     | `saveProjectConfig` refuses unless `overwrite` is explicit |
-| Onboarding can be resumed                          | Met     | Re-running `init` prefills from the configuration          |
-| Every Stage 1 roadmap field is captured            | Met     | Schema 1.1.0 per ADR-0007; `init` flags and prompts        |
-| Older configurations stay readable                 | Met     | 1.0.0 migration, validated before transforming             |
-| Stages 2–8                                         | Not met | Not started                                                |
+| Criterion                                          | State   | Evidence                                                        |
+| -------------------------------------------------- | ------- | --------------------------------------------------------------- |
+| Identity is captured through a guided flow         | Met     | `vahu init`, interactive and flag-driven                        |
+| Identity is a valid `.vahu/project.json`           | Met     | `buildProjectConfig` runs the schema parser                     |
+| Nothing is approved on the user's behalf           | Met     | `init` writes `pending`; approval needs `--by`                  |
+| No file is overwritten without preview and consent | Met     | `saveProjectConfig` refuses unless `overwrite` is explicit      |
+| Onboarding can be resumed                          | Met     | Re-running `init` prefills from the configuration               |
+| Every Stage 1 roadmap field is captured            | Met     | Schema 1.1.0 per ADR-0007; `init` flags and prompts             |
+| Older configurations stay readable                 | Met     | 1.0.0 migration, validated before transforming                  |
+| Brand capture with explicit states and reasons     | Met     | `vahu brand`; not-applicable needs notes, approval needs assets |
+| Design-system recording and approval               | Met     | `vahu design`, `vahu design approve`                            |
+| Design-system analysis and generation              | Not met | Stage 3 remainder; no token inspection or proposal              |
+| Technology selection per area                      | Met     | `vahu technology`                                               |
+| Repository strategy, notes, and locations          | Partial | `vahu repositories`; owner has no flag yet                      |
+| Engineering-foundation inspection                  | Met     | `vahu foundation`; detected facts are not stored                |
+| Readiness report and opt-in record                 | Met     | `vahu readiness [--record]`                                     |
 
 ## Non-goals
 
-Phase 2 Stage 1 does not generate brand assets, design systems, technology
-profiles, agent adapters, documentation, or a readiness report, and it adds no
-hosted service. Those belong to later stages and phases, and each consequential
-one needs explicit approval before implementation.
+These stages do not generate brand assets, analyse design tokens, propose or
+generate a design system, validate technology profiles, set repository
+ownership, store foundation facts, or add a hosted service. They also never mark
+a project ready on their own. Generation, profiles, and any stored foundation
+facts belong to later phases and need their own decisions.

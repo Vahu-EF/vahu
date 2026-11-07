@@ -88,6 +88,33 @@ An approval needs a non-empty approver name; the command refuses to record one
 without it. Changing the identity later with `vahu init` returns it to
 `pending`, so an old approval never covers a new identity.
 
+### Other onboarding stages
+
+Each command requires an existing configuration and prints the section it wrote.
+
+```bash
+vahu brand --status not-applicable --notes "Internal service with no public brand."
+vahu brand --status approved --logo assets/logo.svg --colors "#0b5fff"
+vahu design --status pending-approval --source existing --path docs/design-system.md
+vahu design approve
+vahu technology --area backend --add "node, postgresql"
+vahu technology --area backend --remove node
+vahu repositories --strategy hybrid --notes "API and docs live apart." --location api=.
+vahu foundation
+vahu readiness [--record]
+```
+
+- `brand`: `not-applicable` needs a reason; `approved` needs at least one asset.
+- `design`: approval is refused without an existing or generated source and a
+  path. Marking it not applicable clears both.
+- `technology`: selects values per area; profiles arrive in Phase 4.
+- `repositories`: strategy, notes, and `name=path-or-url` locations. Ownership is
+  stored in the configuration but has no flag yet.
+- `foundation`: detects scripts, workflows, docs, and an environment example from
+  files and writes nothing.
+- `readiness`: prints blocking issues and recommendations; `--record` stores the
+  computed status and check time. It exits `1` while something blocks.
+
 ### `vahu migrate`
 
 Reads a configuration written with schema `1.0.0` and reports the change.

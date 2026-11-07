@@ -8,6 +8,14 @@ All notable changes to VAHU are recorded here. The format follows
 
 ### Added
 
+- Onboarding stages 2–8: `vahu brand`, `vahu design` and `vahu design approve`,
+  `vahu technology`, `vahu repositories`, `vahu foundation`, and
+  `vahu readiness [--record]`, backed by tested core logic in
+  `packages/core/src/stages.ts` and `packages/core/src/foundation.ts`.
+- Brand capture enforces a reason for `not-applicable` and an asset for
+  `approved`; design approval requires a source and a path; foundation reports
+  only facts detected from files and writes nothing.
+
 - Project configuration schema `1.1.0`, adding `project.longDescription`,
   `project.lifecycle`, `project.nonGoals`, and `repositories.locations`
   additively; `project.schema.json` regenerated.
@@ -39,8 +47,12 @@ All notable changes to VAHU are recorded here. The format follows
 
 ### Not included
 
-- Brand, design system, design approval, technology selection, repository
-  strategy, engineering foundation, and readiness onboarding stages.
+- Design-system token analysis, gap reporting, and generated design-system
+  proposals (the rest of Stage 3); the CLI records and approves an existing
+  system.
+- A CLI flag for repository `owner`; the configuration field exists.
+- Stored engineering-foundation facts; `vahu foundation` inspects but writes
+  nothing.
 - Automatic schema upgrades: a `1.0.0` file is read and reported, and is only
   rewritten by `vahu migrate --write`.
 

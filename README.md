@@ -51,8 +51,7 @@ The core principles are:
 | Core engineering standards     | Implemented | 15 Phase 1 standards, all accepted                                              |
 | Framework content model        | In Progress | Draft metadata, discovery, and composition contract with a validator            |
 | Technology profiles            | Planned     | One canonical location reserved under `packages/framework/technology-profiles/` |
-| Agent adapters                 | Planned     | Adapter folders and contracts only; no adapter is claimed                       |
-| Project onboarding             | In Progress | `vahu init` captures Project Identity; later onboarding stages are not built    |
+| Agent adapters                 | Planned     | Adapter folders and contracts only; no adapter is claimed                       |     | Project onboarding | Implemented | Identity, brand, design, technology, repository, foundation, and readiness commands |
 | Full documentation engine      | Planned     | Not implemented                                                                 |
 | Website                        | In Progress | A small static site source exists; it is not published                          |
 
@@ -146,13 +145,22 @@ vahu validate [--path <directory>] [--json]
 vahu init [--path <directory>] [flags] [--yes] [--force]
 vahu identity [--path <directory>] [--json]
 vahu identity approve [--path <directory>] --by "Your Name"
+vahu brand --status <status> [--logo <ref>] [--colors <list>] [--notes <text>]
+vahu design [--status <status>] [--source <source>] [--path <path>]
+vahu design approve
+vahu technology --area <area> [--add <list>] [--remove <list>]
+vahu repositories [--strategy <strategy>] [--notes <text>] [--location <spec>]
+vahu foundation [--path <directory>]
+vahu readiness [--record] [--path <directory>]
 vahu migrate [--path <directory>] [--write]
 ```
 
 `doctor` checks the local environment and project configuration. `validate`
 checks `.vahu/project.json` and the readiness rules. `init` captures Project
 Identity and writes the configuration, and `identity approve` records the
-explicit approval that `validate` requires. `migrate` reads a `1.0.0`
+explicit approval that `validate` requires. The onboarding commands record brand,
+design-system, technology, repository, and readiness decisions, and `foundation`
+inspects detected engineering facts without writing. `migrate` reads a `1.0.0`
 configuration and rewrites it at the current schema version only when asked.
 Commands from the long-term CLI roadmap, such as `design`, `profile`,
 `readiness`, `agents`, and `docs`, are **not implemented** yet.

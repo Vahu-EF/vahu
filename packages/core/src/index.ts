@@ -28,6 +28,29 @@ export {
   type ContentReport,
 } from './content.js';
 export { validateFramework, type FrameworkReport } from './framework.js';
+export { detectFoundation, type FoundationReport } from './foundation.js';
+export {
+  applyBrand,
+  applyDesignSystem,
+  applyRepositories,
+  BRAND_STATUSES,
+  DESIGN_SOURCES,
+  DESIGN_STATUSES,
+  recordReadiness,
+  REPOSITORY_STRATEGIES,
+  TECHNOLOGY_AREAS,
+  updateTechnology,
+  type BrandInput,
+  type BrandStatus,
+  type DesignInput,
+  type DesignSource,
+  type DesignStatus,
+  type RepositoriesInput,
+  type RepositoryStrategy,
+  type StageResult,
+  type TechnologyArea,
+  type TechnologyChange,
+} from './stages.js';
 export {
   approveIdentity,
   buildProjectConfig,

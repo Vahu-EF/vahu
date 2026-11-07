@@ -222,6 +222,116 @@ describe('vahu CLI', () => {
     expect(result.status).toBe(1);
     expect(result.stderr).toContain('Run `vahu init` first.');
   });
+
+  it('requires a reason before marking branding not applicable', async () => {
+    const directory = await createProject(validConfig());
+
+    const refused = runCli(['brand', '--path', directory, '--status', 'not-applicable']);
+    expect(refused.status).toBe(1);
+    expect(refused.stderr).toContain('recorded reason');
+
+    const accepted = runCli([
+      'brand',
+      '--path',
+      directory,
+      '--status',
+      'not-applicable',
+      '--notes',
+      'Internal service.',
+    ]);
+    expect(accepted.status).toBe(0);
+    const config = await readConfig(directory);
+    expect(config.brand.status).toBe('not-applicable');
+    expect(config.brand.notes).toBe('Internal service.');
+  });
+
+  it('approves a design system only when it has a source and path', async () => {
+    const directory = await createProject(validConfig());
+
+    const refused = runCli(['design', 'approve', '--directory', directory]);
+    expect(refused.status).toBe(1);
+    expect(refused.stderr).toContain('source');
+
+    const prepared = runCli([
+      'design',
+      '--directory',
+      directory,
+      '--status',
+      'pending-approval',
+      '--source',
+      'existing',
+      '--path',
+      'docs/design-system.md',
+    ]);
+    expect(prepared.status).toBe(0);
+
+    const approved = runCli(['design', 'approve', '--directory', directory]);
+    expect(approved.status).toBe(0);
+    expect((await readConfig(directory)).designSystem.status).toBe('approved');
+  });
+
+  it('selects technologies by area', async () => {
+    const directory = await createProject(validConfig());
+
+    const result = runCli([
+      'technology',
+      '--path',
+      directory,
+      '--area',
+      'backend',
+      '--add',
+      'node, postgresql',
+    ]);
+
+    expect(result.status).toBe(0);
+    expect((await readConfig(directory)).technology.backend).toEqual(['node', 'postgresql']);
+  });
+
+  it('records the repository strategy and locations', async () => {
+    const directory = await createProject(validConfig());
+
+    const result = runCli([
+      'repositories',
+      '--path',
+      directory,
+      '--strategy',
+      'hybrid',
+      '--notes',
+      'API and documentation live apart.',
+      '--location',
+      'api=.',
+    ]);
+
+    expect(result.status).toBe(0);
+    const config = await readConfig(directory);
+    expect(config.repositories.strategy).toBe('hybrid');
+    expect(config.repositories.locations).toEqual([{ name: 'api', path: '.' }]);
+  });
+
+  it('reports readiness and records the status only when asked', async () => {
+    const directory = await createProject({ ...validConfig(), identity: { status: 'pending' } });
+
+    const blocked = runCli(['readiness', '--path', directory]);
+    expect(blocked.status).toBe(1);
+    expect(blocked.stdout).toContain('Status: blocked');
+    expect((await readConfig(directory)).readiness.checkedAt).toBeUndefined();
+
+    const recorded = runCli(['readiness', '--path', directory, '--record']);
+    expect(recorded.status).toBe(1);
+    const config = await readConfig(directory);
+    expect(config.readiness.status).toBe('blocked');
+    expect(config.readiness.checkedAt).toBeDefined();
+  });
+
+  it('inspects the engineering foundation without writing', async () => {
+    const directory = await createProject(validConfig());
+
+    const result = runCli(['foundation', '--path', directory]);
+
+    expect(result.status).toBe(0);
+    expect(result.stdout).toContain('VAHU engineering foundation');
+    expect(result.stdout).toContain('Detected from files');
+  });
 });
 
 function initArgs(directory: string): string[] {
@@ -260,7 +370,19 @@ interface TestConfig {
     nonGoals: string[];
   };
   identity: { status: string };
-  repositories: { locations: { name: string; path?: string; url?: string }[] };
+  brand: {
+    status: string;
+    notes?: string;
+    assets?: { logo?: string; colors: string[]; typography: string[] };
+  };
+  designSystem: { status: string; source: string; path?: string };
+  repositories: {
+    strategy: string;
+    notes?: string;
+    locations: { name: string; path?: string; url?: string }[];
+  };
+  technology: Record<string, string[]>;
+  readiness: { status: string; checkedAt?: string };
 }
 
 async function readConfig(directory: string): Promise<TestConfig> {
