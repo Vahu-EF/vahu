@@ -18,6 +18,7 @@ New records start from the [ADR template](../../templates/documentation/adr.md).
 | [ADR-0011](ADR-0011-cli-read-only-reports.md)                               | Version read-only CLI report contracts                                   | Accepted |
 | [ADR-0012](ADR-0012-static-website-and-canonical-markdown-documentation.md) | Keep the website static and Markdown docs canonical                      | Accepted |
 | [ADR-0013](ADR-0013-verified-release-candidates.md)                         | Verify release candidates before publication                             | Accepted |
+| [ADR-0014](ADR-0014-atomic-configuration-writes.md)                         | Write the project configuration atomically and never through a symlink   | Accepted |
 
 ## Lifecycle
 

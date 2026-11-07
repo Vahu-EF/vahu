@@ -4,6 +4,33 @@ All notable changes to VAHU are recorded here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and versioning follows
 [Semantic Versioning](https://semver.org/).
 
+## Unreleased — Phase 9 hardening and stability
+
+### Changed
+
+- The project configuration is written to a temporary file and renamed into
+  place, so an interrupted run can no longer truncate the only copy of
+  `.vahu/project.json`.
+- A symlink at the configuration path is replaced instead of followed, so a
+  committed link can no longer redirect a write outside the project.
+- `minimatch` is lifted to `^11.0.1` to resolve GHSA-g3hv-75wg-m249, which
+  arrived transitively through eslint and typescript-eslint.
+
+### Added
+
+- `docs/security/threat-model.md`: assets, trust boundaries, ten threat and
+  mitigation pairs for local file operations and generated instructions, and the
+  residual risks that remain open.
+- `docs/contributing/stability-policy.md`: stable, experimental, and planned
+  surfaces, supported platforms and Node.js versions, and the evidence required
+  before calling a surface stable.
+- ADR-0014 and `architecture/specifications/phase-9.md`.
+
+### Not included
+
+- Cross-platform CI, file locking, directory `fsync` durability, archive
+  extraction hardening, or governance role definitions.
+
 ## Unreleased — Phase 8 release candidates and compatibility
 
 ### Added

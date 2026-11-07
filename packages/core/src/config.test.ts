@@ -1,4 +1,15 @@
-import { mkdtemp, mkdir, rm, writeFile } from 'node:fs/promises';
+import { existsSync } from 'node:fs';
+import {
+  lstat,
+  mkdir,
+  mkdtemp,
+  readFile,
+  readdir,
+  rm,
+  stat,
+  symlink,
+  writeFile,
+} from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { afterEach, describe, expect, it } from 'vitest';
@@ -130,5 +141,70 @@ describe('project configuration writing', () => {
     if (saved.ok) {
       expect(saved.created).toBe(false);
     }
+  });
+
+  it('replaces the file atomically instead of rewriting it in place', async (context) => {
+    const directory = await mkdtemp(join(tmpdir(), 'vahu-config-'));
+    tempDirectories.push(directory);
+    await saveProjectConfig(directory, sampleConfig());
+    const configPath = join(directory, '.vahu/project.json');
+    const before = await stat(configPath);
+    if (before.ino === 0) {
+      // Filesystems without stable inode numbers cannot express this check.
+      context.skip();
+      return;
+    }
+
+    await saveProjectConfig(directory, sampleConfig(), { overwrite: true });
+
+    const after = await stat(configPath);
+    expect(after.ino).not.toBe(before.ino);
+  });
+
+  it('replaces a symlink at the configuration path instead of writing through it', async () => {
+    const directory = await mkdtemp(join(tmpdir(), 'vahu-config-'));
+    const outsideDirectory = await mkdtemp(join(tmpdir(), 'vahu-outside-'));
+    tempDirectories.push(directory, outsideDirectory);
+    const outsideFile = join(outsideDirectory, 'planted.json');
+    await writeFile(outsideFile, '{"keep":true}\n', 'utf8');
+    await mkdir(join(directory, '.vahu'));
+    try {
+      await symlink(outsideFile, join(directory, '.vahu/project.json'));
+    } catch {
+      // Symlink creation may be unavailable or unprivileged on this platform.
+      return;
+    }
+
+    const saved = await saveProjectConfig(directory, sampleConfig(), { overwrite: true });
+
+    expect(saved.ok).toBe(true);
+    expect(await readFile(outsideFile, 'utf8')).toBe('{"keep":true}\n');
+    const written = await lstat(join(directory, '.vahu/project.json'));
+    expect(written.isSymbolicLink()).toBe(false);
+  });
+
+  it('leaves no temporary files behind when the write fails', async () => {
+    const directory = await mkdtemp(join(tmpdir(), 'vahu-config-'));
+    tempDirectories.push(directory);
+    // A directory at the target path makes the final replace fail.
+    await mkdir(join(directory, '.vahu/project.json'), { recursive: true });
+
+    await expect(
+      saveProjectConfig(directory, sampleConfig(), { overwrite: true }),
+    ).rejects.toThrow();
+
+    expect(await readdir(join(directory, '.vahu'))).toEqual(['project.json']);
+  });
+
+  it('keeps the configuration inside the resolved project directory', async () => {
+    const directory = await mkdtemp(join(tmpdir(), 'vahu-config-'));
+    tempDirectories.push(directory);
+    await mkdir(join(directory, 'nested'));
+
+    const saved = await saveProjectConfig(join(directory, 'nested', '..'), sampleConfig());
+
+    expect(saved.ok).toBe(true);
+    expect(existsSync(join(directory, '.vahu/project.json'))).toBe(true);
+    expect(existsSync(join(directory, 'nested', '.vahu'))).toBe(false);
   });
 });

@@ -5,15 +5,16 @@ authoritative product foundation is [`VAHU.md`](../VAHU.md); these pages explain
 the current implementation and how to work with it. The documentation and
 website are still being improved; this is not yet a complete documentation site.
 
-| Area                                        | What it covers                                               |
-| ------------------------------------------- | ------------------------------------------------------------ |
-| [Getting started](getting-started/)         | Install, run the workspace, and make a first validation pass |
-| [Concepts](concepts/)                       | Framework boundaries, project configuration, and readiness   |
-| [Guides](guides/)                           | Task-oriented guidance for the current CLI                   |
-| [CLI](cli/)                                 | Implemented commands and their limits                        |
-| [Framework](framework/)                     | Where reusable framework content belongs                     |
-| [Technology profiles](technology-profiles/) | The one canonical profile location and profile contract      |
-| [Contributing](contributing/)               | Development, review, release preparation, and compatibility  |
+| Area                                        | What it covers                                                    |
+| ------------------------------------------- | ----------------------------------------------------------------- |
+| [Getting started](getting-started/)         | Install, run the workspace, and make a first validation pass      |
+| [Concepts](concepts/)                       | Framework boundaries, project configuration, and readiness        |
+| [Guides](guides/)                           | Task-oriented guidance for the current CLI                        |
+| [CLI](cli/)                                 | Implemented commands and their limits                             |
+| [Framework](framework/)                     | Where reusable framework content belongs                          |
+| [Technology profiles](technology-profiles/) | The one canonical profile location and profile contract           |
+| [Contributing](contributing/)               | Development, review, release preparation, and compatibility       |
+| [Security](security/)                       | Threat model for local file operations and generated instructions |
 
 The docs use three status labels:
 
