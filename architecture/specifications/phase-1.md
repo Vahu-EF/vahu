@@ -1,8 +1,8 @@
 # Phase 1 specification — Core Engineering
 
-- **Status:** In Progress — P1-03 draft; owner acceptance pending
+- **Status:** Complete
 - **Depends on:** accepted Phase 0 foundation
-- **Owner approval:** P1-14 and P1-01 accepted 2026-11-06; P1-03 content acceptance pending
+- **Owner approval:** P1-14 and P1-01 accepted 2026-11-06; P1-02–P1-13 and P1-15 accepted 2026-11-07
 
 ## Goal
 
@@ -12,18 +12,31 @@ feature release.
 
 ## Implementation status
 
-P1-14 and P1-01 are accepted and binding. P1-03 is a draft and awaits owner
-acceptance. P1-02, P1-04 through P1-13, and P1-15 are not started.
+All 15 work packages are accepted and binding. P1-14 and P1-01 were accepted on
+2026-11-06; the other 13 were accepted by the project owner on 2026-11-07 at
+version 0.1.0 (0.1.1 for P1-15), each with an approval record on its page.
 
-| ID                        | Status      | Canonical page                                                                      |
-| ------------------------- | ----------- | ----------------------------------------------------------------------------------- |
-| P1-14                     | Accepted    | [Engineering decisions](../../packages/framework/core/engineering-decisions.md)     |
-| P1-01                     | Accepted    | [Architecture principles](../../packages/framework/core/architecture-principles.md) |
-| P1-03                     | Draft       | [Code quality](../../packages/framework/core/code-quality.md)                       |
-| P1-02, P1-04–P1-13, P1-15 | Not started | None                                                                                |
+| ID    | Status   | Canonical page                                                                      |
+| ----- | -------- | ----------------------------------------------------------------------------------- |
+| P1-14 | Accepted | [Engineering decisions](../../packages/framework/core/engineering-decisions.md)     |
+| P1-01 | Accepted | [Architecture principles](../../packages/framework/core/architecture-principles.md) |
+| P1-02 | Accepted | [Repository organization](../../packages/framework/core/repository-organization.md) |
+| P1-03 | Accepted | [Code quality](../../packages/framework/core/code-quality.md)                       |
+| P1-04 | Accepted | [Naming](../../packages/framework/core/naming.md)                                   |
+| P1-05 | Accepted | [Dependencies](../../packages/framework/core/dependencies.md)                       |
+| P1-06 | Accepted | [Errors and logging](../../packages/framework/core/errors-and-logging.md)           |
+| P1-07 | Accepted | [Configuration](../../packages/framework/core/configuration.md)                     |
+| P1-08 | Accepted | [API design](../../packages/framework/core/api-design.md)                           |
+| P1-09 | Accepted | [Data design](../../packages/framework/core/data-design.md)                         |
+| P1-10 | Accepted | [Testing](../../packages/framework/core/testing.md)                                 |
+| P1-11 | Accepted | [Code review](../../packages/framework/core/code-review.md)                         |
+| P1-12 | Accepted | [Documentation](../../packages/framework/core/documentation.md)                     |
+| P1-13 | Accepted | [Security baseline](../../packages/framework/core/security-baseline.md)             |
+| P1-15 | Accepted | [Validation contracts](../../packages/framework/core/validation-contracts.md)       |
 
-The P1-14 and P1-01 slices are complete. P1-03 is the active draft. All three add
-no runtime code, CLI command, schema, validator, adapter, or technology profile.
+The standards add no CLI command, adapter, or technology profile. P1-15 adds the
+framework validator, and the Phase 1 content model adds the metadata schema and
+composition rules described below.
 
 ## Work packages
 
@@ -45,16 +58,40 @@ no runtime code, CLI command, schema, validator, adapter, or technology profile.
 | P1-14 | Engineering decisions   | ADR lifecycle and decision ownership                            |
 | P1-15 | Validation contracts    | Machine-readable checks for the standards that can be automated |
 
+## Validation
+
+P1-15 adds one executable contract:
+
+```bash
+pnpm validate:standards
+```
+
+It checks standard-page metadata, required sections and their order, rule IDs and
+rule fields, relative links, and decision-index completeness. The logic lives in
+`packages/core/src/standards.ts` and is covered by
+`packages/core/src/standards.test.ts`. `pnpm check` and the CI `verify` job run it
+after the workspace-boundary check.
+
+The same command runs the content-model validator: content metadata, identifiers,
+applicability, dependency graph and cycles, deprecation notes, and composition
+precedence. The contract is documented in
+[the content model](../../packages/framework/CONTENT_MODEL.md), the schema is
+`@vahu-ef/schemas/content.schema.json`, and the logic in `packages/core/src/content.ts`
+is covered by `packages/core/src/content.test.ts`.
+
 ## Suggested order
 
 1. P1-14 and P1-01 establish decision ownership, the standard-page format, and
-   core architecture principles. P1-03 is next and is currently a draft.
+   core architecture principles.
 2. P1-03, P1-04, P1-05, P1-06, and P1-07 establish day-to-day code rules.
 3. P1-08, P1-09, and P1-10 establish interface, data, and evidence rules.
 4. P1-11, P1-12, and P1-13 make review and security explicit.
 5. P1-15 adds only checks that are stable and testable.
 6. P1-02 is finalized after the content shows which repository boundaries are
    actually required.
+
+Steps 2–5 are accepted. P1-02 continues to be reviewed as the repository
+boundaries evolve, per rule P1-02-R7.
 
 ## Constraints
 
@@ -68,12 +105,33 @@ no runtime code, CLI command, schema, validator, adapter, or technology profile.
 
 ## Acceptance
 
-- Every Phase 1 work package has a canonical page.
-- Rules are checkable and have examples and exceptions where needed.
-- Automated checks are covered by tests.
-- The CLI remains a presentation layer over reusable core logic.
-- Existing Phase 0 checks continue to pass.
-- The project owners have approved the standards before release preparation.
+| Criterion                                               | State | Evidence                                                                                 |
+| ------------------------------------------------------- | ----- | ---------------------------------------------------------------------------------------- |
+| Every work package has a canonical page                 | Met   | The status table above links all 15                                                      |
+| Rules are checkable, with examples and exceptions       | Met   | Each page has rule IDs, levels, examples, and exceptions                                 |
+| Automated checks are covered by tests                   | Met   | `standards.test.ts`, `content.test.ts`, `workspace.test.ts`                              |
+| The CLI remains a presentation layer over core logic    | Met   | `apps/cli` imports `@vahu-ef/core`; both validators are scripts over tested package code |
+| Existing Phase 0 checks continue to pass                | Met   | `pnpm check` passes (67 tests when this report was written)                              |
+| Owners approve the standards before release preparation | Met   | Accepted by the project owner on 2026-11-07; see each page's approval record             |
+
+## Completion report
+
+Phase 1 is complete and accepted. What exists:
+
+- 15 accepted standard pages under `packages/framework/core/`.
+- A content model contract (`CONTENT_MODEL.md`) with a schema
+  (`content.schema.json`) and `discoverContent`/`composeContent` in
+  `@vahu-ef/core`.
+- Two repository gates — `validate:workspace` and `validate:standards` — both
+  thin scripts over `@vahu-ef/core`, both covered by tests.
+
+Remaining work is tracked, not hidden:
+
+1. Per-standard checks still listed as planned in each page's `Verification`
+   section, and the composition engine is not yet applied to a project
+   configuration by any command.
+2. Phase 2 (Project Identity & Onboarding) requires its own approval before it
+   starts; see [the roadmap](roadmap.md).
 
 ## Explicit non-goals
 

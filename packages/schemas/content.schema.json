@@ -1,0 +1,115 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "id": {
+      "type": "string",
+      "pattern": "^[A-Z][A-Z0-9]*(?:-[A-Z0-9]+)+$"
+    },
+    "title": {
+      "type": "string",
+      "minLength": 1
+    },
+    "description": {
+      "type": "string",
+      "minLength": 1
+    },
+    "contentType": {
+      "type": "string",
+      "enum": ["standard", "practice", "guide", "workflow", "profile", "template", "adapter"]
+    },
+    "origin": {
+      "type": "string",
+      "enum": ["core", "practice", "profile", "adapter"]
+    },
+    "status": {
+      "type": "string",
+      "enum": ["draft", "experimental", "stable", "deprecated"]
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+(?:-[0-9A-Za-z.-]+)?$"
+    },
+    "owner": {
+      "type": "string",
+      "minLength": 1
+    },
+    "path": {
+      "type": "string",
+      "minLength": 1
+    },
+    "enforcement": {
+      "type": "string",
+      "enum": ["mandatory", "recommended", "optional"]
+    },
+    "projectTypes": {
+      "minItems": 1,
+      "type": "array",
+      "items": {
+        "anyOf": [
+          {
+            "type": "string",
+            "const": "all"
+          },
+          {
+            "type": "string",
+            "enum": [
+              "web-application",
+              "mobile-application",
+              "desktop-application",
+              "backend-service",
+              "library",
+              "cli",
+              "other"
+            ]
+          }
+        ]
+      }
+    },
+    "lifecycleStages": {
+      "minItems": 1,
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": ["planning", "design", "implementation", "review", "release", "operations"]
+      }
+    },
+    "dependencies": {
+      "default": [],
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^[A-Z][A-Z0-9]*(?:-[A-Z0-9]+)+$"
+      }
+    },
+    "tags": {
+      "default": [],
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "compatibility": {
+      "type": "string",
+      "minLength": 1
+    }
+  },
+  "required": [
+    "id",
+    "title",
+    "description",
+    "contentType",
+    "origin",
+    "status",
+    "version",
+    "owner",
+    "path",
+    "enforcement",
+    "projectTypes",
+    "lifecycleStages",
+    "dependencies",
+    "tags"
+  ],
+  "additionalProperties": false
+}

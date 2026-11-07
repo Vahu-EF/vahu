@@ -28,6 +28,7 @@
   },
   "files": [
     "dist",
+    "content.schema.json",
     "project.schema.json"
   ],
   "scripts": {

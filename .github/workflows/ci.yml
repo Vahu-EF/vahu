@@ -49,3 +49,6 @@ jobs:
 
       - name: Validate workspace boundaries
         run: pnpm validate:workspace
+
+      - name: Validate standards
+        run: pnpm validate:standards

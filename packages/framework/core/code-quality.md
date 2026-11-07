@@ -1,12 +1,17 @@
 # P1-03 — Code quality
 
 - **Standard ID:** P1-03
-- **Status:** Draft
+- **Status:** Accepted
 - **Owner:** VAHU maintainers
 - **Approver:** VAHU project owner
-- **Approval:** Pending. This page becomes `Accepted` only after the approver records acceptance.
+- **Approval:** Approved by VAHU project owner on 2026-11-07.
 - **Version:** 0.1.0
 - **Applies to:** Code changes in VAHU projects, across languages and paradigms.
+- **Content type:** standard
+- **Lifecycle stages:** implementation, review
+- **Project types:** all
+- **Depends on:** P1-01, P1-14
+- **Tags:** quality, maintainability, refactoring
 - **Related:** [P1-14: Engineering decisions](engineering-decisions.md), [P1-01: Architecture principles](architecture-principles.md), [Phase 1 specification](../../../architecture/specifications/phase-1.md), [ADR-0002](../../../architecture/decisions/ADR-0002-typescript-toolchain.md), [standard template](../../../templates/documentation/standard.md)
 
 ## Purpose
@@ -146,7 +151,7 @@ expiry, and cleanup plan. Do not hide an exception in a review comment or a
 
 ## Verification
 
-This draft is verified by code review against the rules above and by the
+This standard is verified by code review against the rules above and by the
 repository checks that apply to the project. The VAHU repository gate is:
 
 ```bash
@@ -171,3 +176,10 @@ The following checks are planned for P1-15 and are not implemented yet:
 | Version | Date       | Change                                      |
 | ------- | ---------- | ------------------------------------------- |
 | 0.1.0   | 2026-11-06 | Initial draft for the P1-03 implementation. |
+| 0.1.0   | 2026-11-07 | Accepted by the project owner.              |
+
+## Approval record
+
+| Version | Status   | Approver           | Date       |
+| ------- | -------- | ------------------ | ---------- |
+| 0.1.0   | Accepted | VAHU project owner | 2026-11-07 |

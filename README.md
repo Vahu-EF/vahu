@@ -46,8 +46,8 @@ The core principles are:
 | Framework foundation           | Implemented | `VAHU.md`, monorepo boundaries, documentation skeleton, architectural decisions |
 | Project configuration schema   | Implemented | Versioned Zod schema and JSON Schema for `.vahu/project.json`                   |
 | CLI foundation                 | Implemented | `vahu --version`, `--help`, `doctor`, and `validate`                            |
-| Validation and readiness rules | Implemented | Identity, design-system, brand, repository, technology, and readiness checks    |
-| Core engineering standards     | In Progress | P1-14 and P1-01 accepted; P1-03 draft; remaining standards planned              |
+| Validation and readiness rules | Implemented | Identity, design-system, brand, repository, technology, and readiness checks    |     | Core engineering standards | Implemented | 15 Phase 1 standards, all accepted |
+| Framework content model        | In Progress | Draft metadata, discovery, and composition contract with a validator            |
 | Technology profiles            | Planned     | One canonical location reserved under `packages/framework/technology-profiles/` |
 | Agent adapters                 | Planned     | Adapter folders and contracts only; no adapter is claimed                       |
 | Project onboarding wizard      | Planned     | Not implemented                                                                 |
@@ -192,8 +192,9 @@ Phase 0 includes:
 - strict TypeScript configuration;
 - Prettier formatting checks;
 - ESLint checks;
-- Vitest tests for schemas, validation logic, and CLI behavior;
-- a workspace-boundary validation script;
+- Vitest tests for schemas, validation logic, CLI behavior, and the standards
+  validator;
+- workspace-boundary and standards-content validation scripts;
 - GitHub Actions for CI, lint, security analysis, and dependency review;
 - a security policy with private vulnerability reporting guidance.
 
@@ -223,12 +224,15 @@ release.
 
 ## Project status
 
-Phase 1 is in progress. [P1-14: Engineering
-decisions](packages/framework/core/engineering-decisions.md) was accepted on
-2026-11-06 and is binding. [P1-01: Architecture
-principles](packages/framework/core/architecture-principles.md) was accepted on
-2026-11-06 and is binding. [P1-03: Code
-quality](packages/framework/core/code-quality.md) is a draft and awaits owner
-acceptance. P1-02, P1-04, and the remaining Phase 1 packages have not
-started. Technology profiles, full onboarding, agent adapters, release
-artifacts, and the production website remain future work.
+Phase 1 is complete. All 15 work packages are accepted and binding, listed in
+the [core index](packages/framework/core/README.md): [P1-14: Engineering
+decisions](packages/framework/core/engineering-decisions.md) and [P1-01:
+Architecture principles](packages/framework/core/architecture-principles.md) on
+2026-11-06, and the remaining 13 on 2026-11-07. P1-15 provides the
+`pnpm validate:standards` check, which runs in `pnpm check` and CI.
+
+The phase plan for Phases 1–9 is in [the
+roadmap](architecture/specifications/roadmap.md), with the current state table,
+content-model scope, and remaining phases. Technology profiles, full onboarding,
+agent adapters, release artifacts, and the production website remain future
+work.
