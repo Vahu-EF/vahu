@@ -1,0 +1,58 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "WORKFLOW-IMPLEMENTATION",
+  "name": "Implement a scoped change",
+  "purpose": "Deliver a scoped, reviewed change with evidence that its quality gates passed.",
+  "version": "0.1.0",
+  "trigger": "An approved task has clear scope and acceptance criteria.",
+  "prerequisites": ["Scope and acceptance criteria are recorded."],
+  "requiredContext": ["Relevant source", "Governing standards", "Selected profiles"],
+  "inputs": ["Task statement", "Acceptance criteria", "Affected paths"],
+  "steps": [
+    {
+      "id": "inspect",
+      "action": "Read the affected code, tests, standards, and selected profiles.",
+      "output": "Relevant constraints and dependencies."
+    },
+    {
+      "id": "test",
+      "action": "Add or update a focused test for the requested behaviour.",
+      "output": "A test that demonstrates the acceptance criteria."
+    },
+    {
+      "id": "implement",
+      "action": "Make the smallest change that satisfies the test and scope.",
+      "output": "Implementation and tests."
+    },
+    {
+      "id": "verify",
+      "action": "Run applicable quality gates and record the command, result, and evidence.",
+      "output": "Gate results with evidence."
+    },
+    {
+      "id": "review",
+      "action": "Review the diff for correctness, security, documentation, and scope.",
+      "output": "Review findings and remaining limitations."
+    }
+  ],
+  "outputs": ["Implementation", "Tests", "Gate evidence", "Review summary"],
+  "approvals": [],
+  "qualityGates": [
+    "GATE-FORMATTING",
+    "GATE-LINTING",
+    "GATE-TYPECHECK",
+    "GATE-UNIT-TESTS",
+    "GATE-BUILD",
+    "GATE-DEPENDENCIES",
+    "GATE-SECRET-SCAN",
+    "GATE-SECURITY",
+    "GATE-DOCUMENTATION",
+    "GATE-POSTGRES-MIGRATIONS"
+  ],
+  "recovery": [
+    "If a gate fails, do not report it as passed; fix the cause or report the blocker.",
+    "If requirements conflict, stop and ask the owner before expanding scope."
+  ],
+  "relatedStandards": ["P1-03", "P1-10", "P1-11", "P1-13", "P1-15"],
+  "relatedProfiles": []
+}

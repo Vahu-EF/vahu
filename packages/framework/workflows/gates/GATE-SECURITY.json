@@ -1,0 +1,9 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "GATE-SECURITY",
+  "name": "Security review",
+  "kind": "security-check",
+  "description": "Review trust boundaries, permissions, and security-sensitive changes.",
+  "severity": "blocking",
+  "evidenceRequired": true
+}

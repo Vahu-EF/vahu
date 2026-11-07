@@ -1,0 +1,35 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "WORKFLOW-MAINTENANCE",
+  "name": "Maintenance and incident follow-up",
+  "purpose": "Respond to an incident, preserve evidence, and turn follow-up actions into owned work.",
+  "version": "0.1.0",
+  "trigger": "An incident, defect, dependency alert, or maintenance task is reported.",
+  "prerequisites": ["A reporter or observed symptom is recorded."],
+  "requiredContext": ["Impact", "Timeline", "Relevant logs with secrets removed", "Service owner"],
+  "inputs": ["Symptom", "Impact", "Environment", "Available evidence"],
+  "steps": [
+    { "id": "contain", "action": "Reduce ongoing harm using the smallest reversible action." },
+    {
+      "id": "diagnose",
+      "action": "Separate observed facts from hypotheses; preserve relevant sanitized evidence."
+    },
+    {
+      "id": "recover",
+      "action": "Restore service using the approved recovery path and verify the result."
+    },
+    {
+      "id": "follow-up",
+      "action": "Record root-cause confidence, owners, and dated follow-up actions."
+    }
+  ],
+  "outputs": ["Incident timeline", "Recovery evidence", "Owned follow-up items"],
+  "approvals": [],
+  "qualityGates": ["GATE-SECURITY", "GATE-DOCUMENTATION"],
+  "recovery": [
+    "Escalate if customer data or security may be affected.",
+    "Never include credentials or personal data in incident notes."
+  ],
+  "relatedStandards": ["P1-06", "P1-09", "P1-12", "P1-13"],
+  "relatedProfiles": []
+}

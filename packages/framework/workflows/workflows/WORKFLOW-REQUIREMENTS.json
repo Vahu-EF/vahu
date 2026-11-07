@@ -1,0 +1,34 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "WORKFLOW-REQUIREMENTS",
+  "name": "Project discovery and requirements",
+  "purpose": "Turn stakeholder context into reviewable, evidence-backed requirements.",
+  "version": "0.1.0",
+  "trigger": "A new project or material change needs discovery.",
+  "prerequisites": ["An accountable stakeholder is identified."],
+  "requiredContext": ["Project identity", "Known constraints", "Existing user or system evidence"],
+  "inputs": ["Problem statement", "Stakeholder context", "Existing evidence"],
+  "steps": [
+    {
+      "id": "discover",
+      "action": "Record the problem, users, current behaviour, and evidence; distinguish facts from assumptions."
+    },
+    {
+      "id": "clarify",
+      "action": "List unanswered questions and resolve the ones that change scope, safety, or acceptance."
+    },
+    {
+      "id": "record",
+      "action": "Write requirements with an identifier, rationale, and observable acceptance condition."
+    }
+  ],
+  "outputs": ["Requirements", "Assumption and open-question list", "Acceptance conditions"],
+  "approvals": [],
+  "qualityGates": ["GATE-DOCUMENTATION"],
+  "recovery": [
+    "If critical evidence is missing, mark the requirement unresolved rather than inventing it.",
+    "If stakeholder answers conflict, record the conflict and request an owner decision."
+  ],
+  "relatedStandards": ["P1-01", "P1-12"],
+  "relatedProfiles": []
+}

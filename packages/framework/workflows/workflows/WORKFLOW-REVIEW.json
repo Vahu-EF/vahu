@@ -1,0 +1,32 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "WORKFLOW-REVIEW",
+  "name": "Code review",
+  "purpose": "Find correctness, maintainability, security, and scope defects before integration.",
+  "version": "0.1.0",
+  "trigger": "A change is ready for independent review.",
+  "prerequisites": ["The diff and verification results are available."],
+  "requiredContext": ["Scope", "Diff", "Applicable standards", "Test evidence"],
+  "inputs": ["Change set", "Acceptance criteria", "Verification report"],
+  "steps": [
+    {
+      "id": "correctness",
+      "action": "Check behavior, edge cases, data handling, and failure modes."
+    },
+    { "id": "security", "action": "Check trust boundaries, permissions, and secret handling." },
+    { "id": "scope", "action": "Check that the diff does no more than the approved task." },
+    {
+      "id": "report",
+      "action": "Report actionable findings first with file references and evidence."
+    }
+  ],
+  "outputs": ["Review findings", "Approval or requested changes", "Unresolved-risk list"],
+  "approvals": [],
+  "qualityGates": ["GATE-UNIT-TESTS", "GATE-SECURITY", "GATE-SECRET-SCAN", "GATE-DOCUMENTATION"],
+  "recovery": [
+    "If a critical path cannot be reviewed, state that limitation and block the claim of complete review.",
+    "If evidence is missing, request it rather than inferring a pass."
+  ],
+  "relatedStandards": ["P1-03", "P1-11", "P1-13"],
+  "relatedProfiles": []
+}

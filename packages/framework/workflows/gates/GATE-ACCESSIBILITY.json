@@ -1,0 +1,9 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "GATE-ACCESSIBILITY",
+  "name": "Accessibility",
+  "kind": "accessibility",
+  "description": "Check accessibility for affected user interfaces.",
+  "severity": "blocking",
+  "evidenceRequired": true
+}

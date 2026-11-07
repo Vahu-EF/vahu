@@ -30,6 +30,17 @@ export {
 export { validateFramework, type FrameworkReport } from './framework.js';
 export { detectFoundation, type FoundationReport } from './foundation.js';
 export {
+  evaluateWorkflow,
+  loadWorkflowCatalog,
+  validateWorkflowCatalog,
+  type ApprovalInput,
+  type GateOutcome,
+  type GateResultInput,
+  type WorkflowCatalog,
+  type WorkflowEvaluation,
+  type WorkflowEvaluationInput,
+} from './workflows.js';
+export {
   evaluateProfileSelection,
   loadProfileCatalog,
   selectProfiles,

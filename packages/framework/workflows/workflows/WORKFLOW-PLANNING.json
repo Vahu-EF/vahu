@@ -1,0 +1,31 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "WORKFLOW-PLANNING",
+  "name": "Implementation planning and task decomposition",
+  "purpose": "Create an executable, verifiable plan before a complex implementation begins.",
+  "version": "0.1.0",
+  "trigger": "An approved change has multiple deliverables or dependencies.",
+  "prerequisites": ["Scope and acceptance criteria are approved."],
+  "requiredContext": ["Architecture decisions", "Affected packages", "Available verification"],
+  "inputs": ["Approved scope", "Acceptance criteria", "Dependencies and constraints"],
+  "steps": [
+    {
+      "id": "decompose",
+      "action": "Break work into ordered, independently verifiable increments."
+    },
+    {
+      "id": "assign",
+      "action": "Make dependencies, file boundaries, and approval checkpoints explicit."
+    },
+    { "id": "verify", "action": "Name the check and evidence required for each increment." }
+  ],
+  "outputs": ["Implementation plan", "Task dependencies", "Verification matrix"],
+  "approvals": [],
+  "qualityGates": ["GATE-DOCUMENTATION"],
+  "recovery": [
+    "If a dependency is unknown, mark the plan blocked on evidence rather than guessing.",
+    "Re-plan when approved scope changes."
+  ],
+  "relatedStandards": ["P1-02", "P1-10", "P1-11"],
+  "relatedProfiles": []
+}

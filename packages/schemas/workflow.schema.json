@@ -1,0 +1,167 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "schemaVersion": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^WORKFLOW-[A-Z0-9]+(?:-[A-Z0-9]+)*$"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "purpose": {
+      "type": "string",
+      "minLength": 1
+    },
+    "version": {
+      "type": "string",
+      "pattern": "^\\d+\\.\\d+\\.\\d+(?:-[0-9A-Za-z.-]+)?$"
+    },
+    "trigger": {
+      "type": "string",
+      "minLength": 1
+    },
+    "prerequisites": {
+      "default": [],
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "requiredContext": {
+      "default": [],
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "inputs": {
+      "default": [],
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "steps": {
+      "minItems": 1,
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^[a-z][a-z0-9-]*$"
+          },
+          "action": {
+            "type": "string",
+            "minLength": 1
+          },
+          "output": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": ["id", "action"],
+        "additionalProperties": false
+      }
+    },
+    "outputs": {
+      "minItems": 1,
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "approvals": {
+      "default": [],
+      "type": "array",
+      "items": {
+        "type": "object",
+        "properties": {
+          "id": {
+            "type": "string",
+            "pattern": "^APPROVAL-[A-Z0-9]+(?:-[A-Z0-9]+)*$"
+          },
+          "kind": {
+            "type": "string",
+            "enum": [
+              "product-scope",
+              "architecture",
+              "data-migration",
+              "security-permission",
+              "brand-design",
+              "production-deployment",
+              "public-release"
+            ]
+          },
+          "reason": {
+            "type": "string",
+            "minLength": 1
+          }
+        },
+        "required": ["id", "kind", "reason"],
+        "additionalProperties": false
+      }
+    },
+    "qualityGates": {
+      "default": [],
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^GATE-[A-Z0-9]+(?:-[A-Z0-9]+)*$"
+      }
+    },
+    "recovery": {
+      "minItems": 1,
+      "type": "array",
+      "items": {
+        "type": "string",
+        "minLength": 1
+      }
+    },
+    "relatedStandards": {
+      "default": [],
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^P[0-9]+-[0-9]+$"
+      }
+    },
+    "relatedProfiles": {
+      "default": [],
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^PROFILE-[A-Z0-9]+(?:-[A-Z0-9]+)*$"
+      }
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "id",
+    "name",
+    "purpose",
+    "version",
+    "trigger",
+    "prerequisites",
+    "requiredContext",
+    "inputs",
+    "steps",
+    "outputs",
+    "approvals",
+    "qualityGates",
+    "recovery",
+    "relatedStandards",
+    "relatedProfiles"
+  ],
+  "additionalProperties": false
+}

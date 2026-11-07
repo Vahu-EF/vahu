@@ -1,0 +1,10 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "GATE-LINTING",
+  "name": "Linting",
+  "kind": "linting",
+  "description": "Run the project's configured linter.",
+  "command": "pnpm lint",
+  "severity": "blocking",
+  "evidenceRequired": true
+}

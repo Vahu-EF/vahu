@@ -1,0 +1,10 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "GATE-UNIT-TESTS",
+  "name": "Unit tests",
+  "kind": "unit-tests",
+  "description": "Run unit tests for changed logic and related modules.",
+  "command": "pnpm test",
+  "severity": "blocking",
+  "evidenceRequired": true
+}

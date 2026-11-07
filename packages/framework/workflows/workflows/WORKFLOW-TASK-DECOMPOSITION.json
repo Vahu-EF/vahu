@@ -1,0 +1,31 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "WORKFLOW-TASK-DECOMPOSITION",
+  "name": "Task decomposition",
+  "purpose": "Break an approved implementation plan into reviewable tasks with owners and verification evidence.",
+  "version": "0.1.0",
+  "trigger": "An implementation plan spans multiple independent changes or contributors.",
+  "prerequisites": ["Scope, architecture, and acceptance criteria are approved."],
+  "requiredContext": ["Implementation plan", "Package boundaries", "Dependencies", "Quality gates"],
+  "inputs": ["Approved plan", "Available contributors", "Verification constraints"],
+  "steps": [
+    {
+      "id": "slice",
+      "action": "Create tasks with one observable outcome and a bounded change set each."
+    },
+    {
+      "id": "sequence",
+      "action": "Record dependencies and order tasks so each increment stays buildable."
+    },
+    { "id": "verify", "action": "Assign a focused test and required gates to every task." }
+  ],
+  "outputs": ["Ordered task list", "Dependency graph", "Per-task verification checklist"],
+  "approvals": [],
+  "qualityGates": ["GATE-DOCUMENTATION"],
+  "recovery": [
+    "If a task has no testable outcome, split or rewrite it before assignment.",
+    "If dependencies form a cycle, return to planning and resolve the boundary."
+  ],
+  "relatedStandards": ["P1-02", "P1-10", "P1-11"],
+  "relatedProfiles": []
+}

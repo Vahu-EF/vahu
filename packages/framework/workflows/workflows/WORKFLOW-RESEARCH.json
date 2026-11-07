@@ -1,0 +1,35 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "WORKFLOW-RESEARCH",
+  "name": "Technical research",
+  "purpose": "Resolve technical unknowns using current, attributable evidence.",
+  "version": "0.1.0",
+  "trigger": "A technical decision depends on information not established by the repository.",
+  "prerequisites": ["The research question and decision it informs are stated."],
+  "requiredContext": ["Project constraints", "Candidate options", "Current official documentation"],
+  "inputs": ["Research question", "Constraints", "Candidate technologies"],
+  "steps": [
+    {
+      "id": "source",
+      "action": "Prefer current official documentation and primary sources; record URLs and access dates."
+    },
+    {
+      "id": "compare",
+      "action": "Compare candidates against the stated constraints, security, support, and migration cost."
+    },
+    { "id": "recommend", "action": "State recommendation, trade-offs, unknowns, and evidence." }
+  ],
+  "outputs": [
+    "Research notes with sources",
+    "Comparison",
+    "Recommendation and remaining uncertainty"
+  ],
+  "approvals": [],
+  "qualityGates": ["GATE-DOCUMENTATION", "GATE-DEPENDENCIES"],
+  "recovery": [
+    "If sources are stale or unavailable, say so and avoid claiming current support.",
+    "If evidence does not distinguish candidates, report that no recommendation is supported."
+  ],
+  "relatedStandards": ["P1-05", "P1-12", "P1-13"],
+  "relatedProfiles": []
+}

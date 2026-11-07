@@ -1,0 +1,38 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "WORKFLOW-SCOPE",
+  "name": "Scope definition and acceptance",
+  "purpose": "Bound the change and make completion observable before implementation starts.",
+  "version": "0.1.0",
+  "trigger": "Requirements are understood well enough to propose a bounded change.",
+  "prerequisites": ["Requirements or the existing behaviour to change are recorded."],
+  "requiredContext": ["Requirements", "Constraints", "Out-of-scope items"],
+  "inputs": ["Requirements", "User-provided priorities"],
+  "steps": [
+    { "id": "bound", "action": "Separate in-scope work from explicit non-goals." },
+    { "id": "acceptance", "action": "Define observable acceptance conditions and negative cases." },
+    {
+      "id": "approve",
+      "action": "Present material product-scope changes to the owner for explicit approval."
+    }
+  ],
+  "outputs": [
+    "Scope statement",
+    "Acceptance criteria",
+    "Approved decision record when scope changes"
+  ],
+  "approvals": [
+    {
+      "id": "APPROVAL-PRODUCT-SCOPE",
+      "kind": "product-scope",
+      "reason": "A material scope change needs owner approval."
+    }
+  ],
+  "qualityGates": ["GATE-DOCUMENTATION"],
+  "recovery": [
+    "If scope is ambiguous, do not implement the broadest interpretation; ask the owner.",
+    "If approval is denied, retain the previous scope and record the decision."
+  ],
+  "relatedStandards": ["P1-01", "P1-14"],
+  "relatedProfiles": []
+}
