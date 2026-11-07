@@ -30,6 +30,13 @@ export {
 export { validateFramework, type FrameworkReport } from './framework.js';
 export { detectFoundation, type FoundationReport } from './foundation.js';
 export {
+  evaluateProfileSelection,
+  loadProfileCatalog,
+  selectProfiles,
+  validateProfileCatalog,
+  type ProfileCatalog,
+} from './profiles.js';
+export {
   applyBrand,
   applyDesignSystem,
   applyRepositories,

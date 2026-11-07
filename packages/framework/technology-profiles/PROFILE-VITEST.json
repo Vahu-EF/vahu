@@ -1,0 +1,31 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "PROFILE-VITEST",
+  "name": "Vitest",
+  "description": "Unit and integration testing with Vitest in a TypeScript workspace.",
+  "version": "0.1.0",
+  "category": "testing",
+  "technology": "vitest",
+  "supportedVersions": [">=1"],
+  "projectTypes": ["all"],
+  "prerequisites": [],
+  "related": ["PROFILE-NODE-BACKEND"],
+  "architecture": ["Test behaviour through public interfaces, not private helpers."],
+  "structure": ["Tests live beside the code they exercise.", "Shared fixtures live in one place."],
+  "conventions": [
+    "One behaviour per test.",
+    "A failing test states the expected and actual values."
+  ],
+  "testing": [
+    "Cover the failure path, not only the happy path.",
+    "Keep tests independent and order-free."
+  ],
+  "security": ["Do not commit credentials in fixtures."],
+  "documentation": ["Document how to run one test file and the full suite."],
+  "tooling": ["Coverage reporting is optional and never a target by itself."],
+  "checks": ["Test suite passes from a clean install"],
+  "compatibility": {
+    "conflictsWith": [],
+    "notes": "Framework-specific only; the behaviour rules above apply to any runner."
+  }
+}

@@ -21,7 +21,8 @@
     "test:watch": "vitest",
     "validate:workspace": "node scripts/validation/validate-workspace.mjs",
     "validate:standards": "node scripts/validation/validate-standards.mjs",
-    "check": "pnpm format:check && pnpm lint && pnpm typecheck && pnpm test && pnpm build && pnpm validate:workspace && pnpm validate:standards"
+    "validate:profiles": "node scripts/validation/validate-profiles.mjs",
+    "check": "pnpm format:check && pnpm lint && pnpm typecheck && pnpm test && pnpm build && pnpm validate:workspace && pnpm validate:standards && pnpm validate:profiles"
   },
   "devDependencies": {
     "@changesets/cli": "^3.0.3",

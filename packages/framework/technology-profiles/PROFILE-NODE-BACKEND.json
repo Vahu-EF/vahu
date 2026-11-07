@@ -1,0 +1,36 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "PROFILE-NODE-BACKEND",
+  "name": "Node.js backend",
+  "description": "Server-side TypeScript or JavaScript on the Node.js runtime.",
+  "version": "0.1.0",
+  "category": "backend",
+  "technology": "node",
+  "supportedVersions": [">=22"],
+  "projectTypes": ["all"],
+  "prerequisites": [],
+  "related": ["PROFILE-VITEST"],
+  "architecture": [
+    "Keep transport handlers thin; put decisions in testable modules.",
+    "Make side effects explicit at the edge of the process."
+  ],
+  "structure": [
+    "One entry point per deployable process.",
+    "Configuration is read once at startup."
+  ],
+  "conventions": [
+    "Use the language's module system consistently; do not mix module formats in one package."
+  ],
+  "testing": ["Unit-test logic without network access.", "Integration-test the process boundary."],
+  "security": [
+    "Pin the runtime major version and record it in the configuration.",
+    "Never read secrets from tracked files."
+  ],
+  "documentation": ["Document run, build, and test commands in the README."],
+  "tooling": ["Type checking in CI.", "A formatter and linter in CI."],
+  "checks": ["Type check", "Unit tests", "Process-level integration test"],
+  "compatibility": {
+    "conflictsWith": [],
+    "notes": "Applies to services, CLIs, and libraries that run on Node.js."
+  }
+}
