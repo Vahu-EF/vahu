@@ -1,6 +1,7 @@
+import { randomUUID } from 'node:crypto';
 import { existsSync } from 'node:fs';
-import { mkdir, readFile, writeFile } from 'node:fs/promises';
-import { dirname, resolve } from 'node:path';
+import { mkdir, readFile, rename, rm, writeFile } from 'node:fs/promises';
+import { dirname, join, resolve } from 'node:path';
 import {
   migrateProjectConfig,
   SCHEMA_VERSION,
@@ -47,10 +48,29 @@ export async function saveProjectConfig(
     return { ok: false, configPath, reason: 'exists' };
   }
 
-  await mkdir(dirname(configPath), { recursive: true });
-  await writeFile(configPath, `${JSON.stringify(config, null, 2)}\n`, 'utf8');
+  await writeConfigAtomically(configPath, `${JSON.stringify(config, null, 2)}\n`);
 
   return { ok: true, configPath, created: !existed };
+}
+
+/**
+ * Writes the complete configuration to a temporary file in the same directory,
+ * then renames it into place. A reader therefore sees either the previous file
+ * or the complete new one, never a truncated write, and the rename replaces a
+ * symlink at the target path instead of following it outside the project.
+ */
+async function writeConfigAtomically(configPath: string, contents: string): Promise<void> {
+  const directory = dirname(configPath);
+  await mkdir(directory, { recursive: true });
+  const temporaryPath = join(directory, `.project.json.${randomUUID()}.tmp`);
+
+  try {
+    await writeFile(temporaryPath, contents, { encoding: 'utf8', mode: 0o644, flag: 'wx' });
+    await rename(temporaryPath, configPath);
+  } catch (error) {
+    await rm(temporaryPath, { force: true }).catch(() => undefined);
+    throw error;
+  }
 }
 
 export async function loadProjectConfig(cwd: string): Promise<ConfigLoadResult> {

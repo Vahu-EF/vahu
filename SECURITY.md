@@ -32,6 +32,18 @@ We will acknowledge a report as soon as practical, investigate it, and agree on
 a disclosure plan with the reporter. No response-time guarantee is claimed for
 this pre-release project.
 
+## Known advisories
+
+- GHSA-g3hv-75wg-m249 (`minimatch` below `11.0.1`, denial of service through glob
+  parts amplification) is remediated by a `pnpm-workspace.yaml` override to
+  `^11.0.1`. It arrived transitively through eslint and typescript-eslint and was
+  never part of a release candidate.
+
+`pnpm audit` cannot run against the registry mirror configured for local
+installs, so advisory tracking relies on GitHub Dependabot alerts and the weekly
+security workflow. See the [threat model](docs/security/threat-model.md) for the
+full review.
+
 ## Security principles for contributors
 
 - Never commit credentials, tokens, private keys, or real `.env` values.

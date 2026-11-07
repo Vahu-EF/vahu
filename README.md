@@ -10,7 +10,7 @@ adapters for different AI coding agents.
 VAHU is not a prompt collection and it is not tied to one AI provider. The
 framework content must remain useful without the CLI.
 
-> **Status:** Phases 1–5 complete; Phases 6–8 in progress. This repository is being
+> **Status:** Phases 1–5 complete; Phases 6–9 in progress. This repository is being
 > actively developed. There is no npm release or GitHub Release yet.
 
 ## Why VAHU exists
@@ -286,7 +286,11 @@ specification](architecture/specifications/phase-7.md) records what remains.
 Phase 8 (Release, Distribution & Compatibility) has verified npm candidates,
 checksums, and a compatibility policy; the [Phase 8
 specification](architecture/specifications/phase-8.md) records what is not
-implemented.
+implemented. Phase 9 (Hardening & Community Readiness) has begun with atomic,
+symlink-safe configuration writes, a [threat
+model](docs/security/threat-model.md), and a [stability
+policy](docs/contributing/stability-policy.md); the [Phase 9
+specification](architecture/specifications/phase-9.md) records what remains.
 
 The phase plan for Phases 1–9 is in [the
 roadmap](architecture/specifications/roadmap.md), with the current state table,
