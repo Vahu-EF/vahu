@@ -32,9 +32,16 @@ pnpm typecheck
 pnpm test
 pnpm build
 pnpm validate:workspace
+pnpm validate:standards
 ```
 
 A pull request should pass the same checks locally that CI runs.
+
+Adding or changing a standard page means following
+[P1-14](packages/framework/core/engineering-decisions.md) and the
+[standard template](templates/documentation/standard.md). `pnpm validate:standards`
+checks the page structure and links. Do not mark a standard `Accepted` on the
+approver's behalf.
 
 ## Repository boundaries
 

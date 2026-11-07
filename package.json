@@ -20,7 +20,8 @@
     "test": "vitest run",
     "test:watch": "vitest",
     "validate:workspace": "node scripts/validation/validate-workspace.mjs",
-    "check": "pnpm format:check && pnpm lint && pnpm typecheck && pnpm test && pnpm build && pnpm validate:workspace"
+    "validate:standards": "node scripts/validation/validate-standards.mjs",
+    "check": "pnpm format:check && pnpm lint && pnpm typecheck && pnpm test && pnpm build && pnpm validate:workspace && pnpm validate:standards"
   },
   "devDependencies": {
     "@changesets/cli": "^3.0.3",

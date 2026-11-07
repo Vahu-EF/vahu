@@ -7,6 +7,11 @@
 - **Approval:** Approved by VAHU project owner on 2026-11-06.
 - **Version:** 0.1.0
 - **Applies to:** Architecture decisions and changes in VAHU projects, including modules, packages, services, repositories, APIs, data stores, and shared libraries.
+- **Content type:** standard
+- **Lifecycle stages:** design, implementation, review
+- **Project types:** all
+- **Depends on:** P1-14
+- **Tags:** architecture, boundaries, ownership
 - **Related:** [P1-14: Engineering decisions](engineering-decisions.md), [Phase 1 specification](../../../architecture/specifications/phase-1.md), [ADR-0001](../../../architecture/decisions/ADR-0001-monorepo-boundaries.md), [ADR-0004](../../../architecture/decisions/ADR-0004-agent-adapter-boundary.md), [standard template](../../../templates/documentation/standard.md)
 
 ## Purpose
@@ -138,11 +143,17 @@ the rules above. The repository gate is:
 pnpm check
 ```
 
-The following checks are planned for P1-15 and are not implemented yet:
+Implemented by `pnpm validate:workspace` and `pnpm validate:standards`:
 
-- dependency-cycle detection;
-- cross-boundary private-import detection;
-- ownership metadata validation;
+- workspace dependency-cycle detection (`WORKSPACE_DEPENDENCY_CYCLE`);
+- forbidden cross-package dependency edges (`WORKSPACE_FORBIDDEN_DEPENDENCY`);
+- content dependency-cycle detection (`CONTENT_DEPENDENCY_CYCLE`);
+- owner metadata on standard and content pages (`STANDARD_METADATA`,
+  `CONTENT_METADATA`).
+
+Still planned for P1-15:
+
+- private-file import detection across package boundaries;
 - contract and migration-link checks.
 
 ## Related decisions
@@ -154,9 +165,10 @@ The following checks are planned for P1-15 and are not implemented yet:
 
 ## Change history
 
-| Version | Date       | Change                                        |
-| ------- | ---------- | --------------------------------------------- |
-| 0.1.0   | 2026-11-06 | Initial draft; accepted by the project owner. |
+| Version | Date       | Change                                                                        |
+| ------- | ---------- | ----------------------------------------------------------------------------- |
+| 0.1.0   | 2026-11-06 | Initial draft; accepted by the project owner.                                 |
+| 0.1.0   | 2026-11-07 | Verification list split into implemented and planned checks; no rule changed. |
 
 ## Approval record
 

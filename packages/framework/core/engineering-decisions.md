@@ -7,6 +7,11 @@
 - **Approval:** Approved by VAHU project owner on 2026-11-06.
 - **Version:** 0.1.0
 - **Applies to:** VAHU core standards, architecture decisions, framework content, and contributions to this repository.
+- **Content type:** standard
+- **Lifecycle stages:** planning, implementation, review, release
+- **Project types:** all
+- **Depends on:** None
+- **Tags:** governance, decisions, adr
 - **Related:** [Phase 1 specification](../../../architecture/specifications/phase-1.md), [ADR index](../../../architecture/decisions/README.md), [ADR template](../../../templates/documentation/adr.md), [standard template](../../../templates/documentation/standard.md)
 
 ## Purpose
@@ -292,13 +297,18 @@ This standard is verified by review against the
 pnpm check
 ```
 
-The following checks are planned for P1-15 and are not implemented yet:
+Implemented by `pnpm validate:standards`:
 
-- duplicate or missing standard IDs;
-- duplicate or missing rule IDs;
-- required metadata and sections;
-- ADR index completeness and broken relative links;
-- supersession link consistency.
+- duplicate or missing standard IDs (`STANDARD_ID`, `CONTENT_ID_DUPLICATE`);
+- duplicate or missing rule IDs (`RULE_ID`, `RULE_DUPLICATE`);
+- required metadata and sections (`STANDARD_METADATA`, `STANDARD_SECTION`,
+  `STANDARD_SECTION_ORDER`);
+- ADR index completeness and broken relative links (`ADR_INDEX_MISSING`,
+  `LINK_UNRESOLVED`).
+
+Still planned for P1-15:
+
+- supersession link consistency between a retired and a replacement page.
 
 ## Related decisions
 
@@ -310,9 +320,10 @@ The following checks are planned for P1-15 and are not implemented yet:
 
 ## Change history
 
-| Version | Date       | Change                                        |
-| ------- | ---------- | --------------------------------------------- |
-| 0.1.0   | 2026-11-06 | Initial draft; accepted by the project owner. |
+| Version | Date       | Change                                                                        |
+| ------- | ---------- | ----------------------------------------------------------------------------- |
+| 0.1.0   | 2026-11-06 | Initial draft; accepted by the project owner.                                 |
+| 0.1.0   | 2026-11-07 | Verification list split into implemented and planned checks; no rule changed. |
 
 ## Approval record
 
