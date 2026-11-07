@@ -5,29 +5,259 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta
       name="description"
-      content="VAHU is a modular, agent-agnostic engineering framework for AI-assisted software development."
+      content="VAHU is an open, agent-agnostic engineering framework for AI-assisted software development. Explore standards, profiles, workflows, and the CLI."
     />
+    <meta name="theme-color" content="#f7f5ef" />
     <title>VAHU — Build Better Software, With Better Agents.</title>
     <link rel="stylesheet" href="./styles.css" />
   </head>
   <body>
-    <main>
-      <p class="eyebrow">VAHU Engineering Framework</p>
-      <h1>Build Better Software,<br />With Better Agents.</h1>
-      <p class="lead">
-        VAHU is an open, modular foundation for AI-assisted software engineering. It connects
-        engineering standards, technology profiles, project foundations, and agent adapters without
-        tying a project to one provider or stack.
-      </p>
-      <p class="status">
-        <strong>Status:</strong> Phase 0 foundation. The framework, adapters, and full onboarding
-        experience are still in development.
-      </p>
-      <nav aria-label="Project links">
-        <a href="https://github.com/Vahu-EF/vahu">Main repository</a>
-        <a href="https://github.com/Vahu-EF/.github">Organization profile</a>
-        <a href="https://github.com/Vahu-EF/vahu/blob/main/VAHU.md">Foundation document</a>
+    <a class="skip-link" href="#main-content">Skip to content</a>
+    <header class="site-header">
+      <a class="wordmark" href="#top" aria-label="VAHU home"
+        >VAHU<span> / ENGINEERING FRAMEWORK</span></a
+      >
+      <nav aria-label="Main navigation">
+        <a href="#capabilities">Framework</a>
+        <a href="#agent-support">Agent support</a>
+        <a href="#quick-start">Quick start</a>
+        <a class="nav-cta" href="https://github.com/Vahu-EF/vahu"
+          >GitHub <span aria-hidden="true">↗</span></a
+        >
       </nav>
+    </header>
+
+    <main id="main-content">
+      <section class="hero" id="top" aria-labelledby="hero-title">
+        <div class="hero-copy">
+          <p class="eyebrow">
+            <span class="status-dot" aria-hidden="true"></span> An open engineering framework
+          </p>
+          <h1 id="hero-title">Build better software.<br /><span>Work better with agents.</span></h1>
+          <p class="hero-lead">
+            VAHU gives teams a reusable engineering foundation for AI-assisted development: clear
+            standards, project context, technology profiles, workflows, and quality expectations.
+          </p>
+          <div class="hero-actions">
+            <a class="button button-primary" href="#quick-start"
+              >Start with the CLI <span aria-hidden="true">↓</span></a
+            >
+            <a class="text-link" href="https://github.com/Vahu-EF/vahu"
+              >Explore the repository <span aria-hidden="true">↗</span></a
+            >
+          </div>
+        </div>
+        <aside class="project-status" aria-labelledby="project-status-title">
+          <p class="eyebrow">PROJECT STATUS</p>
+          <h2 id="project-status-title">Built in the open.<br />Still in progress.</h2>
+          <p>
+            Phases 1–6 have approved foundations or initial implementations. Documentation and the
+            website are being improved in Phase 7.
+          </p>
+          <a href="https://github.com/Vahu-EF/vahu/blob/main/architecture/specifications/roadmap.md"
+            >Read the current roadmap <span aria-hidden="true">↗</span></a
+          >
+          <p class="release-note">
+            The CLI is not published to npm, and this site has not been deployed to GitHub Pages.
+          </p>
+        </aside>
+        <div class="hero-index" aria-hidden="true">
+          <span>01</span><span>ENGINEERING FIRST</span><span>AGENT AGNOSTIC</span>
+        </div>
+      </section>
+
+      <section class="section capabilities" id="capabilities" aria-labelledby="capabilities-title">
+        <div class="section-heading">
+          <p class="eyebrow">THE FOUNDATION</p>
+          <h2 id="capabilities-title">A system around the work.</h2>
+          <p>
+            Keep engineering decisions visible, reusable, and grounded in the project you’re
+            building.
+          </p>
+        </div>
+        <div class="capability-grid">
+          <article class="capability-card">
+            <span class="card-number">01</span>
+            <h3>Standards</h3>
+            <p>
+              Fifteen accepted engineering standards cover architecture, testing, security,
+              documentation, and decision-making.
+            </p>
+            <a href="https://github.com/Vahu-EF/vahu/tree/main/packages/framework/core"
+              >Browse core standards <span aria-hidden="true">↗</span></a
+            >
+          </article>
+          <article class="capability-card">
+            <span class="card-number">02</span>
+            <h3>Project context</h3>
+            <p>
+              Record identity, ownership, technology choices, repositories, design-system status,
+              and readiness in a versioned configuration.
+            </p>
+            <a
+              href="https://github.com/Vahu-EF/vahu/blob/main/docs/concepts/project-configuration.md"
+              >Read the configuration guide <span aria-hidden="true">↗</span></a
+            >
+          </article>
+          <article class="capability-card" id="profiles">
+            <span class="card-number">03</span>
+            <h3>Technology profiles</h3>
+            <p>
+              Three initial profiles describe Node.js backend, PostgreSQL, and Vitest practices.
+              Profiles are optional; none is applied by default.
+            </p>
+            <a
+              href="https://github.com/Vahu-EF/vahu/tree/main/packages/framework/technology-profiles"
+              >Explore the profile catalog <span aria-hidden="true">↗</span></a
+            >
+          </article>
+          <article class="capability-card">
+            <span class="card-number">04</span>
+            <h3>Workflows &amp; quality gates</h3>
+            <p>
+              Fourteen lifecycle workflows and thirteen gates define expected inputs, evidence,
+              approvals, and failure states. They are not a command runner.
+            </p>
+            <a href="https://github.com/Vahu-EF/vahu/tree/main/packages/framework/workflows"
+              >Explore workflows and gates <span aria-hidden="true">↗</span></a
+            >
+          </article>
+        </div>
+      </section>
+
+      <section class="section agent-section" id="agent-support" aria-labelledby="agents-title">
+        <div class="agent-intro">
+          <p class="eyebrow">AGENT SUPPORT</p>
+          <h2 id="agents-title">One framework.<br />Honest compatibility.</h2>
+          <p>
+            VAHU keeps canonical agent definitions provider-neutral. An adapter must say what it
+            supports and what it cannot express.
+          </p>
+          <a
+            class="text-link"
+            href="https://github.com/Vahu-EF/vahu/blob/main/architecture/specifications/phase-3.md"
+            >See Phase 3 status <span aria-hidden="true">↗</span></a
+          >
+        </div>
+        <div class="agent-matrix">
+          <table>
+            <thead>
+              <tr>
+                <th scope="col">Adapter</th>
+                <th scope="col">Status</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr>
+                <th scope="row">Generic Markdown renderer</th>
+                <td><span class="tag tag-ready">Implemented</span></td>
+              </tr>
+              <tr>
+                <th scope="row">OpenAI Codex</th>
+                <td><span class="tag">Not implemented</span></td>
+              </tr>
+              <tr>
+                <th scope="row">Claude Code</th>
+                <td><span class="tag">Not implemented</span></td>
+              </tr>
+              <tr>
+                <th scope="row">Gemini CLI</th>
+                <td><span class="tag">Not implemented</span></td>
+              </tr>
+            </tbody>
+          </table>
+          <p class="matrix-note">
+            No provider adapter is implemented; provider-specific compatibility is not claimed or
+            tested.
+          </p>
+        </div>
+      </section>
+
+      <section class="section quick-start" id="quick-start" aria-labelledby="quick-start-title">
+        <div class="section-heading">
+          <p class="eyebrow">TRY IT LOCALLY</p>
+          <h2 id="quick-start-title">Run a first local pass.</h2>
+          <p>
+            The project is not published to npm yet. Clone the repository to use the current CLI.
+          </p>
+        </div>
+        <div class="quick-start-layout">
+          <ol class="steps">
+            <li>
+              <span>01</span>
+              <div>
+                <h3>Get the source</h3>
+                <p>Use Node.js 22+ and pnpm 10+.</p>
+              </div>
+            </li>
+            <li>
+              <span>02</span>
+              <div>
+                <h3>Run the checks</h3>
+                <p>Build and test the workspace locally.</p>
+              </div>
+            </li>
+            <li>
+              <span>03</span>
+              <div>
+                <h3>Inspect an example</h3>
+                <p>Every committed example is validated in the test suite.</p>
+              </div>
+            </li>
+          </ol>
+          <pre
+            class="code-block"
+          ><code><span class="code-comment"># Clone and enter the repository</span>
+git clone https://github.com/Vahu-EF/vahu.git
+cd vahu
+
+<span class="code-comment"># Install, verify, and inspect</span>
+pnpm install
+pnpm check
+pnpm dev -- project inspect --path examples/backend-project
+pnpm dev -- profile list</code></pre>
+        </div>
+        <div class="docs-links" aria-label="Documentation links">
+          <a href="https://github.com/Vahu-EF/vahu/blob/main/docs/getting-started/README.md"
+            >Getting started <span aria-hidden="true">↗</span></a
+          >
+          <a href="https://github.com/Vahu-EF/vahu/blob/main/docs/cli/README.md"
+            >CLI reference <span aria-hidden="true">↗</span></a
+          >
+          <a href="https://github.com/Vahu-EF/vahu/blob/main/examples/README.md"
+            >Examples <span aria-hidden="true">↗</span></a
+          >
+          <a href="https://github.com/Vahu-EF/vahu/blob/main/docs/README.md"
+            >All documentation <span aria-hidden="true">↗</span></a
+          >
+        </div>
+      </section>
+
+      <section class="closing" aria-labelledby="closing-title">
+        <div>
+          <p class="eyebrow">CONTRIBUTE</p>
+          <h2 id="closing-title">Help make the foundation stronger.</h2>
+          <p>
+            Read how the project works, check what is implemented, and contribute through a
+            reviewable pull request.
+          </p>
+        </div>
+        <div class="closing-actions">
+          <a
+            class="button button-light"
+            href="https://github.com/Vahu-EF/vahu/blob/main/CONTRIBUTING.md"
+            >Contribution guide <span aria-hidden="true">↗</span></a
+          >
+          <a class="closing-link" href="https://github.com/Vahu-EF/vahu"
+            >VAHU on GitHub <span aria-hidden="true">↗</span></a
+          >
+        </div>
+      </section>
     </main>
+    <footer class="site-footer">
+      <a class="wordmark" href="#top">VAHU<span> / ENGINEERING FRAMEWORK</span></a>
+      <p>Open engineering practices for software built with people and agents.</p>
+      <a href="https://github.com/Vahu-EF/vahu/blob/main/SECURITY.md">Security policy</a>
+    </footer>
   </body>
 </html>

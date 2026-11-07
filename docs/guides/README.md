@@ -1,11 +1,13 @@
 # Guides
 
-Phase 0 has one supported guide: validate a project configuration.
+This section provides task-oriented guidance for the current CLI and framework capabilities. The docs are evolving in Phase 7; see the [command reference](../cli/README.md) for the complete implemented command list.
 
 ## Validate a project
 
 ```bash
 pnpm dev -- validate --path examples/backend-project
+pnpm dev -- project inspect --path examples/backend-project
+pnpm dev -- profile list
 ```
 
 A valid backend-only example should pass. A UI project with no approved design
@@ -19,4 +21,4 @@ For each issue:
 4. Keep approvals explicit; do not change a status merely to make validation
    green.
 
-More guides will be added only when the corresponding framework features exist.
+The five committed example configurations are validated by the CLI integration suite. Profile listing and validation are available; applying profiles, synchronizing agents, and executing workflow gates are not implemented.

@@ -20,6 +20,32 @@ the presence of `VAHU.md`. It prints `PASS`, `WARN`, or `FAIL` for each check.
 Use `--json` for a machine-readable report. The command exits with status `1`
 when a check fails.
 
+### `vahu project inspect` and `vahu project status`
+
+Read-only reports for project identity, technology choices, computed readiness,
+and validation issues. The JSON output uses `reportType: "project-report"`,
+`contractVersion: "1.0.0"`, and `view` (`inspect` or `status`). Missing or invalid
+configuration emits structured issues and exits with status `1`.
+
+```bash
+vahu project inspect
+vahu project status --path examples/backend-project --json
+```
+
+### `vahu profile list` and `vahu profile validate`
+
+List or validate the bundled technology-profile catalog. `--path` chooses a
+different profile directory. A built CLI bundles a snapshot of its profiles, so
+listing works outside the source repository; it does not synchronize remote
+profiles. JSON uses `reportType: "profile-list"` or
+`"profile-validation"`, with `contractVersion: "1.0.0"`.
+
+```bash
+vahu profile list
+vahu profile list --json
+vahu profile validate --path packages/framework/technology-profiles
+```
+
 ### `vahu validate`
 
 Validates `.vahu/project.json` in the current directory by default.
@@ -107,7 +133,7 @@ vahu readiness [--record]
 - `brand`: `not-applicable` needs a reason; `approved` needs at least one asset.
 - `design`: approval is refused without an existing or generated source and a
   path. Marking it not applicable clears both.
-- `technology`: selects values per area; profiles arrive in Phase 4.
+- `technology`: selects values per area. Profile definitions are available via `vahu profile list/validate`; applying or removing profile selections through the CLI is not implemented.
 - `repositories`: strategy, notes, and `name=path-or-url` locations. Ownership is
   stored in the configuration but has no flag yet.
 - `foundation`: detects scripts, workflows, docs, and an environment example from
@@ -132,11 +158,14 @@ an older schema version.
 
 ## Planned, not implemented
 
-`design`, `profile`, `readiness`, `agents`, `docs`, `update`, and `version` are
-roadmap commands from `VAHU.md`. The remaining onboarding stages (brand, design
-system, technology, repository strategy, engineering foundation, readiness) are
-specified in
-[`phase-2.md`](../../architecture/specifications/phase-2.md) but not implemented.
+Profile listing and validation are implemented; profile `add` and `remove` are
+not. Agent configuration/sync, quality-check execution, docs validation, update,
+and an independent `version` subcommand are not implemented. The commands are
+described in the roadmap, not implied by the Phase 6 milestone.
+
+Project onboarding commands include brand, design, technology, repository
+strategy, foundation inspection, and readiness, as recorded in
+[`phase-2.md`](../../architecture/specifications/phase-2.md).
 
 ## Design boundary
 

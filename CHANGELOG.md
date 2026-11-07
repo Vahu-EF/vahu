@@ -4,6 +4,28 @@ All notable changes to VAHU are recorded here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and versioning follows
 [Semantic Versioning](https://semver.org/).
 
+## Unreleased — Phase 7 documentation, website, and examples
+
+### Added
+
+- Updated the static GitHub Pages source with current capabilities and status,
+  an honest agent adapter matrix, clone-based quick start, canonical source-doc
+  links, semantic sections, keyboard focus/skip navigation, responsive styles,
+  and reduced-motion support.
+- Added source-level website tests, canonical-doc/link checks, and a built Pages
+  artifact-content check.
+- Updated CLI, getting-started, technology-profile, framework-status, and example
+  documentation; all five committed example projects are now validated by the
+  CLI integration tests.
+- ADR-0012 and `architecture/specifications/phase-7.md` record the approved
+  static-site/Markdown-source direction and partial Phase 7 status.
+
+### Not included
+
+- GitHub Pages publication, a generated documentation site, search, runnable
+  application examples, a full WCAG audit, visual regression, or browser-matrix
+  tests.
+
 ## Unreleased — Phase 6 CLI productization
 
 ### Added

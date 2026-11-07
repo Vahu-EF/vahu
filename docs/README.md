@@ -1,8 +1,10 @@
 # VAHU documentation
 
 This folder contains human-facing documentation for the VAHU repository. The
-authoritative product foundation is still [`VAHU.md`](../VAHU.md); these pages
-explain the current implementation and how to work with it.
+authoritative product foundation is [`VAHU.md`](../VAHU.md); these pages explain
+the current implementation and how to work with it. The documentation and
+website are being improved in Phase 7; this is not yet a complete documentation
+site.
 
 | Area                                        | What it covers                                               |
 | ------------------------------------------- | ------------------------------------------------------------ |

@@ -10,7 +10,7 @@ adapters for different AI coding agents.
 VAHU is not a prompt collection and it is not tied to one AI provider. The
 framework content must remain useful without the CLI.
 
-> **Status:** Phases 1–5 complete; Phase 6 in progress. This repository is being
+> **Status:** Phases 1–5 complete; Phases 6–7 in progress. This repository is being
 > actively developed. There is no npm release or GitHub Release yet.
 
 ## Why VAHU exists
@@ -54,7 +54,7 @@ The core principles are:
 | Project onboarding             | Implemented | Identity, brand, design, technology, repository, foundation, and readiness commands     |
 | Engineering workflows          | In Progress | 14 lifecycle definitions, 13 gates, and a non-executing evidence evaluator              |
 | Full documentation engine      | Planned     | Not implemented                                                                         |
-| Website                        | In Progress | A small static site source exists; it is not published                                  |
+| Website                        | In Progress | Updated static overview and quick start; Pages is not published                         |
 
 ## Architecture overview
 
@@ -273,9 +273,12 @@ Phase 2 specification](architecture/specifications/phase-2.md). Phase 3 (Agent
 Ecosystem & Adapters) and Phase 4 (Technology Profiles) have their canonical
 contracts and initial implementations. Phase 5 (Engineering Workflows & Quality
 Gates) is implemented; see [its specification](architecture/specifications/phase-5.md)
-for the evaluator's scope and limitations. Phase 6 (CLI Productization) is in
-progress; its first read-only project and profile commands are documented in
-[the Phase 6 specification](architecture/specifications/phase-6.md).
+for the evaluator's scope and limitations. Phase 6 (CLI Productization) is in progress; its first read-only project and
+profile commands are documented in [the Phase 6
+specification](architecture/specifications/phase-6.md). Phase 7 (Documentation,
+Website & Examples) has begun with a public overview, updated guides, and
+validated example configurations; the [Phase 7
+specification](architecture/specifications/phase-7.md) records what remains.
 
 The phase plan for Phases 1–9 is in [the
 roadmap](architecture/specifications/roadmap.md), with the current state table,
