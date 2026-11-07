@@ -2,8 +2,8 @@
 
 ## Supported versions
 
-VAHU is in Phase 0 and has no published release. Security fixes currently apply
-to the `main` branch.
+VAHU is pre-release and has no published release. Release candidates are verified
+but never published; security fixes currently apply to the `main` branch.
 
 | Version              | Supported |
 | -------------------- | --------- |
@@ -44,6 +44,7 @@ this pre-release project.
 
 ## Scope
 
-The Phase 0 repository contains documentation, a small CLI, configuration
-validation, and CI workflows. It has no backend service, database, account
-system, or remote API.
+The repository contains documentation, a local CLI, configuration validation,
+framework content, and CI workflows. It has no backend service, database,
+account system, or remote API, and it does not publish packages or serve
+generated agent instructions remotely.

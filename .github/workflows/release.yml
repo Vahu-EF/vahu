@@ -29,20 +29,22 @@ jobs:
       - name: Run required checks
         run: pnpm check
 
-      - name: Pack candidate artifacts
-        run: |
-          mkdir -p artifacts
-          pnpm --filter vahu pack --pack-destination artifacts
-          pnpm --filter @vahu-ef/core pack --pack-destination artifacts
-          pnpm --filter @vahu-ef/schemas pack --pack-destination artifacts
+      - name: Pack and verify candidate artifacts
+        run: pnpm release:pack
+
+      - name: Verify the checksum manifest
+        working-directory: artifacts
+        run: sha256sum -c SHA256SUMS
 
       - name: Upload candidate artifacts
         uses: actions/upload-artifact@v7
         with:
           name: vahu-release-candidate
-          path: artifacts/
+          path: |
+            artifacts/*.tgz
+            artifacts/SHA256SUMS
           if-no-files-found: error
 
       # This workflow deliberately does not publish to npm or create a GitHub
-      # Release. Adding those steps requires an approved release decision,
-      # credentials configured outside the repository, and signed artifacts.
+      # Release. Publication requires an approved release decision, credentials
+      # configured outside the repository, and provenance-enabled publishing.

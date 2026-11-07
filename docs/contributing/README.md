@@ -24,5 +24,7 @@ boundary validation.
 
 ## Release work
 
-See [release preparation](release-preparation.md). Phase 0 does not publish
-packages or create releases.
+See [release preparation](release-preparation.md) for the verified candidate
+workflow and [versioning and compatibility](versioning-and-compatibility.md) for
+the promises a published version would carry. Nothing is published: publication
+needs an explicit release approval.

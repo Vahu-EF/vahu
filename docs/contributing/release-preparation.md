@@ -2,14 +2,60 @@
 
 ## Status
 
-**Prepared, not active.** No npm package has been published and no GitHub Release
-exists.
+**Prepared and verified, not published.** No npm package has been published and no
+GitHub Release exists. `pnpm release:pack` produces a checked candidate; nothing
+in this repository uploads it to a registry.
+
+## Verified release candidate
+
+```bash
+pnpm build          # candidates are packed from built dist/ output
+pnpm release:pack   # pack and inspect the approved packages
+```
+
+The command writes tarballs and a `SHA256SUMS` file to `artifacts/`, which is
+ignored by Git. `pnpm release:validate` re-checks an existing `artifacts/`
+directory without repacking. Both commands exit non-zero when a check fails;
+`--json` prints the machine-readable report and `--help` lists the options.
+
+The candidate is rejected when any of the following is true:
+
+- the package set is not exactly `vahu`, `@vahu-ef/core`, and `@vahu-ef/schemas`;
+- an artifact is marked `private`, has no readable manifest, no version, no
+  license field, or no `README.md`/`LICENSE`;
+- expected content is missing: the CLI entry point, the bundled profile catalog,
+  type declarations, or the JSON schemas;
+- a `main`, `types`, `module`, `exports`, or `bin` target is absent from the
+  archive;
+- a dependency range still uses the `workspace:` protocol, or an `@vahu-ef/*`
+  range does not match the candidate version it points at;
+- the archive contains source, tests, source maps, build info, environment
+  files, installed dependencies, changesets, or another archive.
+
+Verify a downloaded candidate against its published checksums:
+
+```bash
+sha256sum -c SHA256SUMS
+```
+
+Passing these checks is necessary, not sufficient: publication still requires the
+approvals below.
+
+### Reproducibility limits
+
+Packing the same `dist/` output twice produces identical bytes. A rebuild is not
+guaranteed to: `@vahu-ef/schemas` declaration bundling emits one object member in
+a varying order, so `dist/index.d.ts` and the tarball checksum can change with no
+source change. Verify a download against the `SHA256SUMS` shipped with that same
+build rather than against a checksum recorded elsewhere.
 
 ## Versioning
 
 VAHU uses Semantic Versioning. The first planned release line is `0.x`; breaking
 changes may happen before `1.0.0`, but they still require a deliberate version
-change and migration notes.
+change and migration notes. See
+[versioning and compatibility](versioning-and-compatibility.md) for the
+compatibility promises attached to each surface.
 
 The release unit records:
 
@@ -20,48 +66,51 @@ The release unit records:
 - adapter versions;
 - template versions.
 
-The schema version is `1.0.0` in Phase 0 and is independent of the CLI version.
+The schema version is `1.1.0` and is independent of the CLI version.
 
 ## npm packages
 
-The intended package layout is:
+| Package             | Purpose                   | Status                            |
+| ------------------- | ------------------------- | --------------------------------- |
+| `vahu`              | CLI binary                | Verified candidate; not published |
+| `@vahu-ef/core`     | Reusable validation logic | Verified candidate; not published |
+| `@vahu-ef/schemas`  | Configuration contracts   | Verified candidate; not published |
+| `@vahu-ef/adapters` | Agent rendering boundary  | Not part of the candidate         |
+| `@vahu-ef/website`  | Static site               | Private; never published          |
+| `@vahu-ef/cli`      | Potential scoped alias    | Not used; name check only         |
 
-| Package            | Purpose                   | Status                           |
-| ------------------ | ------------------------- | -------------------------------- |
-| `vahu`             | CLI binary                | Metadata prepared; not published |
-| `@vahu-ef/core`    | Reusable validation logic | Metadata prepared; not published |
-| `@vahu-ef/schemas` | Configuration contracts   | Metadata prepared; not published |
-| `@vahu-ef/cli`     | Potential scoped alias    | Not used; name check only        |
-
-`@vahu-ef/cli` is not required if the unscoped `vahu` package remains the
-primary installation path.
+`@vahu-ef/adapters` is excluded because it has no published consumer yet, and
+`@vahu-ef/website` is a private application. Revisit the candidate set before a
+release that gives either package a public consumer.
 
 ## GitHub Releases
 
-The future release should include:
+A release would contain:
 
-- the npm tarball;
-- platform-specific executables;
-- checksums;
-- release notes;
-- a changelog entry;
+- the verified npm tarballs and `SHA256SUMS`;
+- platform-specific executables, once they exist and are tested;
+- release notes and a changelog entry;
 - installation and upgrade instructions.
 
-The `.github/workflows/release.yml` workflow is manual and artifact-only. It does
-not publish to npm or create a GitHub Release.
+`.github/workflows/release.yml` is manual and artifact-only. It runs `pnpm check`,
+packs through the validator, verifies the checksum manifest, and uploads the
+candidate. It has read-only repository permissions and does not publish to npm or
+create a GitHub Release.
 
 ## Standalone executables
 
 The CLI is ESM JavaScript for Node.js. A standalone executable requires a tested
-packaging tool and platform-specific smoke tests. This is planned; compiling
-TypeScript alone is not a standalone binary strategy.
+packaging tool and per-platform smoke tests. This is not implemented; compiling
+TypeScript is not a standalone binary strategy, and no executable is claimed.
 
 ## Required approvals
 
 Before the first publication, the owners must confirm:
 
 - the npm organization and package ownership;
-- the release workflow secret names (never values in the repository);
+- how provenance or trusted publishing is configured, and the release workflow
+  secret names (never values in the repository);
 - the legal copyright notice;
 - supported Node.js and operating-system versions;
-- executable packaging and signing policy.
+- executable packaging and signing policy;
+- an explicit release approval naming the version and the tested commit.

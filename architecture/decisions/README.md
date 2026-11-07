@@ -17,6 +17,7 @@ New records start from the [ADR template](../../templates/documentation/adr.md).
 | [ADR-0010](ADR-0010-agent-neutral-workflows-and-gate-evidence.md)           | Define agent-neutral workflows and evidence-based quality gates          | Accepted |
 | [ADR-0011](ADR-0011-cli-read-only-reports.md)                               | Version read-only CLI report contracts                                   | Accepted |
 | [ADR-0012](ADR-0012-static-website-and-canonical-markdown-documentation.md) | Keep the website static and Markdown docs canonical                      | Accepted |
+| [ADR-0013](ADR-0013-verified-release-candidates.md)                         | Verify release candidates before publication                             | Accepted |
 
 ## Lifecycle
 
