@@ -12,13 +12,9 @@ import {
   validateAnswers,
   type IdentityAnswers,
 } from '@vahu-ef/core';
-import type {
-  ProjectConfig,
-  ProjectLifecycle,
-  ProjectType,
-  RepositoryLocation,
-} from '@vahu-ef/schemas';
+import type { ProjectConfig, ProjectLifecycle, ProjectType } from '@vahu-ef/schemas';
 import { formatChangePreview } from '../core/output.js';
+import { collect, formatRepositorySpec, parseRepositorySpecs, splitList } from '../core/inputs.js';
 import { canPrompt, createPromptSession, type PromptSession } from '../core/prompt.js';
 
 interface InitOptions {
@@ -298,7 +294,7 @@ async function collectAnswers(
       return null;
     }
 
-    const repositories = parseRepositories(splitList(repositoryText));
+    const repositories = parseRepositorySpecs(splitList(repositoryText));
     if (!repositories) {
       fail('Repository locations must look like name=path or name=https://example.com/repo.');
       return null;
@@ -330,46 +326,6 @@ function isProjectType(value: string): value is ProjectType {
 
 function isLifecycle(value: string): value is ProjectLifecycle {
   return (PROJECT_LIFECYCLES as readonly string[]).includes(value);
-}
-
-function collect(value: string, previous: string[]): string[] {
-  return [...previous, value];
-}
-
-function formatRepositorySpec(location: RepositoryLocation): string {
-  return `${location.name}=${location.path ?? location.url ?? ''}`;
-}
-
-function parseRepositories(specs: readonly string[]): RepositoryLocation[] | null {
-  const locations: RepositoryLocation[] = [];
-
-  for (const spec of specs) {
-    const separator = spec.indexOf('=');
-    if (separator <= 0) {
-      return null;
-    }
-
-    const name = spec.slice(0, separator).trim();
-    const location = spec.slice(separator + 1).trim();
-    if (name.length === 0 || location.length === 0) {
-      return null;
-    }
-
-    locations.push(
-      location.startsWith('http://') || location.startsWith('https://')
-        ? { name, url: location }
-        : { name, path: location },
-    );
-  }
-
-  return locations;
-}
-
-function splitList(value: string): string[] {
-  return value
-    .split(',')
-    .map((entry) => entry.trim())
-    .filter((entry) => entry.length > 0);
 }
 
 function printIssues(issues: readonly { path: string; message: string }[]): void {
