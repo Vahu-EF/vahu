@@ -1,0 +1,10 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "GATE-POSTGRES-MIGRATIONS",
+  "name": "PostgreSQL migrations",
+  "kind": "custom",
+  "description": "Verify database migrations against a disposable PostgreSQL database and review data-loss risk.",
+  "severity": "blocking",
+  "applicableProfiles": ["PROFILE-POSTGRESQL"],
+  "evidenceRequired": true
+}

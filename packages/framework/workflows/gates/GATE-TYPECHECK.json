@@ -1,0 +1,10 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "GATE-TYPECHECK",
+  "name": "Type checking",
+  "kind": "type-checking",
+  "description": "Run the project's static type checker when applicable.",
+  "command": "pnpm typecheck",
+  "severity": "blocking",
+  "evidenceRequired": true
+}

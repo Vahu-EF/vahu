@@ -1,0 +1,44 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "WORKFLOW-RELEASE",
+  "name": "Release preparation",
+  "purpose": "Prepare a reviewable release without publishing it automatically.",
+  "version": "0.1.0",
+  "trigger": "An owner requests release preparation for a verified change set.",
+  "prerequisites": ["Changes are merged or explicitly selected for release."],
+  "requiredContext": ["Versioning policy", "Changelog", "Build and test evidence", "Release owner"],
+  "inputs": ["Release scope", "Version proposal", "Verification evidence"],
+  "steps": [
+    { "id": "audit", "action": "Confirm the release contents and compatibility impact." },
+    { "id": "notes", "action": "Prepare release notes from verified changes and limitations." },
+    {
+      "id": "gates",
+      "action": "Review the applicable build, tests, security, and documentation gates."
+    },
+    {
+      "id": "approve",
+      "action": "Obtain explicit approval before public release or package publication."
+    }
+  ],
+  "outputs": ["Release checklist", "Release notes", "Approval evidence"],
+  "approvals": [
+    {
+      "id": "APPROVAL-PUBLIC-RELEASE",
+      "kind": "public-release",
+      "reason": "Public releases and package publication require owner approval."
+    }
+  ],
+  "qualityGates": [
+    "GATE-BUILD",
+    "GATE-UNIT-TESTS",
+    "GATE-SECURITY",
+    "GATE-DOCUMENTATION",
+    "GATE-POSTGRES-MIGRATIONS"
+  ],
+  "recovery": [
+    "Do not publish if a blocking gate is failed, skipped, or unverified.",
+    "If the version or contents are ambiguous, stop and ask the release owner."
+  ],
+  "relatedStandards": ["P1-05", "P1-10", "P1-12", "P1-14"],
+  "relatedProfiles": []
+}

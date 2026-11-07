@@ -1,0 +1,9 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "GATE-DOCUMENTATION",
+  "name": "Documentation consistency",
+  "kind": "documentation-consistency",
+  "description": "Check that documentation reflects the changed behaviour and examples.",
+  "severity": "advisory",
+  "evidenceRequired": true
+}

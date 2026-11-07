@@ -1,0 +1,9 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "GATE-DEPENDENCIES",
+  "name": "Dependency health",
+  "kind": "dependency-health",
+  "description": "Review dependency changes and known vulnerability reports.",
+  "severity": "blocking",
+  "evidenceRequired": true
+}

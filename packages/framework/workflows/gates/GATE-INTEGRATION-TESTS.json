@@ -1,0 +1,9 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "GATE-INTEGRATION-TESTS",
+  "name": "Integration tests",
+  "kind": "integration-tests",
+  "description": "Run integration tests for affected service boundaries.",
+  "severity": "blocking",
+  "evidenceRequired": true
+}

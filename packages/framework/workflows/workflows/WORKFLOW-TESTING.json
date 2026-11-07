@@ -1,0 +1,35 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "WORKFLOW-TESTING",
+  "name": "Unit and integration testing",
+  "purpose": "Verify changed behaviour and important boundaries with reproducible evidence.",
+  "version": "0.1.0",
+  "trigger": "A behaviour or integration changes, or a quality gate requires verification.",
+  "prerequisites": ["Expected behaviour is stated."],
+  "requiredContext": ["Changed code", "Acceptance conditions", "Selected technology profiles"],
+  "inputs": ["Test target", "Expected behaviour", "Relevant fixtures"],
+  "steps": [
+    { "id": "unit", "action": "Test logic at the smallest stable public boundary." },
+    {
+      "id": "integration",
+      "action": "Test changed system boundaries with isolated dependencies where practical."
+    },
+    {
+      "id": "report",
+      "action": "Record exact command, exit status, and relevant summary; distinguish not-run from pass."
+    }
+  ],
+  "outputs": [
+    "Tests for changed behaviour",
+    "Command and result evidence",
+    "Known coverage limitations"
+  ],
+  "approvals": [],
+  "qualityGates": ["GATE-UNIT-TESTS", "GATE-INTEGRATION-TESTS", "GATE-BUILD"],
+  "recovery": [
+    "A failed test stays failed until its cause is fixed and the affected check is rerun.",
+    "Do not weaken assertions or skip tests to obtain a pass."
+  ],
+  "relatedStandards": ["P1-10", "P1-15"],
+  "relatedProfiles": ["PROFILE-VITEST"]
+}

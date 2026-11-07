@@ -1,0 +1,9 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "GATE-PERFORMANCE",
+  "name": "Performance",
+  "kind": "performance",
+  "description": "Measure performance when the change affects a performance-sensitive path.",
+  "severity": "advisory",
+  "evidenceRequired": true
+}

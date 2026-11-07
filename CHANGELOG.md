@@ -4,6 +4,26 @@ All notable changes to VAHU are recorded here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and versioning follows
 [Semantic Versioning](https://semver.org/).
 
+## Unreleased — Phase 5 workflows
+
+### Added
+
+- Workflow and quality gate schemas in `@vahu-ef/schemas`, with generated
+  `workflow.schema.json` and `quality-gate.schema.json`.
+- Fourteen agent-neutral lifecycle workflows and thirteen generic/profile-aware
+  quality gates under `packages/framework/workflows/`.
+- `loadWorkflowCatalog`, `validateWorkflowCatalog`, and `evaluateWorkflow` in
+  `@vahu-ef/core`; gate results are caller-supplied, evidence is required when
+  configured, and human approvals require a named approver and evidence.
+- `pnpm validate:workflows`, wired into `pnpm check`; the catalog checks profile
+  references against the adjacent technology-profile catalog when present.
+- ADR-0010, accepted by the project owner, and `architecture/specifications/phase-5.md`.
+
+### Not included
+
+- Command execution, workflow CLI runner, or independent attestation of
+  caller-supplied gate evidence.
+
 ## Unreleased — Phase 4 technology profiles
 
 ### Added

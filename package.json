@@ -22,7 +22,8 @@
     "validate:workspace": "node scripts/validation/validate-workspace.mjs",
     "validate:standards": "node scripts/validation/validate-standards.mjs",
     "validate:profiles": "node scripts/validation/validate-profiles.mjs",
-    "check": "pnpm format:check && pnpm lint && pnpm typecheck && pnpm test && pnpm build && pnpm validate:workspace && pnpm validate:standards && pnpm validate:profiles"
+    "validate:workflows": "node scripts/validation/validate-workflows.mjs",
+    "check": "pnpm format:check && pnpm lint && pnpm typecheck && pnpm test && pnpm build && pnpm validate:workspace && pnpm validate:standards && pnpm validate:profiles && pnpm validate:workflows"
   },
   "devDependencies": {
     "@changesets/cli": "^3.0.3",

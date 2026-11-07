@@ -1,0 +1,53 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "WORKFLOW-ARCHITECTURE",
+  "name": "Architecture design and decision",
+  "purpose": "Make consequential technical choices explicit, reviewable, and owned.",
+  "version": "0.1.0",
+  "trigger": "A change has cross-boundary, security, data, or long-term maintenance consequences.",
+  "prerequisites": ["Requirements and constraints are recorded."],
+  "requiredContext": [
+    "System boundaries",
+    "Existing decisions",
+    "Relevant profiles",
+    "Trade-off evidence"
+  ],
+  "inputs": ["Problem", "Constraints", "Options and consequences"],
+  "steps": [
+    {
+      "id": "options",
+      "action": "Describe viable options, including retaining the current design."
+    },
+    {
+      "id": "tradeoffs",
+      "action": "Compare reversibility, security, data, operational, and maintenance consequences."
+    },
+    {
+      "id": "record",
+      "action": "Write an ADR for a file-format, contract, or consequential architecture decision."
+    },
+    {
+      "id": "approve",
+      "action": "Request the named owner's explicit decision; do not record approval on their behalf."
+    }
+  ],
+  "outputs": [
+    "Architecture proposal",
+    "Accepted or rejected ADR",
+    "Updated architecture documentation"
+  ],
+  "approvals": [
+    {
+      "id": "APPROVAL-ARCHITECTURE",
+      "kind": "architecture",
+      "reason": "Consequential architecture decisions belong to the owner."
+    }
+  ],
+  "qualityGates": ["GATE-SECURITY", "GATE-DOCUMENTATION"],
+  "recovery": [
+    "If no option is adequately supported, record open questions rather than choosing silently.",
+    "If the owner rejects the proposal, keep the prior decision in force."
+  ],
+  "relatedStandards": ["P1-01", "P1-09", "P1-14"],
+  "relatedProfiles": []
+}

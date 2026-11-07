@@ -1,0 +1,35 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "WORKFLOW-DEPLOYMENT",
+  "name": "Deployment readiness",
+  "purpose": "Verify deployment prerequisites and obtain explicit production authorization.",
+  "version": "0.1.0",
+  "trigger": "A deployment is proposed for a named environment.",
+  "prerequisites": ["Release contents and target environment are identified."],
+  "requiredContext": ["Environment configuration", "Rollback plan", "Release evidence"],
+  "inputs": ["Artifact", "Target environment", "Deployment and rollback plan"],
+  "steps": [
+    {
+      "id": "config",
+      "action": "Verify environment-specific configuration and secret references without exposing values."
+    },
+    { "id": "rollback", "action": "Confirm rollback or recovery steps and responsible operator." },
+    { "id": "gates", "action": "Review required build, security, and deployment checks." },
+    { "id": "approve", "action": "Obtain explicit owner approval before production deployment." }
+  ],
+  "outputs": ["Readiness report", "Rollback plan", "Production approval evidence"],
+  "approvals": [
+    {
+      "id": "APPROVAL-PRODUCTION-DEPLOYMENT",
+      "kind": "production-deployment",
+      "reason": "Production deployments require explicit approval."
+    }
+  ],
+  "qualityGates": ["GATE-BUILD", "GATE-SECURITY", "GATE-SECRET-SCAN"],
+  "recovery": [
+    "Block deployment when required evidence, rollback, or approval is missing.",
+    "If deployment fails, follow the recorded recovery plan and report actual state."
+  ],
+  "relatedStandards": ["P1-06", "P1-07", "P1-13", "P1-14"],
+  "relatedProfiles": []
+}

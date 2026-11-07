@@ -1,0 +1,41 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "WORKFLOW-SECURITY",
+  "name": "Security review",
+  "purpose": "Review changes for security-sensitive behavior and explicit permission boundaries.",
+  "version": "0.1.0",
+  "trigger": "A change affects authentication, authorization, secrets, dependencies, data, or tools.",
+  "prerequisites": ["The changed trust boundaries are identified."],
+  "requiredContext": ["Threat-relevant data flows", "Permission changes", "Dependency changes"],
+  "inputs": ["Diff", "Threat context", "Security requirements"],
+  "steps": [
+    {
+      "id": "boundaries",
+      "action": "Trace untrusted inputs, privileged operations, and sensitive data."
+    },
+    {
+      "id": "permissions",
+      "action": "Verify least privilege and make any permission change visible."
+    },
+    {
+      "id": "evidence",
+      "action": "Record scan results and manual findings; distinguish checks not run."
+    },
+    { "id": "decision", "action": "Request explicit approval for a sensitive permission change." }
+  ],
+  "outputs": ["Security findings", "Scan evidence", "Explicit approval record when needed"],
+  "approvals": [
+    {
+      "id": "APPROVAL-SECURITY-PERMISSION",
+      "kind": "security-permission",
+      "reason": "Sensitive permission changes require explicit owner approval."
+    }
+  ],
+  "qualityGates": ["GATE-SECRET-SCAN", "GATE-DEPENDENCIES", "GATE-SECURITY"],
+  "recovery": [
+    "Stop and block on a suspected credential leak or privilege escalation.",
+    "Do not dismiss a finding without recording the evidence and rationale."
+  ],
+  "relatedStandards": ["P1-05", "P1-07", "P1-13"],
+  "relatedProfiles": []
+}

@@ -29,7 +29,11 @@
   "files": [
     "dist",
     "content.schema.json",
-    "project.schema.json"
+    "project.schema.json",
+    "agent.schema.json",
+    "profile.schema.json",
+    "workflow.schema.json",
+    "quality-gate.schema.json"
   ],
   "scripts": {
     "build": "tsup src/index.ts --format esm --dts --clean",

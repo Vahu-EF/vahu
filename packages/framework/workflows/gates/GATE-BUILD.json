@@ -1,0 +1,10 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "GATE-BUILD",
+  "name": "Build validation",
+  "kind": "build-validation",
+  "description": "Build the affected project packages.",
+  "command": "pnpm build",
+  "severity": "blocking",
+  "evidenceRequired": true
+}

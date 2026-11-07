@@ -21,6 +21,26 @@ export {
   type ParseContentItemResult,
 } from './content.js';
 export {
+  parseQualityGate,
+  parseWorkflowDefinition,
+  qualityGateSchema,
+  workflowApprovalKindSchema,
+  workflowApprovalSchema,
+  workflowDefinitionSchema,
+  workflowStepSchema,
+  qualityGateKindSchema,
+  WORKFLOW_SCHEMA_VERSION,
+  type ParseQualityGateResult,
+  type ParseWorkflowResult,
+  type QualityGateDefinition,
+  type QualityGateKind,
+  type WorkflowApproval,
+  type WorkflowApprovalKind,
+  type WorkflowDefinition,
+  type WorkflowIssue,
+  type WorkflowStep,
+} from './workflow.js';
+export {
   parseTechnologyProfile,
   PROFILE_SCHEMA_VERSION,
   profileCategorySchema,

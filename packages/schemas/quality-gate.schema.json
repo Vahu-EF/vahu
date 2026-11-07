@@ -1,0 +1,72 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "type": "object",
+  "properties": {
+    "schemaVersion": {
+      "type": "string",
+      "const": "1.0.0"
+    },
+    "id": {
+      "type": "string",
+      "pattern": "^GATE-[A-Z0-9]+(?:-[A-Z0-9]+)*$"
+    },
+    "name": {
+      "type": "string",
+      "minLength": 1
+    },
+    "kind": {
+      "type": "string",
+      "enum": [
+        "formatting",
+        "linting",
+        "type-checking",
+        "unit-tests",
+        "integration-tests",
+        "build-validation",
+        "dependency-health",
+        "secret-scanning",
+        "security-check",
+        "documentation-consistency",
+        "accessibility",
+        "performance",
+        "custom"
+      ]
+    },
+    "description": {
+      "type": "string",
+      "minLength": 1
+    },
+    "command": {
+      "type": "string",
+      "minLength": 1
+    },
+    "severity": {
+      "default": "blocking",
+      "type": "string",
+      "enum": ["blocking", "advisory"]
+    },
+    "applicableProfiles": {
+      "default": [],
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^PROFILE-[A-Z0-9]+(?:-[A-Z0-9]+)*$"
+      }
+    },
+    "evidenceRequired": {
+      "default": true,
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "schemaVersion",
+    "id",
+    "name",
+    "kind",
+    "description",
+    "severity",
+    "applicableProfiles",
+    "evidenceRequired"
+  ],
+  "additionalProperties": false
+}

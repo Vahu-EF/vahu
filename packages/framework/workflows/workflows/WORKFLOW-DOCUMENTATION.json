@@ -1,0 +1,31 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "WORKFLOW-DOCUMENTATION",
+  "name": "Documentation update",
+  "purpose": "Keep user and maintainer documentation consistent with shipped behavior.",
+  "version": "0.1.0",
+  "trigger": "A change affects a documented interface, configuration, workflow, or operational behavior.",
+  "prerequisites": ["The behavior and user impact are understood."],
+  "requiredContext": ["Changed interfaces", "Existing docs", "Examples and commands"],
+  "inputs": ["Diff", "User impact", "Verification results"],
+  "steps": [
+    {
+      "id": "find",
+      "action": "Find the canonical documentation location; avoid duplicating the same fact."
+    },
+    {
+      "id": "update",
+      "action": "Update instructions and examples to match the implemented behavior."
+    },
+    { "id": "check", "action": "Verify commands, links, and claims against the repository." }
+  ],
+  "outputs": ["Updated canonical documentation", "Documentation check evidence"],
+  "approvals": [],
+  "qualityGates": ["GATE-DOCUMENTATION"],
+  "recovery": [
+    "If behavior is not verified, label the claim as planned or unverified.",
+    "If no canonical location exists, propose one rather than duplicating content."
+  ],
+  "relatedStandards": ["P1-12", "P1-15"],
+  "relatedProfiles": []
+}
