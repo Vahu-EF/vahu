@@ -50,7 +50,7 @@ The core principles are:
 | Validation and readiness rules | Implemented | Identity, design-system, brand, repository, technology, and readiness checks    |
 | Core engineering standards     | Implemented | 15 Phase 1 standards, all accepted                                              |
 | Framework content model        | In Progress | Draft metadata, discovery, and composition contract with a validator            |
-| Technology profiles            | Planned     | One canonical location reserved under `packages/framework/technology-profiles/` |
+| Technology profiles            | In Progress | Validated profile schema, three profiles, and a composition gate                |
 | Agent adapters                 | In Progress | Canonical agent schema and generic adapter; no provider adapter is claimed      |     | Project onboarding | Implemented | Identity, brand, design, technology, repository, foundation, and readiness commands |
 | Full documentation engine      | Planned     | Not implemented                                                                 |
 | Website                        | In Progress | A small static site source exists; it is not published                          |

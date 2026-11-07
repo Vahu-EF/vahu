@@ -1,0 +1,40 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "PROFILE-POSTGRESQL",
+  "name": "PostgreSQL",
+  "description": "Relational storage on PostgreSQL, including schema and migration practice.",
+  "version": "0.1.0",
+  "category": "database",
+  "technology": "postgresql",
+  "supportedVersions": [">=14"],
+  "projectTypes": ["all"],
+  "prerequisites": [],
+  "related": [],
+  "architecture": [
+    "Keep the schema in versioned migrations; never edit an applied migration.",
+    "Separate read models from write models only when a measured need exists."
+  ],
+  "structure": [
+    "Migrations live in the repository and run in order.",
+    "Seed data is separate from schema."
+  ],
+  "conventions": [
+    "Name tables and columns consistently.",
+    "Every foreign key has an index when it is queried."
+  ],
+  "testing": [
+    "Test migrations against a disposable database.",
+    "Test queries with realistic data volumes where it matters."
+  ],
+  "security": [
+    "Use least-privilege database roles.",
+    "Do not log query parameters that contain personal data."
+  ],
+  "documentation": ["Document backup, restore, and migration steps."],
+  "tooling": ["A migration runner that records applied versions."],
+  "checks": ["Migration applies from empty", "Migration is idempotent where declared"],
+  "compatibility": {
+    "conflictsWith": [],
+    "notes": "Assumes a single primary database; replication is out of scope."
+  }
+}

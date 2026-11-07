@@ -8,7 +8,7 @@
 **Document status:** Proposed phase plan — Phase 0 and Phase 1 complete; Phase 2 in progress  
 **Scope:** Phases 1–9. Phase 0 is recorded in [`phase-0.md`](phase-0.md) and the
 foundation document [`VAHU.md`](../../VAHU.md).  
-**Companion specifications:** [`phase-0.md`](phase-0.md), [`phase-1.md`](phase-1.md), [`phase-2.md`](phase-2.md), [`phase-3.md`](phase-3.md)
+**Companion specifications:** [`phase-0.md`](phase-0.md), [`phase-1.md`](phase-1.md), [`phase-2.md`](phase-2.md), [`phase-3.md`](phase-3.md), [`phase-4.md`](phase-4.md)
 
 ---
 
@@ -55,12 +55,12 @@ Do not combine phases merely to finish faster. A phase may be split into smaller
 A phase starts only after the project owner approves it. This table is the
 record; an agent may not add an approval row on the owner's behalf.
 
-| Phase | Approval                                                  | Date       | Record                     |
-| ----- | --------------------------------------------------------- | ---------- | -------------------------- |
-| 0     | Approved and complete                                     | 2026-11-06 | [`phase-0.md`](phase-0.md) |
-| 1     | Approved and complete                                     | 2026-11-07 | [`phase-1.md`](phase-1.md) |     | 2   | Approved; stages implemented | 2026-11-07 | [`phase-2.md`](phase-2.md) |
-| 3     | Approved; canonical model and generic adapter implemented | 2026-11-07 | [`phase-3.md`](phase-3.md) |
-| 4–9   | Not approved                                              | —          | This document              |
+| Phase | Approval                                                       | Date       | Record                     |
+| ----- | -------------------------------------------------------------- | ---------- | -------------------------- |
+| 0     | Approved and complete                                          | 2026-11-06 | [`phase-0.md`](phase-0.md) |
+| 1     | Approved and complete                                          | 2026-11-07 | [`phase-1.md`](phase-1.md) |     | 2   | Approved; stages implemented | 2026-11-07 | [`phase-2.md`](phase-2.md) |     | 3   | Approved; canonical model and generic adapter implemented | 2026-11-07 | [`phase-3.md`](phase-3.md) |
+| 4     | Approved; schema, profiles, and composition checks implemented | 2026-11-07 | [`phase-4.md`](phase-4.md) |
+| 5–9   | Not approved                                                   | —          | This document              |
 
 ## 3.2 Current implementation state
 
@@ -70,14 +70,15 @@ Phase 1. To avoid two competing definitions of Phase 1, the canonical Phase 1
 specification [`phase-1.md`](phase-1.md) owns the standards content and this
 roadmap owns the content model that wraps it.
 
-| Area                                             | State                                                 | Where                                                           |
-| ------------------------------------------------ | ----------------------------------------------------- | --------------------------------------------------------------- |
-| Phase 0 foundation                               | Complete                                              | [`phase-0.md`](phase-0.md)                                      |
-| Phase 1 standards content                        | 15 work packages accepted (2026-11-06 and 2026-11-07) | [`phase-1.md`](phase-1.md)                                      |
-| Phase 1 content metadata, composition, discovery | Draft contract implemented                            | [`CONTENT_MODEL.md`](../../packages/framework/CONTENT_MODEL.md) |
-| Phase 1 structural validation                    | Standard pages, content model, decision index         | `pnpm validate:standards`                                       |     | Phase 2 | Approved 2026-11-07; stages 1–8 implemented (3 and 6 partial) | [`phase-2.md`](phase-2.md) |
-| Phase 3                                          | Approved 2026-11-07; generic adapter implemented      | [`phase-3.md`](phase-3.md)                                      |
-| Phases 4–9                                       | Not started; not approved                             | This document                                                   |
+| Area                                             | State                                                        | Where                                                           |
+| ------------------------------------------------ | ------------------------------------------------------------ | --------------------------------------------------------------- |
+| Phase 0 foundation                               | Complete                                                     | [`phase-0.md`](phase-0.md)                                      |
+| Phase 1 standards content                        | 15 work packages accepted (2026-11-06 and 2026-11-07)        | [`phase-1.md`](phase-1.md)                                      |
+| Phase 1 content metadata, composition, discovery | Draft contract implemented                                   | [`CONTENT_MODEL.md`](../../packages/framework/CONTENT_MODEL.md) |
+| Phase 1 structural validation                    | Standard pages, content model, decision index                | `pnpm validate:standards`                                       |     | Phase 2 | Approved 2026-11-07; stages 1–8 implemented (3 and 6 partial) | [`phase-2.md`](phase-2.md) |
+| Phase 3                                          | Approved 2026-11-07; generic adapter implemented             | [`phase-3.md`](phase-3.md)                                      |
+| Phase 4                                          | Approved 2026-11-07; three profiles and the gate implemented | [`phase-4.md`](phase-4.md)                                      |
+| Phases 5–9                                       | Not started; not approved                                    | This document                                                   |
 
 Read this table before assigning any phase. Do not re-implement content that
 already exists, and do not assume the metadata model is settled.

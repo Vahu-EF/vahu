@@ -21,6 +21,16 @@ export {
   type ParseContentItemResult,
 } from './content.js';
 export {
+  parseTechnologyProfile,
+  PROFILE_SCHEMA_VERSION,
+  profileCategorySchema,
+  technologyProfileSchema,
+  type ParseProfileResult,
+  type ProfileCategory,
+  type ProfileIssue,
+  type TechnologyProfile,
+} from './profile.js';
+export {
   AGENT_SCHEMA_VERSION,
   agentAdapterIdSchema,
   agentCommandSchema,

@@ -4,6 +4,30 @@ All notable changes to VAHU are recorded here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and versioning follows
 [Semantic Versioning](https://semver.org/).
 
+## Unreleased — Phase 4 technology profiles
+
+### Added
+
+- Technology profile schema (`packages/schemas/src/profile.ts`) with a generated
+  `profile.schema.json`: identity, category, technology and supported versions,
+  project types, prerequisites, related profiles, conflicts, and guidance for
+  architecture, structure, conventions, testing, security, documentation,
+  tooling, and checks.
+- Three profiles: `PROFILE-NODE-BACKEND`, `PROFILE-POSTGRESQL`, and
+  `PROFILE-VITEST`, plus JSON authoring guidance in the canonical location.
+- `loadProfileCatalog`, `validateProfileCatalog`, `selectProfiles`, and
+  `evaluateProfileSelection` in `@vahu-ef/core`, with tests for duplicates,
+  unknown references, cycles, conflicts, and missing prerequisites.
+- `pnpm validate:profiles`, wired into `pnpm check`.
+- ADR-0009 and `architecture/specifications/phase-4.md`.
+
+### Not included
+
+- Frontend, mobile, infrastructure, and API profile families.
+- CLI selection (`vahu profiles`) and composition of profile guidance into
+  project content or agent instructions.
+- Any claim that a profile is verified against a real project.
+
 ## Unreleased — Phase 3 agents
 
 ### Added
