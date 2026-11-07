@@ -23,7 +23,7 @@ and what remains.
 
 | Stage | Name                   | State                                                        |
 | ----- | ---------------------- | ------------------------------------------------------------ |
-| 1     | Project Identity       | Implemented for the fields the accepted schema defines       |
+| 1     | Project Identity       | Implemented; every roadmap field is captured                 |
 | 2     | Brand identity         | Not started                                                  |
 | 3     | Design system          | Not started                                                  |
 | 4     | Design approval        | Not started; the readiness rule exists from Phase 0          |
@@ -40,6 +40,7 @@ and what remains.
 vahu init [--path <directory>] [--name <name>] [--slug <slug>] ... [--yes] [--force]
 vahu identity [--path <directory>] [--json]
 vahu identity approve [--path <directory>] --by "Your Name" [--json]
+vahu migrate [--path <directory>] [--write] [--json]
 ```
 
 `vahu init` is the only command that creates `.vahu/project.json`. With flags it
@@ -52,43 +53,44 @@ answer, offering the current value (or a derived default) in brackets.
 
 ### Field mapping
 
-The accepted configuration schema (`schemaVersion` 1.0.0) defines these Project
-Identity fields. Stage 1 captures exactly these and nothing else:
+The accepted configuration schema (`schemaVersion` 1.1.0, per
+[ADR-0007](../decisions/ADR-0007-project-identity-schema-1-1-0.md)) defines these
+Project Identity fields. Stage 1 captures exactly these and nothing else:
 
-| Roadmap requirement    | Configuration field   | Behaviour                                      |
-| ---------------------- | --------------------- | ---------------------------------------------- |
-| Project name           | `project.name`        | Required                                       |
-| Short description      | `project.description` | Required                                       |
-| Project purpose        | `project.purpose`     | Required                                       |
-| Intended users         | `project.targetUsers` | Required, comma-separated list                 |
-| Product category       | `project.type`        | Required, one of the schema's project types    |
-| Documentation language | `project.languages`   | Defaults to `en`, comma-separated list         |
-| Constraints            | `project.constraints` | Optional, comma-separated list                 |
-| Identifier             | `project.slug`        | Derived from the name, editable before writing |
+| Roadmap requirement      | Configuration field       | Behaviour                                        |
+| ------------------------ | ------------------------- | ------------------------------------------------ |
+| Project name             | `project.name`            | Required                                         |
+| Short description        | `project.description`     | Required                                         |
+| Long description         | `project.longDescription` | Optional, blank is omitted                       |
+| Project purpose          | `project.purpose`         | Required                                         |
+| Intended users           | `project.targetUsers`     | Required, comma-separated list                   |
+| Product category         | `project.type`            | Required, one of the schema's project types      |
+| Project status/lifecycle | `project.lifecycle`       | Optional: planned, active, maintenance, archived |
+| Repository locations     | `repositories.locations`  | Optional, `name=path` or `name=https://…`        |
+| Documentation language   | `project.languages`       | Defaults to `en`, comma-separated list           |
+| Constraints              | `project.constraints`     | Optional, comma-separated list                   |
+| Non-goals                | `project.nonGoals`        | Optional, comma-separated list                   |
+| Identifier               | `project.slug`            | Derived from the name, editable before writing   |
 
 Every section the schema also defines is written with an honest starting value,
 not a guess: `identity` is `pending`, `brand` is `not-applicable`,
 `design-system` is `not-started`/`none`, `repositories` is `monorepo`,
 `technology` is empty, `agents` is `generic`, and `readiness` is `incomplete`.
 
-### Not captured yet
+### Schema version and migration
 
-Four roadmap Stage 1 items have no field in the accepted schema: the long
-description, project status and lifecycle, repository locations and ownership,
-and non-goals. Adding them changes the public configuration file format, which
-[P1-14](../../packages/framework/core/engineering-decisions.md) requires to
-happen through an accepted decision record and a schema version with a
-migration. They are therefore deferred, not silently approximated:
+[ADR-0007](../decisions/ADR-0007-project-identity-schema-1-1-0.md) was accepted on
+2026-11-07 and implemented in the same change. The configuration moved from
+`1.0.0` to `1.1.0` additively: `longDescription`, `lifecycle`, `nonGoals`, and
+`repositories.locations` were added, and no field was renamed, removed, or
+re-typed.
 
-| Item                         | Blocker                     |
-| ---------------------------- | --------------------------- |
-| Long description             | Schema 1.1.0 field plus ADR |
-| Project status and lifecycle | Schema 1.1.0 field plus ADR |
-| Repository locations/owners  | Schema 1.1.0 field plus ADR |
-| Non-goals                    | Schema 1.1.0 field plus ADR |
-
-`project.constraints` is not used as a substitute for non-goals, and
-`repositories.notes` is not filled with invented locations.
+A `1.0.0` file is validated against the `1.0.0` schema before it is migrated, so
+a broken file is reported rather than repaired. Migration adds only
+`project.nonGoals: []` and `repositories.locations: []`; fields the file did not
+hold stay absent. `vahu validate` reads such a file without blocking and adds a
+`SCHEMA_1_0_0_NOT_MIGRATED` recommendation; `vahu migrate` previews the change
+and writes it only with `--write`.
 
 ### Approval
 
@@ -119,11 +121,13 @@ configuration.
 
 The stage is covered by automated tests:
 
-| Area                                 | Test file                                         |
-| ------------------------------------ | ------------------------------------------------- |
-| Slug derivation and answers          | `packages/core/src/onboarding.test.ts` (15 tests) |
-| Safe writes and refusal to overwrite | `packages/core/src/config.test.ts`                |
-| Init, approval, and validation gate  | `apps/cli/tests/cli.test.ts`                      |
+| Area                                   | Test file                                         |
+| -------------------------------------- | ------------------------------------------------- |
+| Slug derivation and answers            | `packages/core/src/onboarding.test.ts` (18 tests) |
+| Safe writes, reading, and migration    | `packages/core/src/config.test.ts` (6 tests)      |
+| Schema and migration                   | `packages/schemas/src/project.test.ts` (14 tests) |
+| Readiness and migration recommendation | `packages/core/src/validate.test.ts` (8 tests)    |
+| Init, approval, migration, and gate    | `apps/cli/tests/cli.test.ts` (14 tests)           |
 
 The interactive flow was also exercised once through a real terminal: every
 prompt accepted a value or its default, the preview printed, the file was
@@ -139,7 +143,8 @@ approve` cleared it. Interactive behaviour is not covered by an automated test.
 | Nothing is approved on the user's behalf           | Met     | `init` writes `pending`; approval needs `--by`             |
 | No file is overwritten without preview and consent | Met     | `saveProjectConfig` refuses unless `overwrite` is explicit |
 | Onboarding can be resumed                          | Met     | Re-running `init` prefills from the configuration          |
-| Every Stage 1 roadmap field is captured            | Partial | Four fields need a schema 1.1.0 decision (see above)       |
+| Every Stage 1 roadmap field is captured            | Met     | Schema 1.1.0 per ADR-0007; `init` flags and prompts        |
+| Older configurations stay readable                 | Met     | 1.0.0 migration, validated before transforming             |
 | Stages 2–8                                         | Not met | Not started                                                |
 
 ## Non-goals

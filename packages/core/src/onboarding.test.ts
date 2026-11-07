@@ -21,13 +21,15 @@ function answers(overrides: Partial<IdentityAnswers> = {}): IdentityAnswers {
     languages: ['en'],
     scope: 'First release',
     constraints: [],
+    nonGoals: [],
+    repositories: [],
     ...overrides,
   };
 }
 
 function existing(): ProjectConfig {
   return {
-    schemaVersion: '1.0.0',
+    schemaVersion: '1.1.0',
     vahu: { version: '0.1.0' },
     project: {
       name: 'Old Name',
@@ -39,11 +41,12 @@ function existing(): ProjectConfig {
       languages: ['en'],
       scope: 'Old scope',
       constraints: [],
+      nonGoals: [],
     },
     identity: { status: 'approved', approvedAt: '2026-01-01T00:00:00.000Z', approvedBy: 'Owner' },
     brand: { status: 'not-applicable' },
     designSystem: { status: 'not-applicable', source: 'none' },
-    repositories: { strategy: 'multi-repository', notes: 'Two repositories.' },
+    repositories: { strategy: 'multi-repository', notes: 'Two repositories.', locations: [] },
     technology: {
       backend: ['node'],
       frontend: [],
@@ -83,6 +86,34 @@ describe('identity answers', () => {
     expect(config.readiness.status).toBe('incomplete');
   });
 
+  it('captures the schema 1.1.0 identity fields', () => {
+    const config = buildProjectConfig(
+      answers({
+        longDescription: 'A longer explanation of the service and its audience.',
+        lifecycle: 'active',
+        nonGoals: ['Not a billing system'],
+        repositories: [{ name: 'api', path: 'apps/api', role: 'service', owner: 'platform' }],
+      }),
+    );
+
+    expect(config.schemaVersion).toBe('1.1.0');
+    expect(config.project.longDescription).toContain('longer explanation');
+    expect(config.project.lifecycle).toBe('active');
+    expect(config.project.nonGoals).toEqual(['Not a billing system']);
+    expect(config.repositories.locations).toEqual([
+      { name: 'api', path: 'apps/api', role: 'service', owner: 'platform' },
+    ]);
+  });
+
+  it('omits optional identity fields that were not answered', () => {
+    const config = buildProjectConfig(answers());
+
+    expect('longDescription' in config.project).toBe(false);
+    expect('lifecycle' in config.project).toBe(false);
+    expect(config.project.nonGoals).toEqual([]);
+    expect(config.repositories.locations).toEqual([]);
+  });
+
   it('reports invalid answers', () => {
     const issues = validateAnswers(answers({ slug: 'Not A Slug' }));
 
@@ -107,6 +138,7 @@ describe('merging identity into an existing configuration', () => {
     expect(merged.repositories).toEqual({
       strategy: 'multi-repository',
       notes: 'Two repositories.',
+      locations: [],
     });
     expect(merged.technology.database).toEqual(['postgresql']);
     expect(merged.project.name).toBe('Example Service');
@@ -116,6 +148,17 @@ describe('merging identity into an existing configuration', () => {
     const merged = mergeIdentity(existing(), answers());
 
     expect(merged.identity).toEqual({ status: 'pending' });
+  });
+
+  it('replaces captured repository locations and keeps the strategy', () => {
+    const merged = mergeIdentity(
+      existing(),
+      answers({ repositories: [{ name: 'api', path: '.' }] }),
+    );
+
+    expect(merged.repositories.strategy).toBe('multi-repository');
+    expect(merged.repositories.notes).toBe('Two repositories.');
+    expect(merged.repositories.locations).toEqual([{ name: 'api', path: '.' }]);
   });
 
   it('marks a ready project as incomplete again', () => {

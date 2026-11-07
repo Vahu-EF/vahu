@@ -70,14 +70,14 @@ Phase 1. To avoid two competing definitions of Phase 1, the canonical Phase 1
 specification [`phase-1.md`](phase-1.md) owns the standards content and this
 roadmap owns the content model that wraps it.
 
-| Area                                             | State                                                 | Where                                                           |
-| ------------------------------------------------ | ----------------------------------------------------- | --------------------------------------------------------------- |
-| Phase 0 foundation                               | Complete                                              | [`phase-0.md`](phase-0.md)                                      |
-| Phase 1 standards content                        | 15 work packages accepted (2026-11-06 and 2026-11-07) | [`phase-1.md`](phase-1.md)                                      |
-| Phase 1 content metadata, composition, discovery | Draft contract implemented                            | [`CONTENT_MODEL.md`](../../packages/framework/CONTENT_MODEL.md) |
-| Phase 1 structural validation                    | Standard pages, content model, decision index         | `pnpm validate:standards`                                       |
-| Phase 2                                          | Approved 2026-11-07; Stage 1 implemented              | [`phase-2.md`](phase-2.md)                                      |
-| Phases 3–9                                       | Not started; not approved                             | This document                                                   |
+| Area                                             | State                                                   | Where                                                           |
+| ------------------------------------------------ | ------------------------------------------------------- | --------------------------------------------------------------- |
+| Phase 0 foundation                               | Complete                                                | [`phase-0.md`](phase-0.md)                                      |
+| Phase 1 standards content                        | 15 work packages accepted (2026-11-06 and 2026-11-07)   | [`phase-1.md`](phase-1.md)                                      |
+| Phase 1 content metadata, composition, discovery | Draft contract implemented                              | [`CONTENT_MODEL.md`](../../packages/framework/CONTENT_MODEL.md) |
+| Phase 1 structural validation                    | Standard pages, content model, decision index           | `pnpm validate:standards`                                       |
+| Phase 2                                          | Approved 2026-11-07; Stage 1 implemented (schema 1.1.0) | [`phase-2.md`](phase-2.md)                                      |
+| Phases 3–9                                       | Not started; not approved                               | This document                                                   |
 
 Read this table before assigning any phase. Do not re-implement content that
 already exists, and do not assume the metadata model is settled.

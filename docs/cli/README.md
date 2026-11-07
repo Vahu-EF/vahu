@@ -50,6 +50,19 @@ answer must come from a flag. `--name`, `--description`, `--purpose`,
 `--users`, `--type`, and `--scope` are required, the slug is derived from the
 name, and `--languages` defaults to `en`.
 
+Optional identity fields: `--long-description`, `--lifecycle` (`planned`,
+`active`, `maintenance`, `archived`), `--non-goals`, and repeatable
+`--repository name=path-or-url`.
+
+```bash
+vahu init --name "Billing Service" --type backend-service --yes \
+  --description "Handles invoices." --purpose "Bill customers accurately." \
+  --users "finance teams" --scope "First release" \
+  --long-description "Owns invoice creation, delivery, and reconciliation." \
+  --lifecycle active --non-goals "Not a payment processor" \
+  --repository "api=apps/api" --repository "docs=https://github.com/example/docs"
+```
+
 Before writing, the command prints a preview of the changed fields. A new file
 needs `--yes` when no prompt can be shown; an existing file is only replaced
 with `--force` or an explicit `y` answer. A file that does not parse or does not
@@ -74,6 +87,21 @@ vahu identity approve --path ../service --by "Project Owner" --json
 An approval needs a non-empty approver name; the command refuses to record one
 without it. Changing the identity later with `vahu init` returns it to
 `pending`, so an old approval never covers a new identity.
+
+### `vahu migrate`
+
+Reads a configuration written with schema `1.0.0` and reports the change.
+
+```bash
+vahu migrate
+vahu migrate --path ../service --write
+```
+
+It previews by default: the version change and the two empty collections the
+migration adds. Only `--write` rewrites the file. A file that is already current
+is reported and left alone, and a file that does not match its declared schema
+is never rewritten. `vahu validate` recommends this command but does not block on
+an older schema version.
 
 ## Planned, not implemented
 

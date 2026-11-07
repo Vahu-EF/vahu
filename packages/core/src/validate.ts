@@ -76,6 +76,14 @@ export async function validateProject(cwd: string): Promise<ValidationResult> {
   }
 
   const issues = validateProjectConfig(loaded.config);
+  if (loaded.migratedFrom) {
+    issues.push({
+      code: 'SCHEMA_1_0_0_NOT_MIGRATED',
+      path: '.vahu/project.json',
+      message: `This file uses schema ${loaded.migratedFrom} and was read as 1.1.0. Run \`vahu migrate --write\` to update the file.`,
+      severity: 'warning',
+    });
+  }
   return {
     ok: !issues.some((issue) => issue.severity === 'error'),
     configPath: loaded.configPath,

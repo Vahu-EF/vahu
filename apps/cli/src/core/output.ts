@@ -49,6 +49,15 @@ export function formatIdentity(config: ProjectConfig): string {
     `Status: ${identity.status}`,
   ];
 
+  if (project.lifecycle) {
+    lines.push(`Lifecycle: ${project.lifecycle}`);
+  }
+  if (config.repositories.locations.length > 0) {
+    lines.push(
+      `Repositories: ${config.repositories.locations.map((location) => location.name).join(', ')}`,
+    );
+  }
+
   if (identity.status === 'approved') {
     lines.push(`Approved by: ${identity.approvedBy ?? 'unknown'}`);
     lines.push(`Approved at: ${identity.approvedAt ?? 'unknown'}`);

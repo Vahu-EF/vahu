@@ -5,13 +5,19 @@ import {
   changedConfigPaths,
   loadProjectConfig,
   mergeIdentity,
+  PROJECT_LIFECYCLES,
   PROJECT_TYPES,
   saveProjectConfig,
   suggestSlug,
   validateAnswers,
   type IdentityAnswers,
 } from '@vahu-ef/core';
-import type { ProjectConfig, ProjectType } from '@vahu-ef/schemas';
+import type {
+  ProjectConfig,
+  ProjectLifecycle,
+  ProjectType,
+  RepositoryLocation,
+} from '@vahu-ef/schemas';
 import { formatChangePreview } from '../core/output.js';
 import { canPrompt, createPromptSession, type PromptSession } from '../core/prompt.js';
 
@@ -20,12 +26,16 @@ interface InitOptions {
   name?: string;
   slug?: string;
   description?: string;
+  longDescription?: string;
   purpose?: string;
   users?: string;
   type?: string;
+  lifecycle?: string;
   languages?: string;
   scope?: string;
   constraints?: string;
+  nonGoals?: string;
+  repository: string[];
   yes?: boolean;
   force?: boolean;
   json?: boolean;
@@ -39,12 +49,21 @@ export function registerInitCommand(program: Command): void {
     .option('--name <name>', 'Formal project name.')
     .option('--slug <slug>', 'Project slug; derived from the name when omitted.')
     .option('--description <text>', 'Short project description.')
+    .option('--long-description <text>', 'Longer project description.')
     .option('--purpose <text>', 'What the project exists to do.')
     .option('--users <list>', 'Comma-separated target users.')
     .option('--type <type>', `Project type: ${PROJECT_TYPES.join(', ')}.`)
+    .option('--lifecycle <lifecycle>', `Project lifecycle: ${PROJECT_LIFECYCLES.join(', ')}.`)
     .option('--languages <list>', 'Comma-separated documentation languages.', 'en')
     .option('--scope <text>', 'Scope of the first release.')
     .option('--constraints <list>', 'Comma-separated constraints.')
+    .option('--non-goals <list>', 'Comma-separated non-goals.')
+    .option(
+      '--repository <spec>',
+      'Repository location as name=path-or-url. Repeatable.',
+      collect,
+      [],
+    )
     .option('--yes', 'Write a new configuration without asking for confirmation.')
     .option('--force', 'Replace an existing configuration after the change preview.')
     .option('--json', 'Print a machine-readable result.')
@@ -243,6 +262,26 @@ async function collectAnswers(
       'Constraints (comma-separated, blank for none)',
       (existing?.project.constraints ?? []).join(', '),
     );
+    const longDescription = await optional(
+      options.longDescription,
+      'Long description (blank to skip)',
+      existing?.project.longDescription ?? '',
+    );
+    const lifecycleText = await optional(
+      options.lifecycle,
+      `Project lifecycle (${PROJECT_LIFECYCLES.join(', ')}, blank to skip)`,
+      existing?.project.lifecycle ?? '',
+    );
+    const nonGoals = await optional(
+      options.nonGoals,
+      'Non-goals (comma-separated, blank for none)',
+      (existing?.project.nonGoals ?? []).join(', '),
+    );
+    const repositoryText = await optional(
+      options.repository.length > 0 ? options.repository.join(', ') : undefined,
+      'Repository locations (name=path, comma-separated, blank for none)',
+      (existing?.repositories.locations ?? []).map(formatRepositorySpec).join(', '),
+    );
 
     if (missing.length > 0) {
       fail(`Missing required answers: ${missing.join(', ')}. Pass flags or run interactively.`);
@@ -254,16 +293,31 @@ async function collectAnswers(
       return null;
     }
 
+    if (lifecycleText.length > 0 && !isLifecycle(lifecycleText)) {
+      fail(`Unknown lifecycle "${lifecycleText}". Use one of: ${PROJECT_LIFECYCLES.join(', ')}.`);
+      return null;
+    }
+
+    const repositories = parseRepositories(splitList(repositoryText));
+    if (!repositories) {
+      fail('Repository locations must look like name=path or name=https://example.com/repo.');
+      return null;
+    }
+
     return {
       name,
       slug,
       description,
+      ...(longDescription.length > 0 ? { longDescription } : {}),
       purpose,
       targetUsers: splitList(users),
       type: typeText,
+      ...(lifecycleText.length > 0 ? { lifecycle: lifecycleText as ProjectLifecycle } : {}),
       languages: splitList(languages),
       scope,
       constraints: splitList(constraints),
+      nonGoals: splitList(nonGoals),
+      repositories,
     };
   } finally {
     session?.close();
@@ -272,6 +326,43 @@ async function collectAnswers(
 
 function isProjectType(value: string): value is ProjectType {
   return (PROJECT_TYPES as readonly string[]).includes(value);
+}
+
+function isLifecycle(value: string): value is ProjectLifecycle {
+  return (PROJECT_LIFECYCLES as readonly string[]).includes(value);
+}
+
+function collect(value: string, previous: string[]): string[] {
+  return [...previous, value];
+}
+
+function formatRepositorySpec(location: RepositoryLocation): string {
+  return `${location.name}=${location.path ?? location.url ?? ''}`;
+}
+
+function parseRepositories(specs: readonly string[]): RepositoryLocation[] | null {
+  const locations: RepositoryLocation[] = [];
+
+  for (const spec of specs) {
+    const separator = spec.indexOf('=');
+    if (separator <= 0) {
+      return null;
+    }
+
+    const name = spec.slice(0, separator).trim();
+    const location = spec.slice(separator + 1).trim();
+    if (name.length === 0 || location.length === 0) {
+      return null;
+    }
+
+    locations.push(
+      location.startsWith('http://') || location.startsWith('https://')
+        ? { name, url: location }
+        : { name, path: location },
+    );
+  }
+
+  return locations;
 }
 
 function splitList(value: string): string[] {

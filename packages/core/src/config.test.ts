@@ -21,6 +21,51 @@ describe('project configuration loading', () => {
     expect(loaded.status).toBe('missing');
   });
 
+  it('reads a migrated 1.0.0 configuration', async () => {
+    const directory = await mkdtemp(join(tmpdir(), 'vahu-config-'));
+    tempDirectories.push(directory);
+    const legacy = {
+      schemaVersion: '1.0.0',
+      vahu: { version: '0.1.0' },
+      project: {
+        name: 'Legacy',
+        slug: 'legacy',
+        description: 'A file from before the migration.',
+        purpose: 'Verify migration.',
+        targetUsers: ['developers'],
+        type: 'backend-service',
+        languages: ['en'],
+        scope: 'Test',
+        constraints: [],
+      },
+      identity: { status: 'approved' },
+      brand: { status: 'not-applicable' },
+      designSystem: { status: 'not-started', source: 'none' },
+      repositories: { strategy: 'monorepo' },
+      technology: {
+        backend: [],
+        frontend: [],
+        mobile: [],
+        database: [],
+        infrastructure: [],
+        testing: [],
+        deployment: [],
+      },
+      agents: { enabled: ['generic'], configuration: {} },
+      readiness: { status: 'incomplete', notes: [] },
+    };
+    await mkdir(join(directory, '.vahu'));
+    await writeFile(join(directory, '.vahu/project.json'), JSON.stringify(legacy), 'utf8');
+
+    const loaded = await loadProjectConfig(directory);
+
+    expect(loaded.status).toBe('valid');
+    if (loaded.status === 'valid') {
+      expect(loaded.migratedFrom).toBe('1.0.0');
+      expect(loaded.config.schemaVersion).toBe('1.1.0');
+    }
+  });
+
   it('reports invalid JSON', async () => {
     const directory = await mkdtemp(join(tmpdir(), 'vahu-config-'));
     tempDirectories.push(directory);
@@ -42,6 +87,8 @@ function sampleConfig() {
     languages: ['en'],
     scope: 'Test',
     constraints: [],
+    nonGoals: [],
+    repositories: [],
   });
 }
 

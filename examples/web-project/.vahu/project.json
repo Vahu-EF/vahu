@@ -1,5 +1,5 @@
 {
-  "schemaVersion": "1.0.0",
+  "schemaVersion": "1.1.0",
   "vahu": {
     "version": "0.1.0"
   },
@@ -12,7 +12,8 @@
     "type": "web-application",
     "languages": ["en"],
     "scope": "Phase 0 example",
-    "constraints": []
+    "constraints": [],
+    "nonGoals": []
   },
   "identity": {
     "status": "approved"
@@ -30,7 +31,8 @@
     "path": "docs/design-system.md"
   },
   "repositories": {
-    "strategy": "monorepo"
+    "strategy": "monorepo",
+    "locations": []
   },
   "technology": {
     "backend": [],

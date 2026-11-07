@@ -1,8 +1,12 @@
 import {
   parseProjectConfig,
+  projectLifecycleSchema,
   projectTypeSchema,
+  SCHEMA_VERSION,
   type ProjectConfig,
+  type ProjectLifecycle,
   type ProjectType,
+  type RepositoryLocation,
 } from '@vahu-ef/schemas';
 import type { FrameworkIssue } from './issues.js';
 
@@ -11,17 +15,24 @@ export const DEFAULT_VAHU_VERSION = '0.1.0';
 /** Project types accepted by the configuration schema. */
 export const PROJECT_TYPES = projectTypeSchema.options;
 
+/** Project lifecycle values accepted by the configuration schema. */
+export const PROJECT_LIFECYCLES = projectLifecycleSchema.options;
+
 /** The Project Identity fields captured by onboarding stage 1. */
 export interface IdentityAnswers {
   name: string;
   slug: string;
   description: string;
+  longDescription?: string;
   purpose: string;
   targetUsers: string[];
   type: ProjectType;
+  lifecycle?: ProjectLifecycle;
   languages: string[];
   scope: string;
   constraints: string[];
+  nonGoals: string[];
+  repositories: RepositoryLocation[];
 }
 
 export type ApprovalResult =
@@ -83,6 +94,7 @@ export function mergeIdentity(current: ProjectConfig, answers: IdentityAnswers):
     ...current,
     project: projectFrom(answers),
     identity: { status: 'pending' },
+    repositories: { ...current.repositories, locations: answers.repositories },
     readiness: { status: 'incomplete', notes: current.readiness.notes },
   };
 }
@@ -128,13 +140,13 @@ export function changedConfigPaths(before: ProjectConfig | null, after: ProjectC
 
 function candidateConfig(answers: IdentityAnswers, vahuVersion?: string) {
   return {
-    schemaVersion: '1.0.0' as const,
+    schemaVersion: SCHEMA_VERSION,
     vahu: { version: vahuVersion ?? DEFAULT_VAHU_VERSION },
     project: projectFrom(answers),
     identity: { status: 'pending' as const },
     brand: { status: 'not-applicable' as const },
     designSystem: { status: 'not-started' as const, source: 'none' as const },
-    repositories: { strategy: 'monorepo' as const },
+    repositories: { strategy: 'monorepo' as const, locations: answers.repositories },
     technology: {
       backend: [],
       frontend: [],
@@ -150,19 +162,26 @@ function candidateConfig(answers: IdentityAnswers, vahuVersion?: string) {
 }
 
 function projectFrom(answers: IdentityAnswers) {
+  const longDescription = answers.longDescription?.trim() ?? '';
+
   return {
     name: answers.name.trim(),
     slug: answers.slug.trim(),
     description: answers.description.trim(),
+    ...(longDescription.length > 0 ? { longDescription } : {}),
     purpose: answers.purpose.trim(),
     targetUsers: answers.targetUsers.map((user) => user.trim()).filter((user) => user.length > 0),
     type: answers.type,
+    ...(answers.lifecycle ? { lifecycle: answers.lifecycle } : {}),
     languages: answers.languages.map((language) => language.trim()).filter(Boolean),
     scope: answers.scope.trim(),
-    constraints: answers.constraints
-      .map((constraint) => constraint.trim())
-      .filter((constraint) => constraint.length > 0),
+    constraints: cleanList(answers.constraints),
+    nonGoals: cleanList(answers.nonGoals),
   };
+}
+
+function cleanList(values: readonly string[]): string[] {
+  return values.map((value) => value.trim()).filter((value) => value.length > 0);
 }
 
 function collectChanges(
