@@ -10,8 +10,9 @@ adapters for different AI coding agents.
 VAHU is not a prompt collection and it is not tied to one AI provider. The
 framework content must remain useful without the CLI.
 
-> **Status:** Phase 0 — Foundation and Architecture. This repository is being
-> actively developed. There is no npm release or GitHub Release yet.
+> **Status:** Phase 1 complete; Phase 2 in progress. Project Identity onboarding
+> is implemented. This repository is being actively developed. There is no npm
+> release or GitHub Release yet.
 
 ## Why VAHU exists
 
@@ -45,12 +46,13 @@ The core principles are:
 | ------------------------------ | ----------- | ------------------------------------------------------------------------------- |
 | Framework foundation           | Implemented | `VAHU.md`, monorepo boundaries, documentation skeleton, architectural decisions |
 | Project configuration schema   | Implemented | Versioned Zod schema and JSON Schema for `.vahu/project.json`                   |
-| CLI foundation                 | Implemented | `vahu --version`, `--help`, `doctor`, and `validate`                            |
-| Validation and readiness rules | Implemented | Identity, design-system, brand, repository, technology, and readiness checks    |     | Core engineering standards | Implemented | 15 Phase 1 standards, all accepted |
+| CLI foundation                 | Implemented | `vahu --version`, `--help`, `doctor`, `validate`, `init`, and `identity`        |
+| Validation and readiness rules | Implemented | Identity, design-system, brand, repository, technology, and readiness checks    |
+| Core engineering standards     | Implemented | 15 Phase 1 standards, all accepted                                              |
 | Framework content model        | In Progress | Draft metadata, discovery, and composition contract with a validator            |
 | Technology profiles            | Planned     | One canonical location reserved under `packages/framework/technology-profiles/` |
 | Agent adapters                 | Planned     | Adapter folders and contracts only; no adapter is claimed                       |
-| Project onboarding wizard      | Planned     | Not implemented                                                                 |
+| Project onboarding             | In Progress | `vahu init` captures Project Identity; later onboarding stages are not built    |
 | Full documentation engine      | Planned     | Not implemented                                                                 |
 | Website                        | In Progress | A small static site source exists; it is not published                          |
 
@@ -124,6 +126,7 @@ Run the CLI from source:
 pnpm dev -- --help
 pnpm dev -- doctor
 pnpm dev -- validate --path examples/minimal-project
+pnpm dev -- init --path ../my-project
 ```
 
 Build the workspace:
@@ -140,11 +143,16 @@ vahu --version
 vahu --help
 vahu doctor
 vahu validate [--path <directory>] [--json]
+vahu init [--path <directory>] [flags] [--yes] [--force]
+vahu identity [--path <directory>] [--json]
+vahu identity approve [--path <directory>] --by "Your Name"
 ```
 
 `doctor` checks the local environment and project configuration. `validate`
-checks `.vahu/project.json` and the Phase 0 readiness rules. Commands from the
-long-term CLI roadmap, such as `init`, `identity`, `design`, and `agents`, are
+checks `.vahu/project.json` and the readiness rules. `init` captures Project
+Identity and writes the configuration, and `identity approve` records the
+explicit approval that `validate` requires. Commands from the long-term CLI
+roadmap, such as `design`, `profile`, `readiness`, `agents`, and `docs`, are
 **not implemented** yet.
 
 ## Project configuration
@@ -163,6 +171,8 @@ The schema is defined in `packages/schemas/src/project.ts` and generated as
 Important onboarding rules implemented in Phase 0:
 
 - Project Identity must be approved.
+- `vahu init` writes a `pending` identity and never approves it; only
+  `vahu identity approve` records an approval, with a name and date.
 - An existing design system can be imported; a generated one is not final until
   approved.
 - A UI project needs an approved design system.
@@ -231,8 +241,13 @@ Architecture principles](packages/framework/core/architecture-principles.md) on
 2026-11-06, and the remaining 13 on 2026-11-07. P1-15 provides the
 `pnpm validate:standards` check, which runs in `pnpm check` and CI.
 
+Phase 2 (Project Identity & Onboarding) is in progress: Stage 1 is implemented
+and recorded in [the Phase 2
+specification](architecture/specifications/phase-2.md), including the Stage 1
+fields that need a versioned schema change.
+
 The phase plan for Phases 1–9 is in [the
 roadmap](architecture/specifications/roadmap.md), with the current state table,
-content-model scope, and remaining phases. Technology profiles, full onboarding,
-agent adapters, release artifacts, and the production website remain future
-work.
+content-model scope, and remaining phases. Brand and design onboarding,
+technology profiles, agent adapters, release artifacts, and the production
+website remain future work.

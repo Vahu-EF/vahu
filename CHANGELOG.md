@@ -4,6 +4,30 @@ All notable changes to VAHU are recorded here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and versioning follows
 [Semantic Versioning](https://semver.org/).
 
+## Unreleased — Phase 2 Project Identity
+
+### Added
+
+- `vahu init` captures Project Identity interactively or through flags and writes
+  a schema-valid `.vahu/project.json` without recording an approval.
+- `vahu identity` shows the identity and its approval status;
+  `vahu identity approve --by "Name"` records an explicit approval with a date.
+- `saveProjectConfig` refuses to replace an existing configuration unless the
+  caller passes `overwrite`, and `vahu init` prints a change preview first.
+- Onboarding logic in `@vahu-ef/core` (`buildProjectConfig`, `mergeIdentity`,
+  `approveIdentity`, `changedConfigPaths`, `suggestSlug`) with 15 tests, plus 3
+  tests for safe writes and 6 CLI tests for the flow.
+- `architecture/specifications/phase-2.md` records the stage status, the field
+  mapping, and the Stage 1 fields that need a schema 1.1.0 decision.
+
+### Not included
+
+- Brand, design system, design approval, technology selection, repository
+  strategy, engineering foundation, and readiness onboarding stages.
+- Long description, lifecycle, repository locations, and non-goals capture; the
+  accepted schema has no fields for them, so they need a decision record and a
+  versioned schema change.
+
 ## Unreleased — Phase 1 standards
 
 ### Added
