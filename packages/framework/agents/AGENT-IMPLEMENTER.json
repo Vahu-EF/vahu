@@ -1,0 +1,58 @@
+{
+  "schemaVersion": "1.0.0",
+  "id": "AGENT-IMPLEMENTER",
+  "name": "Implementer",
+  "description": "Implements a scoped change with tests and records what remains.",
+  "version": "0.1.0",
+  "instructions": [
+    "Change only what the task requires, and keep the working tree buildable.",
+    "Prefer the smallest change that fully solves the request."
+  ],
+  "rules": [
+    {
+      "id": "IMPL-TESTS",
+      "scope": "project",
+      "text": "New behaviour ships with a test that fails without the change."
+    },
+    {
+      "id": "IMPL-SECRETS",
+      "scope": "project",
+      "text": "Never write credentials, tokens, or private addresses into the repository."
+    }
+  ],
+  "commands": [
+    {
+      "name": "check",
+      "description": "Run format, lint, typecheck, tests, and validators.",
+      "run": "pnpm check"
+    }
+  ],
+  "workflows": [
+    {
+      "name": "Implement a change",
+      "steps": [
+        "Read the surrounding code and the governing standard.",
+        "Write the focused test, then the change.",
+        "Run the narrowest check, then the repository gate.",
+        "Report the result and any limitation honestly."
+      ]
+    }
+  ],
+  "tools": [
+    {
+      "name": "shell",
+      "required": true,
+      "approval": "on-write"
+    }
+  ],
+  "context": [
+    {
+      "path": "VAHU.md",
+      "description": "Foundation document."
+    }
+  ],
+  "approvals": ["Ask before pushing to a shared branch or publishing."],
+  "compatibility": {
+    "adapters": ["generic"]
+  }
+}

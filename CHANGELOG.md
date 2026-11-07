@@ -4,6 +4,27 @@ All notable changes to VAHU are recorded here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and versioning follows
 [Semantic Versioning](https://semver.org/).
 
+## Unreleased — Phase 3 agents
+
+### Added
+
+- Canonical agent definition schema (`packages/schemas/src/agent.ts`) with a
+  generated `agent.schema.json`: identity, instructions, scoped rules, skills,
+  commands, workflows, tools, context, approvals, and adapter compatibility.
+- `@vahu-ef/adapters` package with the `AgentAdapter` interface and a
+  deterministic `generic` adapter that renders provider-neutral `AGENTS.md`
+  Markdown.
+- `AGENT-IMPLEMENTER` and `AGENT-REVIEWER` definitions under
+  `packages/framework/agents/`, parsed by the adapter tests so an invalid
+  definition fails CI.
+- ADR-0008 and `architecture/specifications/phase-3.md`.
+
+### Not included
+
+- Codex, Claude Code, and Gemini adapters; no provider is claimed compatible.
+- File generation, synchronization, conflict detection, and diff preview.
+- Any execution of agent tools or workflows.
+
 ## Unreleased — Phase 2 Project Identity
 
 ### Added

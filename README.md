@@ -51,7 +51,7 @@ The core principles are:
 | Core engineering standards     | Implemented | 15 Phase 1 standards, all accepted                                              |
 | Framework content model        | In Progress | Draft metadata, discovery, and composition contract with a validator            |
 | Technology profiles            | Planned     | One canonical location reserved under `packages/framework/technology-profiles/` |
-| Agent adapters                 | Planned     | Adapter folders and contracts only; no adapter is claimed                       |     | Project onboarding | Implemented | Identity, brand, design, technology, repository, foundation, and readiness commands |
+| Agent adapters                 | In Progress | Canonical agent schema and generic adapter; no provider adapter is claimed      |     | Project onboarding | Implemented | Identity, brand, design, technology, repository, foundation, and readiness commands |
 | Full documentation engine      | Planned     | Not implemented                                                                 |
 | Website                        | In Progress | A small static site source exists; it is not published                          |
 
@@ -202,10 +202,11 @@ VAHU does not prescribe a stack. Technology profiles will describe one category
 at a time, so a project can combine backend, frontend, mobile, database, and
 infrastructure choices without adopting unrelated rules.
 
-The initial agent targets under evaluation are OpenAI Codex, Claude Code, Gemini
-CLI, and a generic instruction-based adapter. **No adapter is implemented or
-compatibility-tested in Phase 0.** Unsupported capabilities will be reported,
-not silently discarded.
+Agent configuration is written once as a canonical JSON definition under
+`packages/framework/agents/` and rendered by an adapter. The `generic` adapter
+renders provider-neutral Markdown; the OpenAI Codex, Claude Code, and Gemini CLI
+adapters are **not implemented or compatibility-tested**, and unsupported
+capabilities will be reported rather than silently discarded.
 
 ## Quality and security
 

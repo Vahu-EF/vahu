@@ -1,5 +1,6 @@
 import { writeFileSync } from 'node:fs';
 import { z } from 'zod';
+import { agentDefinitionSchema } from '../src/agent.js';
 import { contentItemSchema } from '../src/content.js';
 import { projectConfigSchema } from '../src/project.js';
 
@@ -10,3 +11,4 @@ function writeSchema(name: string, schema: z.ZodType): void {
 
 writeSchema('project.schema.json', projectConfigSchema);
 writeSchema('content.schema.json', contentItemSchema);
+writeSchema('agent.schema.json', agentDefinitionSchema);

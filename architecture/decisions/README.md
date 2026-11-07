@@ -3,14 +3,15 @@
 Architecture decisions follow [P1-14: Engineering decisions](../../packages/framework/core/engineering-decisions.md).
 New records start from the [ADR template](../../templates/documentation/adr.md).
 
-| ID                                                | Decision                                                                 | Status   |
-| ------------------------------------------------- | ------------------------------------------------------------------------ | -------- |
-| [ADR-0001](ADR-0001-monorepo-boundaries.md)       | Use a pnpm monorepo with explicit package boundaries                     | Accepted |
-| [ADR-0002](ADR-0002-typescript-toolchain.md)      | Use strict TypeScript, tsup, Vitest, ESLint, and Prettier                | Accepted |
-| [ADR-0003](ADR-0003-configuration-contract.md)    | Keep one versioned project configuration contract in `packages/schemas`  | Accepted |
-| [ADR-0004](ADR-0004-agent-adapter-boundary.md)    | Keep agent content neutral and put translations behind adapters          | Accepted |
-| [ADR-0005](ADR-0005-apache-license.md)            | Use Apache License 2.0 without asserting an unconfirmed copyright holder | Accepted |
-| [ADR-0006](ADR-0006-content-metadata-contract.md) | Extend the P1-14 page header into a validated content metadata contract  | Proposed |     | [ADR-0007](ADR-0007-project-identity-schema-1-1-0.md) | Extend the configuration to schema 1.1.0 for Project Identity | Accepted |
+| ID                                                          | Decision                                                                 | Status   |
+| ----------------------------------------------------------- | ------------------------------------------------------------------------ | -------- |
+| [ADR-0001](ADR-0001-monorepo-boundaries.md)                 | Use a pnpm monorepo with explicit package boundaries                     | Accepted |
+| [ADR-0002](ADR-0002-typescript-toolchain.md)                | Use strict TypeScript, tsup, Vitest, ESLint, and Prettier                | Accepted |
+| [ADR-0003](ADR-0003-configuration-contract.md)              | Keep one versioned project configuration contract in `packages/schemas`  | Accepted |
+| [ADR-0004](ADR-0004-agent-adapter-boundary.md)              | Keep agent content neutral and put translations behind adapters          | Accepted |
+| [ADR-0005](ADR-0005-apache-license.md)                      | Use Apache License 2.0 without asserting an unconfirmed copyright holder | Accepted |
+| [ADR-0006](ADR-0006-content-metadata-contract.md)           | Extend the P1-14 page header into a validated content metadata contract  | Proposed |     | [ADR-0007](ADR-0007-project-identity-schema-1-1-0.md) | Extend the configuration to schema 1.1.0 for Project Identity | Accepted |
+| [ADR-0008](ADR-0008-canonical-agent-definition-contract.md) | Define a provider-neutral canonical agent contract                       | Accepted |
 
 ## Lifecycle
 
