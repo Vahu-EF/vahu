@@ -4,6 +4,24 @@ All notable changes to VAHU are recorded here. The format follows
 [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and versioning follows
 [Semantic Versioning](https://semver.org/).
 
+## Unreleased — Phase 6 CLI productization
+
+### Added
+
+- Read-only `vahu project inspect` and `vahu project status` reports with
+  versioned JSON (`project-report`, contract `1.0.0`) and human-readable output.
+- `vahu profile list` and `vahu profile validate` with versioned JSON reports,
+  non-zero failures, optional catalog path, and bundled profiles in CLI builds.
+- Command integration tests for valid and missing projects, invalid profile
+  data, report contracts, read-only inspection, and bundled CLI invocation
+  outside the checkout.
+- ADR-0011 and `architecture/specifications/phase-6.md`; CLI reference updated.
+
+### Not included
+
+- Profile mutations, agent commands or sync, quality command execution, project
+  configuration, docs/update commands, or cross-platform compatibility claims.
+
 ## Unreleased — Phase 5 workflows
 
 ### Added

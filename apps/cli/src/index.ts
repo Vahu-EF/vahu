@@ -8,6 +8,8 @@ import { registerIdentityCommand } from './commands/identity.js';
 import { registerInitCommand } from './commands/init.js';
 import { registerMigrateCommand } from './commands/migrate.js';
 import { registerProjectStageCommands } from './commands/project.js';
+import { registerProjectInfoCommands } from './commands/project-info.js';
+import { registerProfileCommands } from './commands/profile.js';
 import { formatDoctor, formatValidation } from './core/output.js';
 
 const require = createRequire(import.meta.url);
@@ -58,6 +60,8 @@ export function createProgram(): Command {
   registerIdentityCommand(program);
   registerMigrateCommand(program);
   registerProjectStageCommands(program);
+  registerProjectInfoCommands(program);
+  registerProfileCommands(program);
 
   return program;
 }

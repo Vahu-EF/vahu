@@ -8,20 +8,40 @@ must remain usable without it.
 
 ## Status
 
-Early Phase 0 preparation. This package is **not published to npm yet**.
+Phase 6 CLI productization is in progress. This package is **not published to npm yet**.
 
-Implemented commands:
+Implemented commands include:
 
 ```bash
 vahu --version
 vahu --help
 vahu doctor
 vahu validate [--path <directory>] [--json]
+vahu project inspect [--path <directory>] [--json]
+vahu project status [--path <directory>] [--json]
+vahu profile list [--path <catalog-directory>] [--json]
+vahu profile validate [--path <catalog-directory>] [--json]
+vahu init [options]
+vahu identity [options]
+vahu identity approve [options]
+vahu migrate [options]
+vahu brand [options]
+vahu design [options]
+vahu technology [options]
+vahu repositories [options]
+vahu foundation [options]
+vahu readiness [options]
 ```
 
-`doctor` checks the local environment and project configuration. `validate`
-checks `.vahu/project.json` against the versioned schema and Phase 0 readiness
-rules.
+`project inspect/status` are read-only and report computed readiness and
+validation issues. Profile commands inspect and validate the bundled profile
+catalog; `--path` selects a different directory. A built CLI bundles the profile
+snapshot and can list it outside the source repository. All these commands
+support human-readable output by default and versioned JSON using `--json`.
+
+Missing project configuration and invalid profile data return a non-zero exit
+status. These commands do not edit project selections, generate agent files, or
+run quality gates.
 
 ## Install from source
 

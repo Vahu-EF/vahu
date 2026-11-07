@@ -16,6 +16,13 @@ function runCli(args: string[], cwd = repoRoot) {
   });
 }
 
+function runBuiltCli(args: string[], cwd: string) {
+  return spawnSync(process.execPath, [join(repoRoot, 'apps/cli/dist/index.js'), ...args], {
+    cwd,
+    encoding: 'utf8',
+  });
+}
+
 function validConfig(version: '1.0.0' | '1.1.0' = '1.1.0') {
   return {
     schemaVersion: version,
@@ -79,6 +86,8 @@ describe('vahu CLI', () => {
     expect(result.status).toBe(0);
     expect(result.stdout).toContain('doctor');
     expect(result.stdout).toContain('validate');
+    expect(result.stdout).toContain('project');
+    expect(result.stdout).toContain('profile');
   });
 
   it('runs doctor in a valid project', async () => {
@@ -321,6 +330,129 @@ describe('vahu CLI', () => {
     const config = await readConfig(directory);
     expect(config.readiness.status).toBe('blocked');
     expect(config.readiness.checkedAt).toBeDefined();
+  });
+
+  it('inspects a project with a versioned JSON contract without writing', async () => {
+    const directory = await createProject(validConfig());
+    const original = await readFile(join(directory, '.vahu/project.json'), 'utf8');
+
+    const result = runCli(['project', 'inspect', '--path', directory, '--json']);
+
+    expect(result.status).toBe(0);
+    const report = JSON.parse(result.stdout) as {
+      contractVersion: string;
+      reportType: string;
+      view: string;
+      ok: boolean;
+      project: { name: string; slug: string; type: string };
+      readiness: { status: string };
+    };
+    expect(report.contractVersion).toBe('1.0.0');
+    expect(report.reportType).toBe('project-report');
+    expect(report.view).toBe('inspect');
+    expect(report.ok).toBe(true);
+    expect(report.project.name).toBe('CLI Test');
+    expect(report.project.slug).toBe('cli-test');
+    expect(report.readiness.status).toBe('ready');
+    expect(await readFile(join(directory, '.vahu/project.json'), 'utf8')).toBe(original);
+  });
+
+  it('shows computed status in a human-readable project status report', async () => {
+    const directory = await createProject({ ...validConfig(), identity: { status: 'pending' } });
+
+    const result = runCli(['project', 'status', '--path', directory]);
+
+    expect(result.status).toBe(1);
+    expect(result.stdout).toContain('VAHU project status');
+    expect(result.stdout).toContain('Status: blocked');
+    expect(result.stdout).toContain('Identity: pending');
+  });
+
+  it('returns versioned JSON and a non-zero exit for a missing project', async () => {
+    const directory = await emptyDirectory();
+
+    const result = runCli(['project', 'inspect', '--path', directory, '--json']);
+
+    expect(result.status).toBe(1);
+    const report = JSON.parse(result.stdout) as {
+      contractVersion: string;
+      reportType: string;
+      view: string;
+      ok: boolean;
+    };
+    expect(report.contractVersion).toBe('1.0.0');
+    expect(report.reportType).toBe('project-report');
+    expect(report.view).toBe('inspect');
+    expect(report.ok).toBe(false);
+  });
+
+  it('lists technology profiles as versioned JSON', async () => {
+    const directory = await emptyDirectory();
+
+    const result = runCli(['profile', 'list', '--json'], directory);
+
+    expect(result.status).toBe(0);
+    const report = JSON.parse(result.stdout) as {
+      contractVersion: string;
+      reportType: string;
+      ok: boolean;
+      profiles: Array<{ id: string; technology: string }>;
+    };
+    expect(report.contractVersion).toBe('1.0.0');
+    expect(report.reportType).toBe('profile-list');
+    expect(report.ok).toBe(true);
+    expect(report.profiles.map((profile) => profile.id)).toContain('PROFILE-POSTGRESQL');
+  });
+
+  it('validates a profile catalog and exits unsuccessfully for invalid data', async () => {
+    const directory = await emptyDirectory();
+    await writeFile(join(directory, 'broken.json'), '{', 'utf8');
+
+    const result = runCli(['profile', 'validate', '--path', directory, '--json']);
+
+    expect(result.status).toBe(1);
+    const report = JSON.parse(result.stdout) as {
+      contractVersion: string;
+      reportType: string;
+      ok: boolean;
+      issues: Array<{ code: string }>;
+    };
+    expect(report.contractVersion).toBe('1.0.0');
+    expect(report.reportType).toBe('profile-validation');
+    expect(report.ok).toBe(false);
+    expect(report.issues[0]?.code).toBe('PROFILE_INVALID_JSON');
+  });
+
+  it('lists bundled profiles from the built CLI outside the source repository', async () => {
+    const directory = await emptyDirectory();
+
+    const result = runBuiltCli(['profile', 'list', '--json'], directory);
+
+    expect(result.status, result.stderr).toBe(0);
+    const report = JSON.parse(result.stdout) as {
+      ok: boolean;
+      profiles: Array<{ id: string }>;
+    };
+    expect(report.ok).toBe(true);
+    expect(report.profiles).toHaveLength(3);
+  });
+
+  it('validates the framework profile catalog', async () => {
+    const directory = await emptyDirectory();
+
+    const result = runCli(['profile', 'validate', '--json'], directory);
+
+    expect(result.status).toBe(0);
+    const report = JSON.parse(result.stdout) as {
+      contractVersion: string;
+      reportType: string;
+      ok: boolean;
+      profilesChecked: number;
+    };
+    expect(report.contractVersion).toBe('1.0.0');
+    expect(report.reportType).toBe('profile-validation');
+    expect(report.ok).toBe(true);
+    expect(report.profilesChecked).toBe(3);
   });
 
   it('inspects the engineering foundation without writing', async () => {
