@@ -5,10 +5,10 @@
 **Organization:** https://github.com/Vahu-EF  
 **Repository:** https://github.com/Vahu-EF/vahu  
 **Tagline:** Build Better Software, With Better Agents.  
-**Document status:** Proposed phase plan — Phase 0 complete; Phase 1 in progress  
+**Document status:** Proposed phase plan — Phase 0 and Phase 1 complete; Phase 2 in progress  
 **Scope:** Phases 1–9. Phase 0 is recorded in [`phase-0.md`](phase-0.md) and the
 foundation document [`VAHU.md`](../../VAHU.md).  
-**Companion specifications:** [`phase-0.md`](phase-0.md), [`phase-1.md`](phase-1.md)
+**Companion specifications:** [`phase-0.md`](phase-0.md), [`phase-1.md`](phase-1.md), [`phase-2.md`](phase-2.md)
 
 ---
 
@@ -55,12 +55,12 @@ Do not combine phases merely to finish faster. A phase may be split into smaller
 A phase starts only after the project owner approves it. This table is the
 record; an agent may not add an approval row on the owner's behalf.
 
-| Phase | Approval                             | Date       | Record                         |
-| ----- | ------------------------------------ | ---------- | ------------------------------ |
-| 0     | Approved and complete                | 2026-11-06 | [`phase-0.md`](phase-0.md)     |
-| 1     | Approved and complete                | 2026-11-07 | [`phase-1.md`](phase-1.md)     |
-| 2     | Approved; implementation not started | 2026-11-07 | This document, Phase 2 section |
-| 3–9   | Not approved                         | —          | This document                  |
+| Phase | Approval                      | Date       | Record                     |
+| ----- | ----------------------------- | ---------- | -------------------------- |
+| 0     | Approved and complete         | 2026-11-06 | [`phase-0.md`](phase-0.md) |
+| 1     | Approved and complete         | 2026-11-07 | [`phase-1.md`](phase-1.md) |
+| 2     | Approved; Stage 1 implemented | 2026-11-07 | [`phase-2.md`](phase-2.md) |
+| 3–9   | Not approved                  | —          | This document              |
 
 ## 3.2 Current implementation state
 
@@ -76,7 +76,7 @@ roadmap owns the content model that wraps it.
 | Phase 1 standards content                        | 15 work packages accepted (2026-11-06 and 2026-11-07) | [`phase-1.md`](phase-1.md)                                      |
 | Phase 1 content metadata, composition, discovery | Draft contract implemented                            | [`CONTENT_MODEL.md`](../../packages/framework/CONTENT_MODEL.md) |
 | Phase 1 structural validation                    | Standard pages, content model, decision index         | `pnpm validate:standards`                                       |
-| Phase 2                                          | Approved 2026-11-07; implementation not started       | This document                                                   |
+| Phase 2                                          | Approved 2026-11-07; Stage 1 implemented              | [`phase-2.md`](phase-2.md)                                      |
 | Phases 3–9                                       | Not started; not approved                             | This document                                                   |
 
 Read this table before assigning any phase. Do not re-implement content that
@@ -250,10 +250,10 @@ start from scratch.
 
 ## Status
 
-Approved by the VAHU project owner on 2026-11-07. Implementation has not started.
-The scope below is the approved scope: it is the contract for this phase until a
-`phase-2.md` specification replaces it, and nothing outside it is in scope
-without a new approval.
+Approved by the VAHU project owner on 2026-11-07. Stage 1 (Project Identity) is
+implemented; Stages 2–8 have not started. The scope below is the approved scope,
+and [`phase-2.md`](phase-2.md) records how each stage is implemented and what
+remains. Nothing outside that scope is in scope without a new approval.
 
 ## Objective
 

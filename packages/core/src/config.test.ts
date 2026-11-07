@@ -2,7 +2,8 @@ import { mkdtemp, mkdir, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { afterEach, describe, expect, it } from 'vitest';
-import { loadProjectConfig } from './config.js';
+import { loadProjectConfig, saveProjectConfig } from './config.js';
+import { buildProjectConfig } from './onboarding.js';
 
 const tempDirectories: string[] = [];
 
@@ -27,5 +28,60 @@ describe('project configuration loading', () => {
     await writeFile(join(directory, '.vahu/project.json'), '{', 'utf8');
     const loaded = await loadProjectConfig(directory);
     expect(loaded.status).toBe('invalid-json');
+  });
+});
+
+function sampleConfig() {
+  return buildProjectConfig({
+    name: 'Saved Project',
+    slug: 'saved-project',
+    description: 'A project written by a test.',
+    purpose: 'Verify writing.',
+    targetUsers: ['developers'],
+    type: 'backend-service',
+    languages: ['en'],
+    scope: 'Test',
+    constraints: [],
+  });
+}
+
+describe('project configuration writing', () => {
+  it('creates the configuration and its directory', async () => {
+    const directory = await mkdtemp(join(tmpdir(), 'vahu-config-'));
+    tempDirectories.push(directory);
+
+    const saved = await saveProjectConfig(directory, sampleConfig());
+
+    expect(saved.ok).toBe(true);
+    if (saved.ok) {
+      expect(saved.created).toBe(true);
+    }
+    expect(await loadProjectConfig(directory)).toMatchObject({ status: 'valid' });
+  });
+
+  it('refuses to replace an existing configuration without permission', async () => {
+    const directory = await mkdtemp(join(tmpdir(), 'vahu-config-'));
+    tempDirectories.push(directory);
+    await saveProjectConfig(directory, sampleConfig());
+
+    const saved = await saveProjectConfig(directory, sampleConfig());
+
+    expect(saved.ok).toBe(false);
+    if (!saved.ok) {
+      expect(saved.reason).toBe('exists');
+    }
+  });
+
+  it('replaces an existing configuration when overwrite is explicit', async () => {
+    const directory = await mkdtemp(join(tmpdir(), 'vahu-config-'));
+    tempDirectories.push(directory);
+    await saveProjectConfig(directory, sampleConfig());
+
+    const saved = await saveProjectConfig(directory, sampleConfig(), { overwrite: true });
+
+    expect(saved.ok).toBe(true);
+    if (saved.ok) {
+      expect(saved.created).toBe(false);
+    }
   });
 });

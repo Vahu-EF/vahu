@@ -4,6 +4,8 @@ import { createRequire } from 'node:module';
 import { pathToFileURL } from 'node:url';
 import { Command } from 'commander';
 import { runDoctor, validateProject } from '@vahu-ef/core';
+import { registerIdentityCommand } from './commands/identity.js';
+import { registerInitCommand } from './commands/init.js';
 import { formatDoctor, formatValidation } from './core/output.js';
 
 const require = createRequire(import.meta.url);
@@ -49,6 +51,9 @@ export function createProgram(): Command {
         process.exitCode = 1;
       }
     });
+
+  registerInitCommand(program);
+  registerIdentityCommand(program);
 
   return program;
 }

@@ -1,5 +1,6 @@
-import { readFile } from 'node:fs/promises';
-import { resolve } from 'node:path';
+import { existsSync } from 'node:fs';
+import { mkdir, readFile, writeFile } from 'node:fs/promises';
+import { dirname, resolve } from 'node:path';
 import { parseProjectConfig, type ConfigIssue, type ProjectConfig } from '@vahu-ef/schemas';
 
 export const PROJECT_CONFIG_RELATIVE_PATH = '.vahu/project.json';
@@ -13,6 +14,32 @@ export type ConfigLoadResult =
 
 export function projectConfigPath(cwd: string): string {
   return resolve(cwd, PROJECT_CONFIG_RELATIVE_PATH);
+}
+
+export type SaveConfigResult =
+  | { ok: true; configPath: string; created: boolean }
+  | { ok: false; configPath: string; reason: 'exists' };
+
+/**
+ * Writes the project configuration. An existing file is only replaced when
+ * `overwrite` is explicit, so a caller cannot silently destroy user changes.
+ */
+export async function saveProjectConfig(
+  cwd: string,
+  config: ProjectConfig,
+  options: { overwrite?: boolean } = {},
+): Promise<SaveConfigResult> {
+  const configPath = projectConfigPath(cwd);
+  const existed = existsSync(configPath);
+
+  if (existed && options.overwrite !== true) {
+    return { ok: false, configPath, reason: 'exists' };
+  }
+
+  await mkdir(dirname(configPath), { recursive: true });
+  await writeFile(configPath, `${JSON.stringify(config, null, 2)}\n`, 'utf8');
+
+  return { ok: true, configPath, created: !existed };
 }
 
 export async function loadProjectConfig(cwd: string): Promise<ConfigLoadResult> {

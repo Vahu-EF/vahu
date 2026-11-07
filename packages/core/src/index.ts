@@ -1,4 +1,11 @@
-export { PROJECT_CONFIG_RELATIVE_PATH, loadProjectConfig, projectConfigPath } from './config.js';
+export {
+  PROJECT_CONFIG_RELATIVE_PATH,
+  loadProjectConfig,
+  projectConfigPath,
+  saveProjectConfig,
+  type ConfigLoadResult,
+  type SaveConfigResult,
+} from './config.js';
 export { runDoctor, type DoctorCheck, type DoctorReport, type DoctorStatus } from './doctor.js';
 export {
   assessReadiness,
@@ -21,6 +28,18 @@ export {
   type ContentReport,
 } from './content.js';
 export { validateFramework, type FrameworkReport } from './framework.js';
+export {
+  approveIdentity,
+  buildProjectConfig,
+  changedConfigPaths,
+  DEFAULT_VAHU_VERSION,
+  mergeIdentity,
+  PROJECT_TYPES,
+  suggestSlug,
+  validateAnswers,
+  type ApprovalResult,
+  type IdentityAnswers,
+} from './onboarding.js';
 export { REQUIRED_WORKSPACE_PATHS, validateWorkspace, type WorkspaceReport } from './workspace.js';
 export type { FrameworkIssue } from './issues.js';
 export {

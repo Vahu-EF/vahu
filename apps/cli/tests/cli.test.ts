@@ -1,4 +1,4 @@
-import { mkdtemp, mkdir, rm, writeFile } from 'node:fs/promises';
+import { mkdtemp, mkdir, readFile, rm, writeFile } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { spawnSync } from 'node:child_process';
@@ -98,4 +98,108 @@ describe('vahu CLI', () => {
     expect(result.status).toBe(1);
     expect(result.stdout).toContain('ERROR');
   });
+
+  it('initializes a configuration with a pending identity', async () => {
+    const directory = await emptyDirectory();
+
+    const result = runCli(initArgs(directory));
+
+    expect(result.status).toBe(0);
+    expect(result.stdout).toContain('Created');
+    const config = await readConfig(directory);
+    expect(config.project.slug).toBe('example-service');
+    expect(config.identity.status).toBe('pending');
+  });
+
+  it('blocks validation until the identity is approved', async () => {
+    const directory = await emptyDirectory();
+    runCli(initArgs(directory));
+
+    const before = runCli(['validate', '--path', directory]);
+    expect(before.status).toBe(1);
+    expect(before.stdout).toContain('identity');
+
+    const approval = runCli(['identity', 'approve', '--path', directory, '--by', 'Test Owner']);
+    expect(approval.status).toBe(0);
+    expect(approval.stdout).toContain('Identity approved by Test Owner.');
+
+    const after = runCli(['validate', '--path', directory]);
+    expect(after.status).toBe(0);
+    expect(after.stdout).toContain('0 blocking issue(s)');
+  });
+
+  it('shows the identity status', async () => {
+    const directory = await emptyDirectory();
+    runCli(initArgs(directory));
+
+    const result = runCli(['identity', '--path', directory]);
+
+    expect(result.status).toBe(0);
+    expect(result.stdout).toContain('Status: pending');
+  });
+
+  it('refuses to replace an existing configuration without --force', async () => {
+    const directory = await emptyDirectory();
+    runCli(initArgs(directory));
+    const original = await readFile(join(directory, '.vahu/project.json'), 'utf8');
+
+    const result = runCli(initArgs(directory));
+
+    expect(result.status).toBe(1);
+    expect(result.stderr).toContain('--force');
+    expect(await readFile(join(directory, '.vahu/project.json'), 'utf8')).toBe(original);
+  });
+
+  it('requires explicit answers when no interactive terminal exists', async () => {
+    const directory = await emptyDirectory();
+
+    const result = runCli(['init', '--path', directory, '--yes']);
+
+    expect(result.status).toBe(1);
+    expect(result.stderr).toContain('Missing required answers');
+  });
+
+  it('reports a missing configuration for identity approval', async () => {
+    const directory = await emptyDirectory();
+
+    const result = runCli(['identity', 'approve', '--path', directory, '--by', 'Test Owner']);
+
+    expect(result.status).toBe(1);
+    expect(result.stderr).toContain('Run `vahu init` first.');
+  });
 });
+
+function initArgs(directory: string): string[] {
+  return [
+    'init',
+    '--path',
+    directory,
+    '--name',
+    'Example Service',
+    '--description',
+    'A service that does one thing.',
+    '--purpose',
+    'Serve one use case well.',
+    '--users',
+    'developers',
+    '--type',
+    'backend-service',
+    '--scope',
+    'First release',
+    '--yes',
+  ];
+}
+
+async function emptyDirectory(): Promise<string> {
+  const directory = await mkdtemp(join(tmpdir(), 'vahu-cli-'));
+  tempDirectories.push(directory);
+  return directory;
+}
+
+async function readConfig(directory: string): Promise<{
+  project: { slug: string };
+  identity: { status: string };
+}> {
+  const source = await readFile(join(directory, '.vahu/project.json'), 'utf8');
+  return JSON.parse(source) as { project: { slug: string }; identity: { status: string } };
+}
