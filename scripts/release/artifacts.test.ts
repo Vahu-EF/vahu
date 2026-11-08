@@ -12,6 +12,9 @@ interface FixtureFile {
 
 const BLOCK_SIZE = 512;
 
+// Loaded Windows CI runners can starve the default 5s budget; the suite runs in ~60ms locally.
+const TEST_TIMEOUT_MS = 30_000;
+
 function writeOctal(buffer: Buffer, offset: number, length: number, value: number): void {
   const text = `${value.toString(8).padStart(length - 1, '0')}\0`;
   buffer.write(text, offset, 'ascii');
@@ -171,181 +174,221 @@ function codes(report: { issues: readonly { code: string }[] }): string[] {
 }
 
 describe('release candidate artifacts', () => {
-  it('accepts a complete candidate set and reports checksums', async () => {
-    const report = await validateReleaseArtifacts(await completeCandidate());
+  it(
+    'accepts a complete candidate set and reports checksums',
+    async () => {
+      const report = await validateReleaseArtifacts(await completeCandidate());
 
-    expect(report.ok).toBe(true);
-    expect(report.issues).toEqual([]);
-    expect(report.packages.map((entry) => entry.name).sort()).toEqual(
-      ['@vahu-ef/core', '@vahu-ef/adapters', '@vahu-ef/schemas', 'vahu'].sort(),
-    );
-    for (const entry of report.packages) {
-      expect(entry.version).toBe('0.1.0');
-      expect(entry.sha256).toMatch(/^[0-9a-f]{64}$/);
-      expect(entry.bytes).toBeGreaterThan(0);
-    }
-  });
+      expect(report.ok).toBe(true);
+      expect(report.issues).toEqual([]);
+      expect(report.packages.map((entry) => entry.name).sort()).toEqual(
+        ['@vahu-ef/core', '@vahu-ef/adapters', '@vahu-ef/schemas', 'vahu'].sort(),
+      );
+      for (const entry of report.packages) {
+        expect(entry.version).toBe('0.1.0');
+        expect(entry.sha256).toMatch(/^[0-9a-f]{64}$/);
+        expect(entry.bytes).toBeGreaterThan(0);
+      }
+    },
+    TEST_TIMEOUT_MS,
+  );
 
-  it('rejects artifacts that still reference workspace dependencies', async () => {
-    const files = coreFiles().map((file) =>
-      file.path === 'package/package.json'
-        ? {
-            ...file,
-            content: manifest({
-              name: '@vahu-ef/core',
-              main: './dist/index.js',
-              exports: { '.': { import: './dist/index.js' } },
-              dependencies: { '@vahu-ef/schemas': 'workspace:*' },
-            }),
-          }
-        : file,
-    );
-    const directory = await artifactDirectory([
-      { file: 'vahu-0.1.0.tgz', files: cliFiles() },
-      { file: 'vahu-ef-adapters-0.1.0.tgz', files: adapterFiles() },
-      { file: 'vahu-ef-core-0.1.0.tgz', files },
-      { file: 'vahu-ef-schemas-0.1.0.tgz', files: schemasFiles() },
-    ]);
-
-    const report = await validateReleaseArtifacts(directory);
-
-    expect(report.ok).toBe(false);
-    expect(codes(report)).toContain('WORKSPACE_PROTOCOL');
-  });
-
-  it('rejects a candidate missing its readme or license', async () => {
-    const files = cliFiles().filter((file) => file.path !== 'package/LICENSE');
-    const report = await validateReleaseArtifacts(
-      await artifactDirectory([
-        { file: 'vahu-0.1.0.tgz', files },
+  it(
+    'rejects artifacts that still reference workspace dependencies',
+    async () => {
+      const files = coreFiles().map((file) =>
+        file.path === 'package/package.json'
+          ? {
+              ...file,
+              content: manifest({
+                name: '@vahu-ef/core',
+                main: './dist/index.js',
+                exports: { '.': { import: './dist/index.js' } },
+                dependencies: { '@vahu-ef/schemas': 'workspace:*' },
+              }),
+            }
+          : file,
+      );
+      const directory = await artifactDirectory([
+        { file: 'vahu-0.1.0.tgz', files: cliFiles() },
         { file: 'vahu-ef-adapters-0.1.0.tgz', files: adapterFiles() },
+        { file: 'vahu-ef-core-0.1.0.tgz', files },
+        { file: 'vahu-ef-schemas-0.1.0.tgz', files: schemasFiles() },
+      ]);
+
+      const report = await validateReleaseArtifacts(directory);
+
+      expect(report.ok).toBe(false);
+      expect(codes(report)).toContain('WORKSPACE_PROTOCOL');
+    },
+    TEST_TIMEOUT_MS,
+  );
+
+  it(
+    'rejects a candidate missing its readme or license',
+    async () => {
+      const files = cliFiles().filter((file) => file.path !== 'package/LICENSE');
+      const report = await validateReleaseArtifacts(
+        await artifactDirectory([
+          { file: 'vahu-0.1.0.tgz', files },
+          { file: 'vahu-ef-adapters-0.1.0.tgz', files: adapterFiles() },
+          { file: 'vahu-ef-core-0.1.0.tgz', files: coreFiles() },
+          { file: 'vahu-ef-schemas-0.1.0.tgz', files: schemasFiles() },
+        ]),
+      );
+
+      expect(report.ok).toBe(false);
+      expect(codes(report)).toContain('MISSING_FILE');
+      expect(report.issues.some((issue) => issue.message.includes('LICENSE'))).toBe(true);
+    },
+    TEST_TIMEOUT_MS,
+  );
+
+  it(
+    'rejects source files, tests, and source maps inside an archive',
+    async () => {
+      const files = [
+        ...coreFiles(),
+        { path: 'package/src/config.ts', content: 'export {};\n' },
+        { path: 'package/dist/index.js.map', content: '{}\n' },
+        { path: 'package/tests/config.test.ts', content: 'import "vitest";\n' },
+      ];
+      const report = await validateReleaseArtifacts(
+        await artifactDirectory([
+          { file: 'vahu-0.1.0.tgz', files: cliFiles() },
+          { file: 'vahu-ef-adapters-0.1.0.tgz', files: adapterFiles() },
+          { file: 'vahu-ef-core-0.1.0.tgz', files },
+          { file: 'vahu-ef-schemas-0.1.0.tgz', files: schemasFiles() },
+        ]),
+      );
+
+      expect(report.ok).toBe(false);
+      expect(codes(report).filter((code) => code === 'FORBIDDEN_FILE')).toHaveLength(3);
+    },
+    TEST_TIMEOUT_MS,
+  );
+
+  it(
+    'rejects a missing package and an unexpected package',
+    async () => {
+      const directory = await artifactDirectory([
+        { file: 'vahu-0.1.0.tgz', files: cliFiles() },
         { file: 'vahu-ef-core-0.1.0.tgz', files: coreFiles() },
-        { file: 'vahu-ef-schemas-0.1.0.tgz', files: schemasFiles() },
-      ]),
-    );
+        {
+          file: 'vahu-ef-website-0.1.0.tgz',
+          files: [
+            {
+              path: 'package/package.json',
+              content: manifest({ name: '@vahu-ef/website', private: true }),
+            },
+          ],
+        },
+      ]);
 
-    expect(report.ok).toBe(false);
-    expect(codes(report)).toContain('MISSING_FILE');
-    expect(report.issues.some((issue) => issue.message.includes('LICENSE'))).toBe(true);
-  });
+      const report = await validateReleaseArtifacts(directory);
 
-  it('rejects source files, tests, and source maps inside an archive', async () => {
-    const files = [
-      ...coreFiles(),
-      { path: 'package/src/config.ts', content: 'export {};\n' },
-      { path: 'package/dist/index.js.map', content: '{}\n' },
-      { path: 'package/tests/config.test.ts', content: 'import "vitest";\n' },
-    ];
-    const report = await validateReleaseArtifacts(
-      await artifactDirectory([
-        { file: 'vahu-0.1.0.tgz', files: cliFiles() },
-        { file: 'vahu-ef-adapters-0.1.0.tgz', files: adapterFiles() },
-        { file: 'vahu-ef-core-0.1.0.tgz', files },
-        { file: 'vahu-ef-schemas-0.1.0.tgz', files: schemasFiles() },
-      ]),
-    );
+      expect(report.ok).toBe(false);
+      expect(codes(report)).toContain('MISSING_PACKAGE');
+      expect(codes(report)).toContain('UNEXPECTED_PACKAGE');
+      expect(codes(report)).toContain('PRIVATE_PACKAGE');
+    },
+    TEST_TIMEOUT_MS,
+  );
 
-    expect(report.ok).toBe(false);
-    expect(codes(report).filter((code) => code === 'FORBIDDEN_FILE')).toHaveLength(3);
-  });
+  it(
+    'rejects an adapter package whose published entry points are missing',
+    async () => {
+      const files = adapterFiles().filter((file) => file.path !== 'package/dist/index.d.ts');
+      const report = await validateReleaseArtifacts(
+        await artifactDirectory([
+          { file: 'vahu-0.1.0.tgz', files: cliFiles() },
+          { file: 'vahu-ef-adapters-0.1.0.tgz', files },
+          { file: 'vahu-ef-core-0.1.0.tgz', files: coreFiles() },
+          { file: 'vahu-ef-schemas-0.1.0.tgz', files: schemasFiles() },
+        ]),
+      );
 
-  it('rejects a missing package and an unexpected package', async () => {
-    const directory = await artifactDirectory([
-      { file: 'vahu-0.1.0.tgz', files: cliFiles() },
-      { file: 'vahu-ef-core-0.1.0.tgz', files: coreFiles() },
-      {
-        file: 'vahu-ef-website-0.1.0.tgz',
-        files: [
-          {
-            path: 'package/package.json',
-            content: manifest({ name: '@vahu-ef/website', private: true }),
-          },
-        ],
-      },
-    ]);
+      expect(report.ok).toBe(false);
+      expect(codes(report)).toContain('MISSING_ENTRY');
+    },
+    TEST_TIMEOUT_MS,
+  );
 
-    const report = await validateReleaseArtifacts(directory);
+  it(
+    'rejects an internal dependency whose version differs from the candidate',
+    async () => {
+      const files = coreFiles().map((file) =>
+        file.path === 'package/package.json'
+          ? {
+              ...file,
+              content: manifest({
+                name: '@vahu-ef/core',
+                main: './dist/index.js',
+                exports: { '.': { import: './dist/index.js' } },
+                dependencies: { '@vahu-ef/schemas': '0.0.9' },
+              }),
+            }
+          : file,
+      );
+      const report = await validateReleaseArtifacts(
+        await artifactDirectory([
+          { file: 'vahu-0.1.0.tgz', files: cliFiles() },
+          { file: 'vahu-ef-adapters-0.1.0.tgz', files: adapterFiles() },
+          { file: 'vahu-ef-core-0.1.0.tgz', files },
+          { file: 'vahu-ef-schemas-0.1.0.tgz', files: schemasFiles() },
+        ]),
+      );
 
-    expect(report.ok).toBe(false);
-    expect(codes(report)).toContain('MISSING_PACKAGE');
-    expect(codes(report)).toContain('UNEXPECTED_PACKAGE');
-    expect(codes(report)).toContain('PRIVATE_PACKAGE');
-  });
+      expect(report.ok).toBe(false);
+      expect(codes(report)).toContain('INTERNAL_DEPENDENCY_MISMATCH');
+    },
+    TEST_TIMEOUT_MS,
+  );
 
-  it('rejects an adapter package whose published entry points are missing', async () => {
-    const files = adapterFiles().filter((file) => file.path !== 'package/dist/index.d.ts');
-    const report = await validateReleaseArtifacts(
-      await artifactDirectory([
-        { file: 'vahu-0.1.0.tgz', files: cliFiles() },
-        { file: 'vahu-ef-adapters-0.1.0.tgz', files },
-        { file: 'vahu-ef-core-0.1.0.tgz', files: coreFiles() },
-        { file: 'vahu-ef-schemas-0.1.0.tgz', files: schemasFiles() },
-      ]),
-    );
+  it(
+    'rejects an entry point that is not present in the archive',
+    async () => {
+      const files = coreFiles().filter((file) => file.path !== 'package/dist/index.d.ts');
+      const report = await validateReleaseArtifacts(
+        await artifactDirectory([
+          { file: 'vahu-0.1.0.tgz', files: cliFiles() },
+          { file: 'vahu-ef-adapters-0.1.0.tgz', files: adapterFiles() },
+          { file: 'vahu-ef-core-0.1.0.tgz', files },
+          { file: 'vahu-ef-schemas-0.1.0.tgz', files: schemasFiles() },
+        ]),
+      );
 
-    expect(report.ok).toBe(false);
-    expect(codes(report)).toContain('MISSING_ENTRY');
-  });
+      expect(report.ok).toBe(false);
+      expect(codes(report)).toContain('MISSING_ENTRY');
+    },
+    TEST_TIMEOUT_MS,
+  );
 
-  it('rejects an internal dependency whose version differs from the candidate', async () => {
-    const files = coreFiles().map((file) =>
-      file.path === 'package/package.json'
-        ? {
-            ...file,
-            content: manifest({
-              name: '@vahu-ef/core',
-              main: './dist/index.js',
-              exports: { '.': { import: './dist/index.js' } },
-              dependencies: { '@vahu-ef/schemas': '0.0.9' },
-            }),
-          }
-        : file,
-    );
-    const report = await validateReleaseArtifacts(
-      await artifactDirectory([
-        { file: 'vahu-0.1.0.tgz', files: cliFiles() },
-        { file: 'vahu-ef-adapters-0.1.0.tgz', files: adapterFiles() },
-        { file: 'vahu-ef-core-0.1.0.tgz', files },
-        { file: 'vahu-ef-schemas-0.1.0.tgz', files: schemasFiles() },
-      ]),
-    );
+  it(
+    'reports a missing artifact directory instead of throwing',
+    async () => {
+      const directory = join(await mkdtemp(join(tmpdir(), 'vahu-release-')), 'absent');
 
-    expect(report.ok).toBe(false);
-    expect(codes(report)).toContain('INTERNAL_DEPENDENCY_MISMATCH');
-  });
+      const report = await validateReleaseArtifacts(directory);
 
-  it('rejects an entry point that is not present in the archive', async () => {
-    const files = coreFiles().filter((file) => file.path !== 'package/dist/index.d.ts');
-    const report = await validateReleaseArtifacts(
-      await artifactDirectory([
-        { file: 'vahu-0.1.0.tgz', files: cliFiles() },
-        { file: 'vahu-ef-adapters-0.1.0.tgz', files: adapterFiles() },
-        { file: 'vahu-ef-core-0.1.0.tgz', files },
-        { file: 'vahu-ef-schemas-0.1.0.tgz', files: schemasFiles() },
-      ]),
-    );
+      expect(report.ok).toBe(false);
+      expect(codes(report)).toContain('MISSING_PACKAGE');
+      expect(report.packages).toEqual([]);
+    },
+    TEST_TIMEOUT_MS,
+  );
 
-    expect(report.ok).toBe(false);
-    expect(codes(report)).toContain('MISSING_ENTRY');
-  });
+  it(
+    'renders a deterministic checksum file covering every tarball',
+    async () => {
+      const report = await validateReleaseArtifacts(await completeCandidate());
 
-  it('reports a missing artifact directory instead of throwing', async () => {
-    const directory = join(await mkdtemp(join(tmpdir(), 'vahu-release-')), 'absent');
+      const text = renderChecksums(report.packages);
 
-    const report = await validateReleaseArtifacts(directory);
-
-    expect(report.ok).toBe(false);
-    expect(codes(report)).toContain('MISSING_PACKAGE');
-    expect(report.packages).toEqual([]);
-  });
-
-  it('renders a deterministic checksum file covering every tarball', async () => {
-    const report = await validateReleaseArtifacts(await completeCandidate());
-
-    const text = renderChecksums(report.packages);
-
-    expect(text.trim().split('\n')).toHaveLength(4);
-    expect(text).toBe(renderChecksums([...report.packages].reverse()));
-    expect(text).toContain('  vahu-0.1.0.tgz');
-  });
+      expect(text.trim().split('\n')).toHaveLength(4);
+      expect(text).toBe(renderChecksums([...report.packages].reverse()));
+      expect(text).toContain('  vahu-0.1.0.tgz');
+    },
+    TEST_TIMEOUT_MS,
+  );
 });
