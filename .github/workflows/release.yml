@@ -84,18 +84,11 @@ jobs:
           name: vahu-release-candidate
           path: artifacts
 
-      - name: Verify checksums, npm access, and version availability
+      - name: Verify checksums and version availability
         working-directory: artifacts
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         shell: bash
         run: |
-          if [ -z "${NODE_AUTH_TOKEN:-}" ]; then
-            echo '::error::Configure the repository Actions secret NPM_TOKEN before publishing.'
-            exit 1
-          fi
           sha256sum -c SHA256SUMS
-          npm whoami --registry=https://registry.npmjs.org/
           for package_version in \
             'vahu/0.1.0' \
             '@vahu-ef%2fadapters/0.1.0' \
@@ -112,10 +105,9 @@ jobs:
             fi
           done
 
+      # npm authenticates this job through trusted publishing (OIDC), not a token.
       - name: Publish verified tarballs to npm with provenance
         working-directory: artifacts
-        env:
-          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
         run: |
           npm publish vahu-ef-schemas-0.1.0.tgz --provenance --access public --registry=https://registry.npmjs.org/
           npm publish vahu-ef-adapters-0.1.0.tgz --provenance --access public --registry=https://registry.npmjs.org/
