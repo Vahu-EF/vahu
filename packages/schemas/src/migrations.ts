@@ -14,7 +14,8 @@ export const SUPPORTED_SCHEMA_VERSIONS = [PREVIOUS_SCHEMA_VERSION, SCHEMA_VERSIO
 export type SchemaVersion = (typeof SUPPORTED_SCHEMA_VERSIONS)[number];
 
 export type MigrationResult =
-  { ok: true; config: ProjectConfig; from: SchemaVersion } | { ok: false; issues: ConfigIssue[] };
+  | { ok: true; config: ProjectConfig; from: SchemaVersion }
+  | { ok: false; issues: ConfigIssue[] };
 
 interface MigrationStep {
   from: typeof PREVIOUS_SCHEMA_VERSION;

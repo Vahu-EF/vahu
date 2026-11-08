@@ -25,6 +25,9 @@ pnpm check
 
 The main checks are:
 
+`pnpm format` applies Biome formatting; `pnpm format:check` verifies it without
+writing changes. Biome also runs the repository's lint rules through `pnpm lint`.
+
 ```bash
 pnpm format:check
 pnpm lint

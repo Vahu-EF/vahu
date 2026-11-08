@@ -109,9 +109,9 @@ ships.
 ### 9. Dependency and supply chain
 
 - GHSA-g3hv-75wg-m249: `minimatch` below 11.0.1 is a denial-of-service risk
-  through glob-parts amplification. It arrives transitively through eslint and
-  typescript-eslint. `pnpm-workspace.yaml` lifts the range to `^11.0.1`, and the
-  lint suite passes with the newer version.
+  through glob-parts amplification. Removing ESLint and its TypeScript plugin
+  removed `minimatch` from the current lockfile, so the temporary override is no
+  longer needed. Recheck the resolved dependency tree when changing tooling.
 - `pnpm audit` could not run here: the configured registry mirror has no audit
   endpoint. Advisory data therefore comes from GitHub's Dependabot alerts.
 - CI pins workflow actions to major tags and uses read-only permissions for

@@ -36,7 +36,8 @@ export interface IdentityAnswers {
 }
 
 export type ApprovalResult =
-  { ok: true; config: ProjectConfig } | { ok: false; issues: FrameworkIssue[] };
+  | { ok: true; config: ProjectConfig }
+  | { ok: false; issues: FrameworkIssue[] };
 
 /**
  * Derives a valid project slug from a display name: lower case, ASCII letters,

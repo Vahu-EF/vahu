@@ -37,9 +37,10 @@ probes.
 ### Dependency remediation
 
 `GHSA-g3hv-75wg-m249` (`minimatch` below `11.0.1`, denial of service through glob
-parts amplification) reached the workspace transitively through eslint and
-typescript-eslint. `pnpm-workspace.yaml` lifts the range to `^11.0.1`; the lint
-suite passes on the resolved `11.0.5`.
+parts amplification) reached the workspace transitively through ESLint and its
+TypeScript plugin. The workspace initially lifted the range to `^11.0.1`; after
+removing those dependencies, the current lockfile no longer includes `minimatch`
+and the override was removed.
 
 ### Stability policy
 

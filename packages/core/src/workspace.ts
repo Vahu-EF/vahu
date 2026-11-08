@@ -1,3 +1,4 @@
+import type { Dirent } from 'node:fs';
 import { readdir, readFile, stat } from 'node:fs/promises';
 import { join, relative } from 'node:path';
 import type { FrameworkIssue } from './issues.js';
@@ -144,7 +145,7 @@ function readDependencyMap(manifest: unknown, key: string): Record<string, strin
 async function packageManifests(root: string): Promise<string[]> {
   const files: string[] = [];
   for (const parent of PACKAGE_PARENTS) {
-    let entries;
+    let entries: Dirent[];
     try {
       entries = await readdir(join(root, parent), { withFileTypes: true });
     } catch {

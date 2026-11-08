@@ -32,10 +32,10 @@ jobs:
       - name: Install dependencies
         run: pnpm install --frozen-lockfile
 
-      - name: Check formatting
+      - name: Biome format check
         run: pnpm format:check
 
-      - name: Lint
+      - name: Biome lint
         run: pnpm lint
 
       - name: Type-check

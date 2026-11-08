@@ -13,18 +13,17 @@ for external contributors.
 
 Use:
 
-| Area               | Choice                       |
-| ------------------ | ---------------------------- |
-| Runtime            | Node.js 22+                  |
-| Language           | TypeScript, strict settings  |
-| Workspace          | pnpm workspaces              |
-| CLI parser         | Commander.js                 |
-| Runtime validation | Zod                          |
-| Tests              | Vitest                       |
-| Bundling           | tsup                         |
-| Lint               | ESLint with TypeScript rules |
-| Format             | Prettier                     |
-| Releases           | Changesets, prepared only    |
+| Area               | Choice                      |
+| ------------------ | --------------------------- |
+| Runtime            | Node.js 22+                 |
+| Language           | TypeScript, strict settings |
+| Workspace          | pnpm workspaces             |
+| CLI parser         | Commander.js                |
+| Runtime validation | Zod                         |
+| Tests              | Vitest                      |
+| Bundling           | tsup                        |
+| Lint and format    | Biome                       |
+| Releases           | Changesets, prepared only   |
 
 These are implementation choices, not claims that every future VAHU project must
 use the same stack. VAHU-authored projects may select different profiles.
@@ -37,3 +36,5 @@ use the same stack. VAHU-authored projects may select different profiles.
   packaging decision is required before GitHub Releases can ship binaries.
 - Dependency versions are pinned in the lockfile and reviewed through Changesets
   and Dependabot.
+- Biome provides formatting and linting, while TypeScript compilation remains a
+  separate quality gate.

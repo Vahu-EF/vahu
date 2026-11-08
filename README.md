@@ -228,8 +228,7 @@ capabilities will be reported rather than silently discarded.
 Phase 0 includes:
 
 - strict TypeScript configuration;
-- Prettier formatting checks;
-- ESLint checks;
+- Biome formatting and lint checks;
 - Vitest tests for schemas, validation logic, CLI behavior, and the standards
   validator;
 - workspace-boundary and standards-content validation scripts;

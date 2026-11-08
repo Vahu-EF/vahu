@@ -16,8 +16,8 @@ What is the smallest change that solves it?
 
 ## Verification
 
-- [ ] `pnpm format:check`
-- [ ] `pnpm lint`
+- [ ] `pnpm format:check` (Biome)
+- [ ] `pnpm lint` (Biome)
 - [ ] `pnpm typecheck`
 - [ ] `pnpm test`
 - [ ] `pnpm build`

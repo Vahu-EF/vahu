@@ -4,7 +4,8 @@ import { changedConfigPaths } from './onboarding.js';
 import { assessReadiness } from './readiness.js';
 
 export type StageResult =
-  { ok: true; config: ProjectConfig; changed: string[] } | { ok: false; issues: FrameworkIssue[] };
+  | { ok: true; config: ProjectConfig; changed: string[] }
+  | { ok: false; issues: FrameworkIssue[] };
 
 export const BRAND_STATUSES = ['pending', 'approved', 'not-applicable'] as const;
 export type BrandStatus = (typeof BRAND_STATUSES)[number];
