@@ -2,6 +2,12 @@ name: Release preparation
 
 on:
   workflow_dispatch:
+    inputs:
+      publish_npm:
+        description: Publish the verified 0.1.0 tarballs to npm with provenance.
+        required: true
+        default: false
+        type: boolean
 
 permissions:
   contents: read
@@ -51,6 +57,67 @@ jobs:
             artifacts/SHA256SUMS
           if-no-files-found: error
 
-      # This workflow deliberately does not publish to npm or create a GitHub
-      # Release. Publication requires an approved release decision, credentials
-      # configured outside the repository, and provenance-enabled publishing.
+  publish:
+    name: publish to npm
+    if: inputs.publish_npm
+    needs: package
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      id-token: write
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v7
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          registry-url: https://registry.npmjs.org
+
+      - name: Install npm with provenance support
+        run: npm install --global npm@^11.5.1
+
+      - name: Download verified release candidate
+        uses: actions/download-artifact@v7
+        with:
+          name: vahu-release-candidate
+          path: artifacts
+
+      - name: Verify checksums, npm access, and version availability
+        working-directory: artifacts
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        shell: bash
+        run: |
+          if [ -z "${NODE_AUTH_TOKEN:-}" ]; then
+            echo '::error::Configure the repository Actions secret NPM_TOKEN before publishing.'
+            exit 1
+          fi
+          sha256sum -c SHA256SUMS
+          npm whoami --registry=https://registry.npmjs.org/
+          for package_version in \
+            'vahu/0.1.0' \
+            '@vahu-ef%2fadapters/0.1.0' \
+            '@vahu-ef%2fcore/0.1.0' \
+            '@vahu-ef%2fschemas/0.1.0'; do
+            status="$(curl --silent --show-error --output /dev/null --write-out '%{http_code}' "https://registry.npmjs.org/${package_version}")"
+            if [ "$status" = '200' ]; then
+              echo "Refusing to overwrite existing npm version: ${package_version}"
+              exit 1
+            fi
+            if [ "$status" != '404' ]; then
+              echo "Unexpected npm registry response ${status} for ${package_version}"
+              exit 1
+            fi
+          done
+
+      - name: Publish verified tarballs to npm with provenance
+        working-directory: artifacts
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.NPM_TOKEN }}
+        run: |
+          npm publish vahu-ef-schemas-0.1.0.tgz --provenance --access public --registry=https://registry.npmjs.org/
+          npm publish vahu-ef-adapters-0.1.0.tgz --provenance --access public --registry=https://registry.npmjs.org/
+          npm publish vahu-ef-core-0.1.0.tgz --provenance --access public --registry=https://registry.npmjs.org/
+          npm publish vahu-0.1.0.tgz --provenance --access public --registry=https://registry.npmjs.org/

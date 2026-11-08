@@ -3,8 +3,8 @@
 ## Status
 
 **Prepared and verified, not published.** No npm package has been published and no
-GitHub Release exists. `pnpm release:pack` produces a checked candidate; nothing
-in this repository uploads it to a registry.
+GitHub Release exists. `pnpm release:pack` produces a checked candidate; npm
+publishing is an explicit opt-in in the manual release workflow.
 
 ## Verified release candidate
 
@@ -92,10 +92,13 @@ A release would contain:
 - release notes and a changelog entry;
 - installation and upgrade instructions.
 
-`.github/workflows/release.yml` is manual and artifact-only. It runs `pnpm check`,
+`.github/workflows/release.yml` is manually dispatched. It runs `pnpm check`,
 packs through the validator, verifies the checksum manifest, and uploads the
-candidate. It has read-only repository permissions and does not publish to npm or
-create a GitHub Release.
+candidate. Publishing is a separate, explicit `publish_npm: true` choice that
+downloads that exact artifact, re-verifies checksums and npm version availability,
+and publishes the tarballs with provenance from a GitHub-hosted runner. The
+publish job needs a repository Actions secret named `NPM_TOKEN` and OIDC
+`id-token: write`; it does not create a GitHub Release.
 
 ## Standalone executables
 
@@ -108,8 +111,8 @@ TypeScript is not a standalone binary strategy, and no executable is claimed.
 Before the first publication, the owners must confirm:
 
 - the npm organization and package ownership;
-- how provenance or trusted publishing is configured, and the release workflow
-  secret names (never values in the repository);
+- the repository Actions secret `NPM_TOKEN` must be configured without exposing
+  its value; the explicit publish job uses GitHub OIDC to generate provenance;
 - the legal copyright notice;
 - supported Node.js and operating-system versions;
 - executable packaging and signing policy;
