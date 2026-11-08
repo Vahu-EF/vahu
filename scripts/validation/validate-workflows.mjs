@@ -1,6 +1,6 @@
 import { existsSync } from 'node:fs';
 import { dirname, join } from 'node:path';
-import { fileURLToPath } from 'node:url';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 
 const root = join(dirname(fileURLToPath(import.meta.url)), '../..');
 const coreEntry = join(root, 'packages/core/dist/index.js');
@@ -12,7 +12,7 @@ if (!existsSync(coreEntry)) {
   process.exit(1);
 }
 
-const { loadWorkflowCatalog } = await import(coreEntry);
+const { loadWorkflowCatalog } = await import(pathToFileURL(coreEntry).href);
 const catalog = await loadWorkflowCatalog(join(root, 'packages/framework/workflows'));
 
 if (!catalog.ok) {
