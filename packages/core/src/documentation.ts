@@ -62,7 +62,7 @@ export async function validateDocumentation(root: string): Promise<Documentation
       } catch {
         issues.push({
           code: 'LINK_INVALID_ENCODING',
-          path: relative(absoluteRoot, file),
+          path: displayPath(relative(absoluteRoot, file)),
           message: `Relative link has invalid percent encoding: ${rawTarget}`,
         });
         continue;
@@ -79,7 +79,7 @@ export async function validateDocumentation(root: string): Promise<Documentation
       ) {
         issues.push({
           code: 'LINK_OUTSIDE_ROOT',
-          path: relative(absoluteRoot, file),
+          path: displayPath(relative(absoluteRoot, file)),
           message: `Local link resolves outside the repository: ${rawTarget}`,
         });
         continue;
@@ -89,7 +89,7 @@ export async function validateDocumentation(root: string): Promise<Documentation
       if (canonicalTarget === null) {
         issues.push({
           code: 'LINK_UNRESOLVED',
-          path: relative(absoluteRoot, file),
+          path: displayPath(relative(absoluteRoot, file)),
           message: `Relative link does not resolve: ${rawTarget}`,
         });
         continue;
@@ -102,7 +102,7 @@ export async function validateDocumentation(root: string): Promise<Documentation
       ) {
         issues.push({
           code: 'LINK_OUTSIDE_ROOT',
-          path: relative(absoluteRoot, file),
+          path: displayPath(relative(absoluteRoot, file)),
           message: `Local link resolves outside the repository: ${rawTarget}`,
         });
       }
@@ -138,6 +138,10 @@ async function markdownFiles(directory: string, root: string): Promise<string[]>
     }
   }
   return files;
+}
+
+function displayPath(path: string): string {
+  return path.split(sep).join('/');
 }
 
 function isOutsideRoot(root: string, target: string): boolean {
