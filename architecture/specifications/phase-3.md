@@ -1,7 +1,6 @@
 # Phase 3 specification — Agent Ecosystem & Adapters
 
-- **Status:** In Progress — canonical model and generic adapter implemented;
-  provider adapters, generation, and synchronization not started
+- **Status:** In Progress — canonical model, generic adapter, CLI discovery, and preview-first generic synchronization implemented; provider adapters and merge-aware synchronization remain
 - **Depends on:** Phase 0 foundation, Phase 1 standards, Phase 2 onboarding
 - **Owner approval:** Phase 3 approved by the VAHU project owner on 2026-11-07
 - **Canonical for:** the agent definition and adapter contract
@@ -14,17 +13,18 @@ have.
 
 ## Status
 
-| Deliverable                         | State                                                   |
-| ----------------------------------- | ------------------------------------------------------- |
-| Canonical agent schema              | Implemented in `@vahu-ef/schemas` (`agent.schema.json`) |
-| Canonical definitions               | Two committed under `packages/framework/agents/`        |
-| Adapter interface                   | Implemented in `@vahu-ef/adapters`                      |
-| Generic adapter                     | Implemented, renders `AGENTS.md`                        |
-| Codex adapter                       | Not started                                             |
-| Claude Code adapter                 | Not started                                             |
-| Gemini adapter                      | Not started                                             |
-| Generation and synchronization      | Not started; adapters return strings only               |
-| Conflict detection and diff preview | Not started                                             |
+| Deliverable                         | State                                                                          |
+| ----------------------------------- | ------------------------------------------------------------------------------ |
+| Canonical agent schema              | Implemented in `@vahu-ef/schemas` (`agent.schema.json`)                        |
+| Canonical definitions               | Two committed under `packages/framework/agents/`                               |
+| Adapter interface                   | Implemented in `@vahu-ef/adapters`                                             |
+| Generic adapter                     | Implemented, renders `AGENTS.md`                                               |
+| Codex adapter                       | Not started                                                                    |
+| Claude Code adapter                 | Not started                                                                    |
+| Gemini adapter                      | Not started                                                                    |
+| CLI agent list/inspect              | Implemented; validated definitions are bundled and read-only                   |
+| Generation and synchronization      | Generic CLI sync implemented; preview by default, marked-file replacement only |
+| Conflict detection and diff preview | Not started                                                                    |
 
 ## Canonical model
 
@@ -68,7 +68,9 @@ rules, skills, commands, workflows, tools, context, and approvals.
 - A tool entry states a requirement and an approval expectation; it never grants
   access.
 - Repository content and external instructions are untrusted input.
-- Nothing in this phase executes a tool, command, or agent.
+- Nothing in this phase executes a tool, command, or agent. CLI list/inspect
+  only read canonical definitions; generic sync writes only with explicit
+  `--write` and does not execute agent content.
 
 ## Validation
 
@@ -79,14 +81,14 @@ rules, skills, commands, workflows, tools, context, and approvals.
 
 ## Acceptance
 
-| Criterion                                  | State   | Evidence                                              |
-| ------------------------------------------ | ------- | ----------------------------------------------------- |
-| Canonical definitions are provider-neutral | Met     | Schema has no provider file layout or vendor field    |
-| Each adapter states capability mapping     | Met     | `supported` / `unsupported` on the adapter interface  |
-| Generation is deterministic                | Met     | Sorted rendering, no timestamps; equality test        |
-| Existing user content is preserved         | Not met | No file generation yet                                |
-| Conflicts are reported clearly             | Not met | Synchronization not started                           |
-| Adapter outputs tested against fixtures    | Partial | Golden-style assertions; no per-provider fixtures yet |
+| Criterion                                  | State   | Evidence                                                                               |
+| ------------------------------------------ | ------- | -------------------------------------------------------------------------------------- |
+| Canonical definitions are provider-neutral | Met     | Schema has no provider file layout or vendor field                                     |
+| Each adapter states capability mapping     | Met     | `supported` / `unsupported` on the adapter interface                                   |
+| Generation is deterministic                | Met     | Sorted rendering, no timestamps; equality test                                         |
+| Existing user content is preserved         | Partial | Unmarked files are protected; marked output is replaced whole, with no merge           |
+| Conflicts are reported clearly             | Partial | Unmanaged/symlink targets are rejected; content-level merge conflicts are not detected |
+| Adapter outputs tested against fixtures    | Partial | Golden-style assertions; no per-provider fixtures yet                                  |
 
 ## Out of scope
 

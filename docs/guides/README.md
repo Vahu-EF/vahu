@@ -21,4 +21,4 @@ For each issue:
 4. Keep approvals explicit; do not change a status merely to make validation
    green.
 
-The five committed example configurations are validated by the CLI integration suite. Profile listing/validation and preview-first add/remove of technology selections are available; profile IDs are not stored and profile guidance is not composed into project files. Agent synchronization and workflow-gate execution are not implemented.
+The five committed example configurations are validated by the CLI integration suite. Profile listing/validation and preview-first add/remove of technology selections are available; profile IDs are not stored and profile guidance is not composed into project files. Generic agent synchronization is available through `vahu agents sync` with preview-by-default writes; provider-specific adapters, merge-aware updates, and workflow-gate execution remain unimplemented.

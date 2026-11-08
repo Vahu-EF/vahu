@@ -133,6 +133,9 @@ importers:
 
   apps/cli:
     dependencies:
+      '@vahu-ef/adapters':
+        specifier: workspace:*
+        version: link:../../packages/adapters
       '@vahu-ef/core':
         specifier: workspace:*
         version: link:../../packages/core

@@ -15,10 +15,16 @@ export const RELEASE_PACKAGES: readonly ReleasePackageSpec[] = [
     name: 'vahu',
     requiredFiles: [
       'dist/index.js',
+      'dist/agents/AGENT-IMPLEMENTER.json',
+      'dist/agents/AGENT-REVIEWER.json',
       'dist/technology-profiles/PROFILE-NODE-BACKEND.json',
       'dist/technology-profiles/PROFILE-POSTGRESQL.json',
       'dist/technology-profiles/PROFILE-VITEST.json',
     ],
+  },
+  {
+    name: '@vahu-ef/adapters',
+    requiredFiles: ['dist/index.js', 'dist/index.d.ts'],
   },
   {
     name: '@vahu-ef/core',

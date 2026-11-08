@@ -8,6 +8,16 @@ The package is named `vahu` and the binary is `vahu`. It is not published yet.
 
 Prints the CLI package version. The short form is `-v`.
 
+### `vahu version`
+
+Prints the same package version as `vahu --version`. `--json` returns a
+versioned `version` report.
+
+```bash
+vahu version
+vahu version --json
+```
+
 ### `vahu --help`
 
 Lists commands, descriptions, and options.
@@ -30,6 +40,54 @@ configuration emits structured issues and exits with status `1`.
 ```bash
 vahu project inspect
 vahu project status --path examples/backend-project --json
+```
+
+### `vahu project configure`
+
+Updates Project Identity fields in an existing configuration. It previews
+before/after values by default; `--write` is required to save. A real identity
+change resets identity approval to pending and readiness to incomplete. A
+no-op does not rewrite the file or reset approval. Optional lifecycle and long
+description can be removed with their `--clear-*` options. Other configuration
+sections, including brand, design system, technology, repositories, and agents,
+are unchanged; use their dedicated commands to configure those stages.
+
+```bash
+vahu project configure --description "Updated service description" --json
+vahu project configure --lifecycle maintenance --write
+vahu project configure --clear-lifecycle --clear-long-description --write
+```
+
+The JSON report uses `reportType: "project-configuration-change"` and
+`contractVersion: "1.0.0"`. Invalid fields are rejected without writing.
+
+### `vahu agents list`, `inspect`, and `sync`
+
+List or inspect the canonical agent definitions. `--path` selects a different
+catalog; by default the commands use the definitions bundled with the CLI. The
+built CLI therefore works outside the source checkout. Definitions are parsed
+with the canonical agent schema; invalid catalog files cause a non-zero exit.
+JSON uses `reportType: "agent-list"` or `"agent-inspection"`, with
+`contractVersion: "1.0.0"`.
+
+```bash
+vahu agents list
+vahu agents list --json
+vahu agents inspect AGENT-REVIEWER --json
+```
+
+`list` and `inspect` are read-only. `sync` renders the generic adapter's
+provider-neutral `AGENTS.md`, previews the complete proposed file by default, and
+writes only with `--write`. JSON uses `reportType: "agent-sync"` and includes
+the preview when not writing. It refuses to replace a target that is a symlink,
+not a regular file, or lacks the generated-file marker. A marked file is replaced
+as a whole; manual edits inside it are not merged or preserved, so review the
+preview carefully before choosing `--write`. Provider-specific adapters are not
+available, and this command does not claim compatibility with vendor file formats.
+
+```bash
+vahu agents sync --agent AGENT-REVIEWER
+vahu agents sync --agent AGENT-IMPLEMENTER --agent AGENT-REVIEWER --write
 ```
 
 ### `vahu profile list` and `vahu profile validate`
@@ -194,9 +252,11 @@ profile guidance into generated content.
 
 ## Planned, not implemented
 
-Agent configuration/sync, quality-check execution, framework update, and an
-independent `version` subcommand are not implemented. The commands are
-described in the roadmap, not implied by the Phase 6 milestone.
+Agent configuration, provider-specific adapters, merge-aware synchronization,
+quality-check execution, and framework update are not implemented. Generic
+`agents sync` is preview-first and replaces only VAHU-marked output with explicit
+`--write`; manual edits inside a marked file are not merged. The remaining
+commands are described in the roadmap, not implied by the Phase 6 milestone.
 
 Project onboarding commands include brand, design, technology, repository
 strategy, foundation inspection, and readiness, as recorded in

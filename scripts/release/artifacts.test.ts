@@ -68,14 +68,39 @@ function cliFiles(): FixtureFile[] {
   return [
     {
       path: 'package/package.json',
-      content: manifest({ name: 'vahu', bin: { vahu: './dist/index.js' } }),
+      content: manifest({
+        name: 'vahu',
+        bin: { vahu: './dist/index.js' },
+        dependencies: { '@vahu-ef/adapters': '0.1.0', '@vahu-ef/core': '0.1.0' },
+      }),
     },
     { path: 'package/README.md', content: '# vahu\n' },
     { path: 'package/LICENSE', content: 'Apache License 2.0\n' },
     { path: 'package/dist/index.js', content: '#!/usr/bin/env node\n' },
+    { path: 'package/dist/agents/AGENT-IMPLEMENTER.json', content: '{}\n' },
+    { path: 'package/dist/agents/AGENT-REVIEWER.json', content: '{}\n' },
     { path: 'package/dist/technology-profiles/PROFILE-NODE-BACKEND.json', content: '{}\n' },
     { path: 'package/dist/technology-profiles/PROFILE-POSTGRESQL.json', content: '{}\n' },
     { path: 'package/dist/technology-profiles/PROFILE-VITEST.json', content: '{}\n' },
+  ];
+}
+
+function adapterFiles(): FixtureFile[] {
+  return [
+    {
+      path: 'package/package.json',
+      content: manifest({
+        name: '@vahu-ef/adapters',
+        main: './dist/index.js',
+        types: './dist/index.d.ts',
+        exports: { '.': { types: './dist/index.d.ts', import: './dist/index.js' } },
+        dependencies: { '@vahu-ef/schemas': '0.1.0' },
+      }),
+    },
+    { path: 'package/README.md', content: '# @vahu-ef/adapters\n' },
+    { path: 'package/LICENSE', content: 'Apache License 2.0\n' },
+    { path: 'package/dist/index.js', content: 'export {};\n' },
+    { path: 'package/dist/index.d.ts', content: 'export {};\n' },
   ];
 }
 
@@ -135,6 +160,7 @@ async function artifactDirectory(
 async function completeCandidate(): Promise<string> {
   return artifactDirectory([
     { file: 'vahu-0.1.0.tgz', files: cliFiles() },
+    { file: 'vahu-ef-adapters-0.1.0.tgz', files: adapterFiles() },
     { file: 'vahu-ef-core-0.1.0.tgz', files: coreFiles() },
     { file: 'vahu-ef-schemas-0.1.0.tgz', files: schemasFiles() },
   ]);
@@ -150,11 +176,9 @@ describe('release candidate artifacts', () => {
 
     expect(report.ok).toBe(true);
     expect(report.issues).toEqual([]);
-    expect(report.packages.map((entry) => entry.name).sort()).toEqual([
-      '@vahu-ef/core',
-      '@vahu-ef/schemas',
-      'vahu',
-    ]);
+    expect(report.packages.map((entry) => entry.name).sort()).toEqual(
+      ['@vahu-ef/core', '@vahu-ef/adapters', '@vahu-ef/schemas', 'vahu'].sort(),
+    );
     for (const entry of report.packages) {
       expect(entry.version).toBe('0.1.0');
       expect(entry.sha256).toMatch(/^[0-9a-f]{64}$/);
@@ -178,6 +202,7 @@ describe('release candidate artifacts', () => {
     );
     const directory = await artifactDirectory([
       { file: 'vahu-0.1.0.tgz', files: cliFiles() },
+      { file: 'vahu-ef-adapters-0.1.0.tgz', files: adapterFiles() },
       { file: 'vahu-ef-core-0.1.0.tgz', files },
       { file: 'vahu-ef-schemas-0.1.0.tgz', files: schemasFiles() },
     ]);
@@ -193,6 +218,7 @@ describe('release candidate artifacts', () => {
     const report = await validateReleaseArtifacts(
       await artifactDirectory([
         { file: 'vahu-0.1.0.tgz', files },
+        { file: 'vahu-ef-adapters-0.1.0.tgz', files: adapterFiles() },
         { file: 'vahu-ef-core-0.1.0.tgz', files: coreFiles() },
         { file: 'vahu-ef-schemas-0.1.0.tgz', files: schemasFiles() },
       ]),
@@ -213,6 +239,7 @@ describe('release candidate artifacts', () => {
     const report = await validateReleaseArtifacts(
       await artifactDirectory([
         { file: 'vahu-0.1.0.tgz', files: cliFiles() },
+        { file: 'vahu-ef-adapters-0.1.0.tgz', files: adapterFiles() },
         { file: 'vahu-ef-core-0.1.0.tgz', files },
         { file: 'vahu-ef-schemas-0.1.0.tgz', files: schemasFiles() },
       ]),
@@ -245,6 +272,21 @@ describe('release candidate artifacts', () => {
     expect(codes(report)).toContain('PRIVATE_PACKAGE');
   });
 
+  it('rejects an adapter package whose published entry points are missing', async () => {
+    const files = adapterFiles().filter((file) => file.path !== 'package/dist/index.d.ts');
+    const report = await validateReleaseArtifacts(
+      await artifactDirectory([
+        { file: 'vahu-0.1.0.tgz', files: cliFiles() },
+        { file: 'vahu-ef-adapters-0.1.0.tgz', files },
+        { file: 'vahu-ef-core-0.1.0.tgz', files: coreFiles() },
+        { file: 'vahu-ef-schemas-0.1.0.tgz', files: schemasFiles() },
+      ]),
+    );
+
+    expect(report.ok).toBe(false);
+    expect(codes(report)).toContain('MISSING_ENTRY');
+  });
+
   it('rejects an internal dependency whose version differs from the candidate', async () => {
     const files = coreFiles().map((file) =>
       file.path === 'package/package.json'
@@ -262,6 +304,7 @@ describe('release candidate artifacts', () => {
     const report = await validateReleaseArtifacts(
       await artifactDirectory([
         { file: 'vahu-0.1.0.tgz', files: cliFiles() },
+        { file: 'vahu-ef-adapters-0.1.0.tgz', files: adapterFiles() },
         { file: 'vahu-ef-core-0.1.0.tgz', files },
         { file: 'vahu-ef-schemas-0.1.0.tgz', files: schemasFiles() },
       ]),
@@ -276,6 +319,7 @@ describe('release candidate artifacts', () => {
     const report = await validateReleaseArtifacts(
       await artifactDirectory([
         { file: 'vahu-0.1.0.tgz', files: cliFiles() },
+        { file: 'vahu-ef-adapters-0.1.0.tgz', files: adapterFiles() },
         { file: 'vahu-ef-core-0.1.0.tgz', files },
         { file: 'vahu-ef-schemas-0.1.0.tgz', files: schemasFiles() },
       ]),
@@ -300,7 +344,7 @@ describe('release candidate artifacts', () => {
 
     const text = renderChecksums(report.packages);
 
-    expect(text.trim().split('\n')).toHaveLength(3);
+    expect(text.trim().split('\n')).toHaveLength(4);
     expect(text).toBe(renderChecksums([...report.packages].reverse()));
     expect(text).toContain('  vahu-0.1.0.tgz');
   });

@@ -38,10 +38,10 @@ Repository-location ownership capture was implemented in this increment through
 - Implement and verify Codex, Claude Code, and Gemini CLI adapters, each with
   capability mapping, documented limitations/version assumptions, and output
   fixtures.
-- Generate files from canonical definitions, with preview/diff, managed-file
-  ownership, preservation of user content, conflict handling, and safe updates.
-- Expand fixture coverage beyond the generic renderer. Do not claim a provider
-  integration until its output and behavior are verified.
+- Add merge-aware updates that preserve manual edits inside VAHU-marked output
+  and report content conflicts. Current generic `agents sync` previews the full
+  output, requires `--write`, and replaces marked files as a whole; it protects
+  unmarked targets and symlinks but does not merge user content.
 
 ## Phase 4 — Technology profiles
 
@@ -66,9 +66,12 @@ Repository-location ownership capture was implemented in this increment through
 
 ## Phase 6 — CLI productization
 
-- Implement prioritized missing commands: project configure; design inspect and
-  proposal flow; agent list/inspect/configure/sync; quality check; update; and a
-  standalone `version` command. Preview-first profile technology add/remove and
+- Extend `project configure` beyond Project Identity to a coherent project/stage
+  configuration interface; implement design inspect and proposal flow; agent
+  configuration plus provider-specific/merge-aware sync; quality check; and
+  framework update. Project identity
+  configure, the standalone `version` command, agent list/inspect and
+  preview-first generic sync, preview-first profile technology add/remove, and
   `docs validate` have shipped; framework metadata validation across external
   trees remains separate work.
 - Add accurate dry-run/diff behavior to file-changing operations and broaden
@@ -79,8 +82,11 @@ Repository-location ownership capture was implemented in this increment through
   and use from a clean external project after a package is publishable.
 - Keep `phase-6.md`, CLI docs, and help output synchronized with shipped
   commands. `docs validate` is implemented and included in `pnpm check`; remaining
-  command groups are listed above. Profile add/remove is a technology-value
-  mutation only; profile IDs and composition remain Phase 4 work.
+  command groups are listed above. Project configure currently covers Project
+  Identity fields only; agent sync supports only the generic adapter and replaces
+  VAHU-marked output wholesale. Profile
+  add/remove is a technology-value mutation only;
+  profile IDs and composition remain Phase 4 work.
 
 ## Phase 7 — Documentation, website, and examples
 

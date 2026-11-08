@@ -20,11 +20,11 @@ directory without repacking. Both commands exit non-zero when a check fails;
 
 The candidate is rejected when any of the following is true:
 
-- the package set is not exactly `vahu`, `@vahu-ef/core`, and `@vahu-ef/schemas`;
+- the package set is not exactly `vahu`, `@vahu-ef/adapters`, `@vahu-ef/core`, and `@vahu-ef/schemas`;
 - an artifact is marked `private`, has no readable manifest, no version, no
   license field, or no `README.md`/`LICENSE`;
-- expected content is missing: the CLI entry point, the bundled profile catalog,
-  type declarations, or the JSON schemas;
+- expected content is missing: the CLI entry point, bundled agent/profile
+  catalogs, adapter/core type declarations, or the JSON schemas;
 - a `main`, `types`, `module`, `exports`, or `bin` target is absent from the
   archive;
 - a dependency range still uses the `workspace:` protocol, or an `@vahu-ef/*`
@@ -75,13 +75,13 @@ The schema version is `1.1.0` and is independent of the CLI version.
 | `vahu`              | CLI binary                | Verified candidate; not published |
 | `@vahu-ef/core`     | Reusable validation logic | Verified candidate; not published |
 | `@vahu-ef/schemas`  | Configuration contracts   | Verified candidate; not published |
-| `@vahu-ef/adapters` | Agent rendering boundary  | Not part of the candidate         |
+| `@vahu-ef/adapters` | Agent rendering boundary  | Verified candidate; not published |
 | `@vahu-ef/website`  | Static site               | Private; never published          |
 | `@vahu-ef/cli`      | Potential scoped alias    | Not used; name check only         |
 
-`@vahu-ef/adapters` is excluded because it has no published consumer yet, and
-`@vahu-ef/website` is a private application. Revisit the candidate set before a
-release that gives either package a public consumer.
+`@vahu-ef/adapters` is included because the CLI uses its generic renderer for
+preview-first agent synchronization. `@vahu-ef/website` remains a private
+application and is never part of the candidate set.
 
 ## GitHub Releases
 

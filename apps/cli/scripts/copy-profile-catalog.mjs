@@ -3,11 +3,21 @@ import { dirname, join } from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const scriptDirectory = dirname(fileURLToPath(import.meta.url));
-const source = join(scriptDirectory, '../../../packages/framework/technology-profiles');
-const destination = join(scriptDirectory, '../dist/technology-profiles');
-const files = (await readdir(source)).filter((name) => name.endsWith('.json')).sort();
+const catalogs = [
+  {
+    source: join(scriptDirectory, '../../../packages/framework/technology-profiles'),
+    destination: join(scriptDirectory, '../dist/technology-profiles'),
+  },
+  {
+    source: join(scriptDirectory, '../../../packages/framework/agents'),
+    destination: join(scriptDirectory, '../dist/agents'),
+  },
+];
 
-await mkdir(destination, { recursive: true });
-for (const file of files) {
-  await cp(join(source, file), join(destination, file));
+for (const catalog of catalogs) {
+  const files = (await readdir(catalog.source)).filter((name) => name.endsWith('.json')).sort();
+  await mkdir(catalog.destination, { recursive: true });
+  for (const file of files) {
+    await cp(join(catalog.source, file), join(catalog.destination, file));
+  }
 }

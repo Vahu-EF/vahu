@@ -142,6 +142,7 @@ node apps/cli/dist/index.js --version
 
 ```bash
 vahu --version
+vahu version [--json]
 vahu --help
 vahu doctor
 vahu validate [--path <directory>] [--json]
@@ -158,6 +159,9 @@ vahu readiness [--record] [--path <directory>]
 vahu migrate [--path <directory>] [--write]
 vahu project inspect [--path <directory>] [--json]
 vahu project status [--path <directory>] [--json]
+vahu project configure [identity flags] [--write] [--path <directory>] [--json]
+vahu agents list [--path <catalog-directory>] [--json]
+vahu agents inspect <agent-id> [--path <catalog-directory>] [--json]
 vahu profile list [--path <catalog-directory>] [--json]
 vahu profile validate [--path <catalog-directory>] [--json]
 vahu profile add <profile-id> [--area <area>] [--path <directory>] [--write] [--json]
@@ -166,8 +170,15 @@ vahu docs validate [--path <repository-root>] [--json]
 ```
 
 `project inspect/status` report the project configuration and computed readiness
-without writing. `profile list/validate` inspect the bundled technology-profile
-snapshot; the built CLI bundles profiles so listing works outside the checkout.
+without writing. `project configure` previews Project Identity changes and writes
+only with `--write`; a real identity change resets approval to pending. This
+command does not configure the other project sections. `agents list/inspect`
+read validated canonical definitions; `agents sync` previews generic `AGENTS.md`
+content and only writes with `--write`, replacing only files with the VAHU marker.
+It does not merge manual edits or provide provider-specific formats.
+`profile list/validate`
+inspect the bundled technology-profile snapshot; the built CLI bundles profiles
+so listing works outside the checkout.
 Their JSON reports carry `contractVersion: "1.0.0"` and a `reportType`.
 
 `doctor` checks the local environment and project configuration. `validate`
@@ -181,8 +192,9 @@ Profile listing, validation, and preview-first technology add/remove are
 implemented. Add/remove changes the project's technology values and requires
 `--write` to persist; the schema does not store profile IDs or compose their
 guidance into generated content. `vahu docs validate` checks local Markdown
-links and also runs as part of `pnpm check`. Agent configuration/sync commands
-remain **not implemented**.
+links and also runs as part of `pnpm check`. Agent listing, inspection, and
+preview-first generic file synchronization are implemented; provider-specific
+adapters and merge-aware synchronization remain **not implemented**.
 Workflow definitions and quality gates are validated by
 `pnpm validate:workflows`, but there is no CLI workflow runner and the core
 evaluator does not execute commands.

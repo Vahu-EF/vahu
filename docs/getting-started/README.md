@@ -59,8 +59,9 @@ configuration examples, not production applications.
 
 ## Current limits
 
-`project inspect/status` and `profile list/validate` are read-only. Profile
-selection/mutation, provider-specific adapters, agent synchronization,
-workflow execution, generated documentation, and release publishing are not
-implemented. See the [CLI reference](../cli/README.md) and the
+`project inspect/status` and `profile list/validate` are read-only.
+`project configure` previews identity-field updates and requires `--write` to
+save them; broader stage configuration remains separate. Profile selection,
+provider-specific adapters, agent synchronization, workflow execution, generated
+documentation, and release publishing remain incomplete. See the [CLI reference](../cli/README.md) and the
 [Phase 6 specification](../../architecture/specifications/phase-6.md).

@@ -6,11 +6,12 @@
 - **Approver:** VAHU project owner
 - **Supersedes:** None
 - **Superseded by:** None
+- **Review:** Package set amended with project-owner approval on 2026-11-08; no publisher identity recorded.
 
 ## Context
 
 Phase 0 prepared package metadata, a Changesets configuration, and a manual
-`release.yml` workflow. That workflow packed three tarballs and uploaded them
+`release.yml` workflow. That workflow packed the approved package tarballs and uploaded them
 without inspecting what it had built. A regression — a packed `workspace:`
 range, a missing type declaration, an archived `src/` tree, or a client-only
 package slipping into the set — would have been uploaded, and later published,
@@ -26,7 +27,10 @@ credentials that do not belong in the repository.
 - Keep publication out of scope until a separate, explicit release approval.
 - Add `scripts/release/validate-artifacts.ts` as the single way to produce release
   candidates. It packs the approved packages and inspects each archive.
-- Enforce a fixed package set (`vahu`, `@vahu-ef/core`, `@vahu-ef/schemas`), a
+- Include `@vahu-ef/adapters` because the CLI uses its generic renderer for
+  preview-first agent synchronization; keep the package set fixed and validate
+  adapter entrypoints and internal dependency versions like the other packages.
+- Enforce a fixed package set (`vahu`, `@vahu-ef/adapters`, `@vahu-ef/core`, and `@vahu-ef/schemas`), a
   readable manifest, `README.md` and `LICENSE`, required package content, existing
   entry points, released (not `workspace:`) dependency ranges, internal versions
   matching their sibling candidate, and the absence of source, tests, source maps,

@@ -73,8 +73,10 @@ Covered by "replaces the file atomically instead of rewriting it in place" and
 
 `saveProjectConfig` refuses to replace an existing configuration unless
 `overwrite` is explicit; `vahu init` asks before replacing and honors `--force`
-only when given. The CLI writes exactly one file: `.vahu/project.json`. It does
-not generate source files, rewrite `package.json`, or touch `.github/`.
+only when given. `vahu agents sync` can also write `AGENTS.md` only with
+`--write`; it rejects symlinks and targets without the VAHU generic-adapter
+marker, and it replaces marked files wholesale. It does not generate source files,
+rewrite `package.json`, or touch `.github/`.
 
 ### 5. Reading secrets
 
@@ -89,8 +91,9 @@ Canonical definitions are data. Rendering emits provider-neutral Markdown with a
 generated-by header; nothing in a definition is executed, and no tool permission
 is granted automatically. A definition can still contain text that a model might
 follow, so generated instructions are treated as repository content: a reviewer
-reads the diff before an agent consumes it. Provider adapters are not
-implemented, so no provider file is written yet.
+reads the preview before using `--write` and before an agent consumes it. Generic
+sync writes only the provider-neutral `AGENTS.md`; provider-specific adapters are
+not implemented.
 
 ### 7. Command execution
 

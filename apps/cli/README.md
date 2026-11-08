@@ -14,11 +14,16 @@ Implemented commands include:
 
 ```bash
 vahu --version
+vahu version [--json]
 vahu --help
 vahu doctor
 vahu validate [--path <directory>] [--json]
 vahu project inspect [--path <directory>] [--json]
 vahu project status [--path <directory>] [--json]
+vahu project configure [identity flags] [--write] [--path <directory>] [--json]
+vahu agents list [--path <catalog-directory>] [--json]
+vahu agents inspect <agent-id> [--path <catalog-directory>] [--json]
+vahu agents sync --agent <agent-id>... [--path <project-directory>] [--write] [--json]
 vahu profile list [--path <catalog-directory>] [--json]
 vahu profile validate [--path <catalog-directory>] [--json]
 vahu init [options]
@@ -35,7 +40,12 @@ vahu docs validate [--path <repository-root>] [--json]
 ```
 
 `project inspect/status` are read-only and report computed readiness and
-validation issues. Profile commands inspect and validate the bundled profile
+validation issues. `project configure` previews identity-field changes and only
+writes with `--write`; a real identity change resets approval to pending. Agent
+commands list and inspect validated bundled definitions without writing; `agents sync`
+previews generic `AGENTS.md` output and only writes with `--write`, refusing to
+overwrite files without the VAHU generated-file marker. It does not merge manual
+content. Profile commands inspect and validate the bundled profile
 catalog; `--path` selects a different directory. A built CLI bundles the profile
 snapshot and can list it outside the source repository. All these commands
 support human-readable output by default and versioned JSON using `--json`.
@@ -44,8 +54,7 @@ Missing project configuration, invalid profile data, and unresolved local
 Markdown links return a non-zero exit status. `docs validate` checks Markdown in
 the repository documentation trees without modifying files. Repository owners
 can be recorded with repeatable `--owner name=team` options; each name must match
-a configured `--location` (or an existing location in the project). These
-commands do not generate agent files or run quality gates.
+a configured `--location` (or an existing location in the project). These commands do not run quality gates.
 
 ## Install from source
 
