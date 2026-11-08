@@ -4,7 +4,7 @@ on:
   workflow_dispatch:
     inputs:
       publish_npm:
-        description: Publish the verified 0.1.0 tarballs to npm with provenance.
+        description: Stage the verified 0.1.0 tarballs on npm with provenance; a maintainer approves them with 2FA before they go live.
         required: true
         default: false
         type: boolean
@@ -58,7 +58,7 @@ jobs:
           if-no-files-found: error
 
   publish:
-    name: publish to npm
+    name: stage to npm
     if: inputs.publish_npm
     needs: package
     runs-on: ubuntu-latest
@@ -75,8 +75,8 @@ jobs:
           node-version: 24
           registry-url: https://registry.npmjs.org
 
-      - name: Install npm with provenance support
-        run: npm install --global npm@^11.5.1
+      - name: Install npm with staged publishing support
+        run: npm install --global npm@^11.15.0
 
       - name: Download verified release candidate
         uses: actions/download-artifact@v7
@@ -106,10 +106,10 @@ jobs:
           done
 
       # npm authenticates this job through trusted publishing (OIDC), not a token.
-      - name: Publish verified tarballs to npm with provenance
+      - name: Stage verified tarballs for npm publication
         working-directory: artifacts
         run: |
-          npm publish vahu-ef-schemas-0.1.0.tgz --provenance --access public --registry=https://registry.npmjs.org/
-          npm publish vahu-ef-adapters-0.1.0.tgz --provenance --access public --registry=https://registry.npmjs.org/
-          npm publish vahu-ef-core-0.1.0.tgz --provenance --access public --registry=https://registry.npmjs.org/
-          npm publish vahu-0.1.0.tgz --provenance --access public --registry=https://registry.npmjs.org/
+          npm stage publish vahu-ef-schemas-0.1.0.tgz --provenance --access public --registry=https://registry.npmjs.org/
+          npm stage publish vahu-ef-adapters-0.1.0.tgz --provenance --access public --registry=https://registry.npmjs.org/
+          npm stage publish vahu-ef-core-0.1.0.tgz --provenance --access public --registry=https://registry.npmjs.org/
+          npm stage publish vahu-0.1.0.tgz --provenance --access public --registry=https://registry.npmjs.org/
