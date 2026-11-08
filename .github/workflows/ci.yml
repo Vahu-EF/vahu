@@ -13,7 +13,7 @@ concurrency:
   cancel-in-progress: true
 
 jobs:
-  verify:
+  verify-matrix:
     name: verify (${{ matrix.os }}, Node ${{ matrix.node }})
     runs-on: ${{ matrix.os }}
     strategy:
@@ -60,6 +60,21 @@ jobs:
 
       - name: Validate documentation
         run: pnpm validate:docs
+
+  # The branch ruleset requires the exact check name "verify".
+  verify:
+    name: verify
+    needs: verify-matrix
+    if: always()
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check matrix results
+        run: |
+          result="${{ needs.verify-matrix.result }}"
+          if [ "$result" != "success" ]; then
+            echo "verify matrix result: $result"
+            exit 1
+          fi
 
   release-candidate:
     name: release candidate artifacts
