@@ -13,9 +13,9 @@
   "scripts": {
     "build": "pnpm -r --if-present build",
     "dev": "pnpm --filter vahu dev",
-    "format": "prettier --write .",
-    "format:check": "prettier --check .",
-    "lint": "eslint .",
+    "format": "biome format --write .",
+    "format:check": "biome format .",
+    "lint": "biome lint .",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "pretest": "pnpm build",
     "test": "vitest run",
@@ -24,20 +24,18 @@
     "validate:standards": "node scripts/validation/validate-standards.mjs",
     "validate:profiles": "node scripts/validation/validate-profiles.mjs",
     "validate:workflows": "node scripts/validation/validate-workflows.mjs",
+    "validate:docs": "node --import tsx scripts/validation/validate-docs.mjs",
     "release:pack": "tsx scripts/release/validate-artifacts.ts --pack",
     "release:validate": "tsx scripts/release/validate-artifacts.ts",
-    "check": "pnpm format:check && pnpm lint && pnpm typecheck && pnpm test && pnpm build && pnpm validate:workspace && pnpm validate:standards && pnpm validate:profiles && pnpm validate:workflows"
+    "check": "pnpm format:check && pnpm lint && pnpm typecheck && pnpm test && pnpm build && pnpm validate:workspace && pnpm validate:standards && pnpm validate:profiles && pnpm validate:workflows && pnpm validate:docs"
   },
   "devDependencies": {
+    "@biomejs/biome": "^2.6.6",
     "@changesets/cli": "^3.0.3",
-    "@eslint/js": "^10.0.1",
     "@types/node": "^24.10.1",
-    "eslint": "^10.14.0",
-    "prettier": "^3.9.10",
     "tsup": "^9.0.0",
     "tsx": "^4.23.15",
     "typescript": "^6.0.3",
-    "typescript-eslint": "^8.72.1",
     "vitest": "^5.1.0"
   }
 }

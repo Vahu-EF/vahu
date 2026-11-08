@@ -112,7 +112,8 @@ export interface AgentIssue {
 }
 
 export type ParseAgentResult =
-  { ok: true; data: AgentDefinition } | { ok: false; issues: AgentIssue[] };
+  | { ok: true; data: AgentDefinition }
+  | { ok: false; issues: AgentIssue[] };
 
 export function parseAgentDefinition(input: unknown): ParseAgentResult {
   const result = agentDefinitionSchema.safeParse(input);

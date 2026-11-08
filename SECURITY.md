@@ -35,9 +35,9 @@ this pre-release project.
 ## Known advisories
 
 - GHSA-g3hv-75wg-m249 (`minimatch` below `11.0.1`, denial of service through glob
-  parts amplification) is remediated by a `pnpm-workspace.yaml` override to
-  `^11.0.1`. It arrived transitively through eslint and typescript-eslint and was
-  never part of a release candidate.
+  parts amplification) was previously addressed with a workspace override. The
+  current lockfile has no `minimatch` dependency after removing ESLint and its
+  TypeScript plugin; recheck the dependency tree when changing tooling.
 
 `pnpm audit` cannot run against the registry mirror configured for local
 installs, so advisory tracking relies on GitHub Dependabot alerts and the weekly

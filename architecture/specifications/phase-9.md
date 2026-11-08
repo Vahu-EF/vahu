@@ -1,6 +1,6 @@
 # Phase 9 specification — Hardening & Community Readiness
 
-- **Status:** In Progress — local write safety, security baseline, and stability policy implemented
+- **Status:** In Progress — local write safety, security baseline, stability policy, and governance procedure documented
 - **Owner approval:** This Phase 9 first milestone and spec approved by the VAHU project owner on 2026-11-07
 - **Decision:** [ADR-0014](../decisions/ADR-0014-atomic-configuration-writes.md), accepted 2026-11-07
 - **Canonical for:** Phase 9 hardening status
@@ -37,9 +37,10 @@ probes.
 ### Dependency remediation
 
 `GHSA-g3hv-75wg-m249` (`minimatch` below `11.0.1`, denial of service through glob
-parts amplification) reached the workspace transitively through eslint and
-typescript-eslint. `pnpm-workspace.yaml` lifts the range to `^11.0.1`; the lint
-suite passes on the resolved `11.0.5`.
+parts amplification) reached the workspace transitively through ESLint and its
+TypeScript plugin. The workspace initially lifted the range to `^11.0.1`; after
+removing those dependencies, the current lockfile no longer includes `minimatch`
+and the override was removed.
 
 ### Stability policy
 
@@ -50,13 +51,14 @@ before a surface may be called stable.
 
 ## Not implemented
 
-- Cross-platform integration tests: no Windows CI job runs.
+- Cross-platform integration results: a six-combination Ubuntu/macOS/Windows and Node 22/24 CI matrix is configured, but has not run from this workspace yet.
 - Upgrade and migration tests beyond the existing `1.0.0` to `1.1.0` path.
 - Large-repository performance tests.
 - Idempotency checks for every command.
 - Archive or template extraction (so no extraction hardening yet).
-- Governance documents: maintainer responsibilities, issue triage, release
-  ownership, and security response expectations beyond `SECURITY.md`.
+- Governance role assignments and service commitments: responsibilities and
+  procedures are documented in `docs/contributing/governance.md`, but no named
+  people/teams or response-time guarantees are assigned.
 - A usability study with developers unfamiliar with VAHU.
 - File locking for concurrent writers, and directory `fsync` durability.
 
@@ -74,13 +76,13 @@ demonstrate the regression rather than merely accompanying it.
 
 ## Acceptance state
 
-| Criterion                                                              | State   | Evidence                                                                                             |
-| ---------------------------------------------------------------------- | ------- | ---------------------------------------------------------------------------------------------------- |
-| No known critical security issue remains unresolved                    | Partial | Write path hardened and one advisory remediated; audit endpoint unavailable on the configured mirror |
-| Core workflows pass supported platform tests                           | Partial | Linux and macOS CI; no Windows job                                                                   |
-| Upgrade paths are tested                                               | Partial | `1.0.0` to `1.1.0` migration tested; no published version to upgrade from                            |
-| Public compatibility claims are backed by test evidence                | Partial | Configuration write, schema, and report contracts tested; core exports not itemized                  |
-| Maintainers can triage, review, and release using documented processes | Partial | Contribution, review, release, and stability docs exist; governance roles are not defined            |
+| Criterion                                                              | State   | Evidence                                                                                                    |
+| ---------------------------------------------------------------------- | ------- | ----------------------------------------------------------------------------------------------------------- |
+| No known critical security issue remains unresolved                    | Partial | Write path hardened and one advisory remediated; audit endpoint unavailable on the configured mirror        |
+| Core workflows pass supported platform tests                           | Partial | Ubuntu/Node 24 passed locally; six OS/Node matrix jobs are configured, pending hosted macOS/Windows results |
+| Upgrade paths are tested                                               | Partial | `1.0.0` to `1.1.0` migration tested; no published version to upgrade from                                   |
+| Public compatibility claims are backed by test evidence                | Partial | Configuration write, schema, and report contracts tested; core exports not itemized                         |
+| Maintainers can triage, review, and release using documented processes | Partial | Governance procedures are documented; actual role holders and contact channel ownership are unassigned      |
 
 ## Out of scope and limitations
 

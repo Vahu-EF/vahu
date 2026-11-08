@@ -21,6 +21,7 @@
     "sourceMap": true,
     "paths": {
       "@vahu-ef/core": ["./packages/core/src/index.ts"],
+      "@vahu-ef/adapters": ["./packages/adapters/src/index.ts"],
       "@vahu-ef/schemas": ["./packages/schemas/src/index.ts"]
     }
   }

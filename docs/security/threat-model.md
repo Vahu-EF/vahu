@@ -73,8 +73,10 @@ Covered by "replaces the file atomically instead of rewriting it in place" and
 
 `saveProjectConfig` refuses to replace an existing configuration unless
 `overwrite` is explicit; `vahu init` asks before replacing and honors `--force`
-only when given. The CLI writes exactly one file: `.vahu/project.json`. It does
-not generate source files, rewrite `package.json`, or touch `.github/`.
+only when given. `vahu agents sync` can also write `AGENTS.md` only with
+`--write`; it rejects symlinks and targets without the VAHU generic-adapter
+marker, and it replaces marked files wholesale. It does not generate source files,
+rewrite `package.json`, or touch `.github/`.
 
 ### 5. Reading secrets
 
@@ -89,8 +91,9 @@ Canonical definitions are data. Rendering emits provider-neutral Markdown with a
 generated-by header; nothing in a definition is executed, and no tool permission
 is granted automatically. A definition can still contain text that a model might
 follow, so generated instructions are treated as repository content: a reviewer
-reads the diff before an agent consumes it. Provider adapters are not
-implemented, so no provider file is written yet.
+reads the preview before using `--write` and before an agent consumes it. Generic
+sync writes only the provider-neutral `AGENTS.md`; provider-specific adapters are
+not implemented.
 
 ### 7. Command execution
 
@@ -109,9 +112,9 @@ ships.
 ### 9. Dependency and supply chain
 
 - GHSA-g3hv-75wg-m249: `minimatch` below 11.0.1 is a denial-of-service risk
-  through glob-parts amplification. It arrives transitively through eslint and
-  typescript-eslint. `pnpm-workspace.yaml` lifts the range to `^11.0.1`, and the
-  lint suite passes with the newer version.
+  through glob-parts amplification. Removing ESLint and its TypeScript plugin
+  removed `minimatch` from the current lockfile, so the temporary override is no
+  longer needed. Recheck the resolved dependency tree when changing tooling.
 - `pnpm audit` could not run here: the configured registry mirror has no audit
   endpoint. Advisory data therefore comes from GitHub's Dependabot alerts.
 - CI pins workflow actions to major tags and uses read-only permissions for

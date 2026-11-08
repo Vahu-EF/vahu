@@ -13,8 +13,9 @@ All notable changes to VAHU are recorded here. The format follows
   `.vahu/project.json`.
 - A symlink at the configuration path is replaced instead of followed, so a
   committed link can no longer redirect a write outside the project.
-- `minimatch` is lifted to `^11.0.1` to resolve GHSA-g3hv-75wg-m249, which
-  arrived transitively through eslint and typescript-eslint.
+- GHSA-g3hv-75wg-m249 (`minimatch` below `11.0.1`) was addressed with a
+  workspace override; removing ESLint also removed that dependency chain and the
+  no-longer-needed override.
 
 ### Added
 

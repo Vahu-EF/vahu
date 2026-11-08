@@ -1,15 +1,18 @@
 #!/usr/bin/env node
 
+import { realpathSync } from 'node:fs';
 import { createRequire } from 'node:module';
-import { pathToFileURL } from 'node:url';
+import { fileURLToPath } from 'node:url';
 import { Command } from 'commander';
 import { runDoctor, validateProject } from '@vahu-ef/core';
+import { registerAgentCommands } from './commands/agents.js';
 import { registerIdentityCommand } from './commands/identity.js';
 import { registerInitCommand } from './commands/init.js';
 import { registerMigrateCommand } from './commands/migrate.js';
 import { registerProjectStageCommands } from './commands/project.js';
 import { registerProjectInfoCommands } from './commands/project-info.js';
 import { registerProfileCommands } from './commands/profile.js';
+import { registerDocumentationCommands } from './commands/documentation.js';
 import { formatDoctor, formatValidation } from './core/output.js';
 
 const require = createRequire(import.meta.url);
@@ -22,6 +25,24 @@ export function createProgram(): Command {
     .name('vahu')
     .description('Build Better Software, With Better Agents.')
     .version(packageJson.version, '-v, --version', 'Print the VAHU CLI version.');
+
+  program
+    .command('version')
+    .description('Print the VAHU CLI version.')
+    .option('--json', 'Print a versioned machine-readable report.')
+    .action((options: { json?: boolean }) => {
+      if (options.json === true) {
+        process.stdout.write(
+          `${JSON.stringify(
+            { contractVersion: '1.0.0', reportType: 'version', version: packageJson.version },
+            null,
+            2,
+          )}\n`,
+        );
+      } else {
+        process.stdout.write(`${packageJson.version}\n`);
+      }
+    });
 
   program
     .command('doctor')
@@ -62,6 +83,8 @@ export function createProgram(): Command {
   registerProjectStageCommands(program);
   registerProjectInfoCommands(program);
   registerProfileCommands(program);
+  registerAgentCommands(program);
+  registerDocumentationCommands(program);
 
   return program;
 }
@@ -70,6 +93,6 @@ export async function main(argv: string[] = process.argv): Promise<void> {
   await createProgram().parseAsync(argv);
 }
 
-if (process.argv[1] && import.meta.url === pathToFileURL(process.argv[1]).href) {
+if (process.argv[1] && fileURLToPath(import.meta.url) === realpathSync(process.argv[1])) {
   await main();
 }

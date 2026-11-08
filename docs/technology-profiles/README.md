@@ -24,8 +24,8 @@ selects only what it needs.
 
 The versioned profile format and three initial profiles are implemented. Run
 `pnpm validate:profiles` to validate the canonical catalog, or use
-`vahu profile list` and `vahu profile validate` from the CLI. Profile selection
-and mutation through the CLI are not implemented; project technology values are
-not silently interpreted as applied profile rules. See the
-[Phase 4 specification](../../architecture/specifications/phase-4.md) for exact
-coverage and limitations.
+`vahu profile list`, `vahu profile validate`, and preview-first `vahu profile
+add/remove` commands. Add/remove changes the project's technology value only;
+the schema does not store profile IDs, and profile guidance is not composed into
+project or agent files. See the [Phase 4 specification](../../architecture/specifications/phase-4.md)
+for exact coverage and limitations.

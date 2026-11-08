@@ -1,7 +1,8 @@
 import { existsSync } from 'node:fs';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
+import { fileURLToPath, pathToFileURL } from 'node:url';
 
-const root = new URL('../../', import.meta.url).pathname;
+const root = join(dirname(fileURLToPath(import.meta.url)), '../..');
 const coreEntry = join(root, 'packages/core/dist/index.js');
 
 if (!existsSync(coreEntry)) {
@@ -11,7 +12,7 @@ if (!existsSync(coreEntry)) {
   process.exit(1);
 }
 
-const { loadProfileCatalog } = await import(coreEntry);
+const { loadProfileCatalog } = await import(pathToFileURL(coreEntry).href);
 const catalog = await loadProfileCatalog(join(root, 'packages/framework/technology-profiles'));
 
 if (!catalog.ok) {

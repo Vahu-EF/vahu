@@ -87,8 +87,7 @@ The following are recommendations, not yet immutable requirements:
 | CLI argument parsing | Commander.js                             |
 | Schema validation    | Zod                                      |
 | Unit testing         | Vitest                                   |
-| Formatting           | Prettier                                 |
-| Linting              | ESLint                                   |
+| Formatting and linting | Biome                                  |
 | Documentation        | Markdown + GitHub Pages                  |
 | CI/CD                | GitHub Actions                           |
 | Release automation   | Changesets or equivalent                 |
@@ -632,8 +631,7 @@ vahu/
 ├── .gitignore
 ├── .npmrc
 ├── .nvmrc
-├── .prettierrc.json
-├── eslint.config.js
+├── biome.jsonc
 ├── package.json
 ├── pnpm-workspace.yaml
 ├── pnpm-lock.yaml

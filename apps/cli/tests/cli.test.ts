@@ -1,16 +1,27 @@
-import { access, mkdtemp, mkdir, readFile, readdir, rm, writeFile } from 'node:fs/promises';
+import {
+  access,
+  mkdtemp,
+  mkdir,
+  readFile,
+  readdir,
+  rm,
+  symlink,
+  writeFile,
+} from 'node:fs/promises';
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { spawnSync } from 'node:child_process';
+import { createRequire } from 'node:module';
 import { afterEach, describe, expect, it } from 'vitest';
 
 const repoRoot = resolve(import.meta.dirname, '../../..');
 const cliPath = join(repoRoot, 'apps/cli/src/index.ts');
-const tsxPath = join(repoRoot, 'node_modules/.bin/tsx');
+const require = createRequire(import.meta.url);
+const tsxCliPath = require.resolve('tsx/cli');
 const tempDirectories: string[] = [];
 
 function runCli(args: string[], cwd = repoRoot) {
-  return spawnSync(tsxPath, [cliPath, ...args], {
+  return spawnSync(process.execPath, [tsxCliPath, cliPath, ...args], {
     cwd,
     encoding: 'utf8',
   });
@@ -81,6 +92,35 @@ describe('vahu CLI', () => {
     expect(result.stdout.trim()).toBe('0.1.0');
   });
 
+  it('runs from an npm-style symlinked binary path', async () => {
+    const directory = await emptyDirectory();
+    const binary = join(directory, 'node_modules/.bin/vahu');
+    await mkdir(join(directory, 'node_modules/.bin'), { recursive: true });
+    await symlink(join(repoRoot, 'apps/cli/dist/index.js'), binary);
+
+    const result = spawnSync(process.execPath, [binary, 'version'], {
+      cwd: directory,
+      encoding: 'utf8',
+    });
+
+    expect(result.status, result.stderr).toBe(0);
+    expect(result.stdout.trim()).toBe('0.1.0');
+  });
+
+  it('prints the version through the standalone version command', () => {
+    const human = runCli(['version']);
+    expect(human.status).toBe(0);
+    expect(human.stdout.trim()).toBe('0.1.0');
+
+    const json = runCli(['version', '--json']);
+    expect(json.status).toBe(0);
+    expect(JSON.parse(json.stdout)).toMatchObject({
+      contractVersion: '1.0.0',
+      reportType: 'version',
+      version: '0.1.0',
+    });
+  });
+
   it('prints help with the implemented commands', () => {
     const result = runCli(['--help']);
     expect(result.status).toBe(0);
@@ -88,6 +128,15 @@ describe('vahu CLI', () => {
     expect(result.stdout).toContain('validate');
     expect(result.stdout).toContain('project');
     expect(result.stdout).toContain('profile');
+    expect(result.stdout).toContain('agents');
+
+    const agentsHelp = runCli(['agents', '--help']);
+    expect(agentsHelp.status).toBe(0);
+    expect(agentsHelp.stdout).toContain('inspect');
+
+    const projectHelp = runCli(['project', '--help']);
+    expect(projectHelp.status).toBe(0);
+    expect(projectHelp.stdout).toContain('configure');
   });
 
   it('runs doctor in a valid project', async () => {
@@ -332,12 +381,56 @@ describe('vahu CLI', () => {
       'API and documentation live apart.',
       '--location',
       'api=.',
+      '--location',
+      'docs=https://example.com/docs',
+      '--owner',
+      'api=platform',
+      '--owner',
+      'docs=documentation team',
     ]);
 
     expect(result.status).toBe(0);
     const config = await readConfig(directory);
     expect(config.repositories.strategy).toBe('hybrid');
-    expect(config.repositories.locations).toEqual([{ name: 'api', path: '.' }]);
+    expect(config.repositories.locations).toEqual([
+      { name: 'api', path: '.', owner: 'platform' },
+      { name: 'docs', url: 'https://example.com/docs', owner: 'documentation team' },
+    ]);
+  });
+
+  it('updates repository ownership for an existing location and rejects unknown or duplicate assignments', async () => {
+    const directory = await createProject({
+      ...validConfig(),
+      repositories: {
+        strategy: 'monorepo',
+        locations: [{ name: 'api', path: 'apps/api' }],
+      },
+    });
+
+    const updated = runCli(['repositories', '--path', directory, '--owner', 'api=platform']);
+    expect(updated.status).toBe(0);
+    expect((await readConfig(directory)).repositories.locations).toEqual([
+      { name: 'api', path: 'apps/api', owner: 'platform' },
+    ]);
+
+    const refused = runCli(['repositories', '--path', directory, '--owner', 'web=frontend']);
+    expect(refused.status).toBe(1);
+    expect(refused.stderr).toContain('must refer to a configured repository location');
+
+    const duplicate = runCli([
+      'repositories',
+      '--path',
+      directory,
+      '--owner',
+      'api=platform',
+      '--owner',
+      'api=another-team',
+    ]);
+    expect(duplicate.status).toBe(1);
+    expect(duplicate.stderr).toContain('provided at most once');
+    expect((await readConfig(directory)).repositories.locations).toEqual([
+      { name: 'api', path: 'apps/api', owner: 'platform' },
+    ]);
   });
 
   it('reports readiness and records the status only when asked', async () => {
@@ -391,6 +484,126 @@ describe('vahu CLI', () => {
     expect(result.stdout).toContain('Identity: pending');
   });
 
+  it('previews project configuration and requires --write to change identity fields', async () => {
+    const directory = await createProject({
+      ...validConfig(),
+      readiness: { status: 'ready', notes: [] },
+    });
+    const configPath = join(directory, '.vahu/project.json');
+    const original = await readFile(configPath, 'utf8');
+
+    const preview = runCli([
+      'project',
+      'configure',
+      '--path',
+      directory,
+      '--description',
+      'An updated description.',
+      '--json',
+    ]);
+
+    expect(preview.status).toBe(0);
+    expect(JSON.parse(preview.stdout)).toMatchObject({
+      contractVersion: '1.0.0',
+      reportType: 'project-configuration-change',
+      ok: true,
+      changed: true,
+      written: false,
+      identityApprovalRequired: true,
+      changes: [
+        { path: 'identity.status', before: 'approved', after: 'pending' },
+        {
+          path: 'project.description',
+          before: 'A test project.',
+          after: 'An updated description.',
+        },
+        { path: 'readiness.status', before: 'ready', after: 'incomplete' },
+      ],
+    });
+    expect(await readFile(configPath, 'utf8')).toBe(original);
+
+    const written = runCli([
+      'project',
+      'configure',
+      '--path',
+      directory,
+      '--description',
+      'An updated description.',
+      '--write',
+      '--json',
+    ]);
+
+    expect(written.status).toBe(0);
+    expect(JSON.parse(written.stdout)).toMatchObject({ changed: true, written: true });
+    const config = await readConfig(directory);
+    expect(JSON.parse(await readFile(configPath, 'utf8')).project.description).toBe(
+      'An updated description.',
+    );
+    expect(config.identity.status).toBe('pending');
+    expect(config.readiness.status).toBe('incomplete');
+    expect(config.technology.backend).toEqual(['node']);
+  });
+
+  it('does not reset identity approval when project configure makes no changes', async () => {
+    const directory = await createProject(validConfig());
+
+    const result = runCli([
+      'project',
+      'configure',
+      '--path',
+      directory,
+      '--description',
+      'A test project.',
+      '--write',
+      '--json',
+    ]);
+
+    expect(result.status).toBe(0);
+    expect(JSON.parse(result.stdout)).toMatchObject({ changed: false, written: false });
+    expect((await readConfig(directory)).identity.status).toBe('approved');
+  });
+
+  it('clears optional project fields only when --write is provided', async () => {
+    const base = validConfig();
+    const config = {
+      ...base,
+      project: { ...base.project, longDescription: 'Details.', lifecycle: 'active' },
+    };
+    const directory = await createProject(config);
+    const args = ['project', 'configure', '--path', directory];
+
+    const preview = runCli([...args, '--clear-long-description', '--clear-lifecycle']);
+    expect(preview.status).toBe(0);
+    expect(preview.stdout).toContain('project.longDescription');
+    expect(preview.stdout).toContain('project.lifecycle');
+    expect((await readConfig(directory)).project.longDescription).toBe('Details.');
+
+    const written = runCli([...args, '--clear-long-description', '--clear-lifecycle', '--write']);
+    expect(written.status).toBe(0);
+    const updated = await readConfig(directory);
+    expect(updated.project.longDescription).toBeUndefined();
+    expect(updated.project.lifecycle).toBeUndefined();
+  });
+
+  it('rejects invalid project types and preserves the configuration', async () => {
+    const directory = await createProject(validConfig());
+    const before = await readFile(join(directory, '.vahu/project.json'), 'utf8');
+
+    const result = runCli([
+      'project',
+      'configure',
+      '--path',
+      directory,
+      '--type',
+      'unknown-type',
+      '--write',
+    ]);
+
+    expect(result.status).toBe(1);
+    expect(result.stderr).toContain('Unknown project type');
+    expect(await readFile(join(directory, '.vahu/project.json'), 'utf8')).toBe(before);
+  });
+
   it('returns versioned JSON and a non-zero exit for a missing project', async () => {
     const directory = await emptyDirectory();
 
@@ -407,6 +620,191 @@ describe('vahu CLI', () => {
     expect(report.reportType).toBe('project-report');
     expect(report.view).toBe('inspect');
     expect(report.ok).toBe(false);
+  });
+
+  it('lists canonical agent definitions as versioned JSON', async () => {
+    const directory = await emptyDirectory();
+
+    const result = runCli(
+      ['agents', 'list', '--path', join(repoRoot, 'packages/framework/agents'), '--json'],
+      directory,
+    );
+
+    expect(result.status).toBe(0);
+    const report = JSON.parse(result.stdout) as {
+      contractVersion: string;
+      reportType: string;
+      ok: boolean;
+      agents: Array<{ id: string; name: string }>;
+    };
+    expect(report).toMatchObject({
+      contractVersion: '1.0.0',
+      reportType: 'agent-list',
+      ok: true,
+    });
+    expect(report.agents.map((agent) => agent.id)).toEqual(['AGENT-IMPLEMENTER', 'AGENT-REVIEWER']);
+  });
+
+  it('inspects an agent definition and reports unknown IDs', () => {
+    const catalog = join(repoRoot, 'packages/framework/agents');
+
+    const inspect = runCli(['agents', 'inspect', 'AGENT-REVIEWER', '--path', catalog, '--json']);
+    expect(inspect.status).toBe(0);
+    expect(JSON.parse(inspect.stdout)).toMatchObject({
+      contractVersion: '1.0.0',
+      reportType: 'agent-inspection',
+      ok: true,
+      agent: { id: 'AGENT-REVIEWER', name: 'Engineering reviewer' },
+    });
+
+    const missing = runCli(['agents', 'inspect', 'AGENT-MISSING', '--path', catalog, '--json']);
+    expect(missing.status).toBe(1);
+    expect(JSON.parse(missing.stdout)).toMatchObject({
+      reportType: 'agent-inspection',
+      ok: false,
+      agent: null,
+    });
+  });
+
+  it('lists bundled agents from the built CLI outside the source repository', async () => {
+    const directory = await emptyDirectory();
+
+    const result = runBuiltCli(['agents', 'list', '--json'], directory);
+
+    expect(result.status, result.stderr).toBe(0);
+    const report = JSON.parse(result.stdout) as {
+      ok: boolean;
+      agents: Array<{ id: string }>;
+    };
+    expect(report.ok).toBe(true);
+    expect(report.agents.map((agent) => agent.id)).toEqual(['AGENT-IMPLEMENTER', 'AGENT-REVIEWER']);
+  });
+
+  it('syncs bundled agents from the built CLI outside the source repository', async () => {
+    const directory = await emptyDirectory();
+
+    const result = runBuiltCli(
+      ['agents', 'sync', '--path', directory, '--agent', 'AGENT-REVIEWER', '--json'],
+      directory,
+    );
+
+    expect(result.status, result.stderr).toBe(0);
+    expect(JSON.parse(result.stdout)).toMatchObject({
+      reportType: 'agent-sync',
+      ok: true,
+      adapter: 'generic',
+      agentIds: ['AGENT-REVIEWER'],
+      changed: true,
+      written: false,
+    });
+    await expect(readFile(join(directory, 'AGENTS.md'), 'utf8')).rejects.toMatchObject({
+      code: 'ENOENT',
+    });
+  });
+
+  it('rejects an invalid agent catalog', async () => {
+    const directory = await emptyDirectory();
+    await writeFile(join(directory, 'broken.json'), '{', 'utf8');
+
+    const result = runCli(['agents', 'list', '--path', directory, '--json']);
+
+    expect(result.status).toBe(1);
+    expect(JSON.parse(result.stdout)).toMatchObject({
+      reportType: 'agent-list',
+      ok: false,
+      agents: [],
+      issues: [expect.objectContaining({ code: 'AGENT_INVALID_JSON' })],
+    });
+  });
+
+  it('previews agent sync and writes generated generic instructions only with --write', async () => {
+    const directory = await emptyDirectory();
+    const outputPath = join(directory, 'AGENTS.md');
+    const args = ['agents', 'sync', '--path', directory, '--agent', 'AGENT-REVIEWER'];
+
+    const preview = runCli([...args, '--json']);
+    expect(preview.status).toBe(0);
+    expect(JSON.parse(preview.stdout)).toMatchObject({
+      contractVersion: '1.0.0',
+      reportType: 'agent-sync',
+      ok: true,
+      changed: true,
+      written: false,
+      adapter: 'generic',
+      agentIds: ['AGENT-REVIEWER'],
+      preview: expect.stringContaining('AGENT-REVIEWER'),
+    });
+    await expect(readFile(outputPath, 'utf8')).rejects.toMatchObject({ code: 'ENOENT' });
+
+    const written = runCli([...args, '--write', '--json']);
+    expect(written.status).toBe(0);
+    expect(JSON.parse(written.stdout)).toMatchObject({ changed: true, written: true });
+    const generated = await readFile(outputPath, 'utf8');
+    expect(generated).toContain('<!-- Generated by VAHU (generic adapter).');
+    expect(generated).toContain('AGENT-REVIEWER');
+
+    const unchanged = runCli([...args, '--write', '--json']);
+    expect(unchanged.status).toBe(0);
+    expect(JSON.parse(unchanged.stdout)).toMatchObject({ changed: false, written: false });
+
+    const updated = runCli([
+      'agents',
+      'sync',
+      '--path',
+      directory,
+      '--agent',
+      'AGENT-IMPLEMENTER',
+      '--write',
+      '--json',
+    ]);
+    expect(updated.status).toBe(0);
+    expect(JSON.parse(updated.stdout)).toMatchObject({ changed: true, written: true });
+    const updatedContent = await readFile(outputPath, 'utf8');
+    expect(updatedContent).toContain('AGENT-IMPLEMENTER');
+    expect(updatedContent).not.toContain('AGENT-REVIEWER');
+  });
+
+  it('refuses unmanaged and symlinked generic agent output', async () => {
+    const directory = await emptyDirectory();
+    const outputPath = join(directory, 'AGENTS.md');
+    const args = ['agents', 'sync', '--path', directory, '--agent', 'AGENT-REVIEWER', '--write'];
+    const manualContent = '# User-owned instructions.\n';
+    await writeFile(outputPath, manualContent, 'utf8');
+
+    const unmanaged = runCli(args);
+    expect(unmanaged.status).toBe(1);
+    expect(unmanaged.stderr).toContain('not generated by VAHU');
+    expect(await readFile(outputPath, 'utf8')).toBe(manualContent);
+
+    const linkedDirectory = await emptyDirectory();
+    const linkedTarget = join(linkedDirectory, 'user-owned.md');
+    const linkedOutput = join(linkedDirectory, 'AGENTS.md');
+    await writeFile(linkedTarget, manualContent, 'utf8');
+    try {
+      await symlink(linkedTarget, linkedOutput);
+    } catch (error) {
+      if (
+        error instanceof Error &&
+        'code' in error &&
+        ['EPERM', 'EACCES', 'ENOTSUP'].includes(String(error.code))
+      ) {
+        return;
+      }
+      throw error;
+    }
+
+    const symlinked = runCli([
+      'agents',
+      'sync',
+      '--path',
+      linkedDirectory,
+      '--agent',
+      'AGENT-REVIEWER',
+      '--write',
+    ]);
+    expect(symlinked.status).toBe(1);
+    expect(symlinked.stderr).toContain('not a regular file');
+    expect(await readFile(linkedTarget, 'utf8')).toBe(manualContent);
   });
 
   it('lists technology profiles as versioned JSON', async () => {
@@ -476,6 +874,163 @@ describe('vahu CLI', () => {
     expect(report.reportType).toBe('profile-validation');
     expect(report.ok).toBe(true);
     expect(report.profilesChecked).toBe(3);
+  });
+
+  it('previews profile changes and writes them only when explicitly requested', async () => {
+    const projectConfig = validConfig();
+    projectConfig.technology.backend = [];
+    const directory = await createProject(projectConfig);
+
+    const addPreview = runCli([
+      'profile',
+      'add',
+      'PROFILE-NODE-BACKEND',
+      '--area',
+      'backend',
+      '--path',
+      directory,
+      '--json',
+    ]);
+    expect(addPreview.status).toBe(0);
+    expect(JSON.parse(addPreview.stdout)).toMatchObject({
+      contractVersion: '1.0.0',
+      reportType: 'profile-selection-change',
+      action: 'add',
+      written: false,
+      changed: true,
+      technology: 'node',
+      area: 'backend',
+    });
+    expect((await readConfig(directory)).technology.backend).toEqual([]);
+
+    const addWrite = runCli([
+      'profile',
+      'add',
+      'PROFILE-NODE-BACKEND',
+      '--area',
+      'backend',
+      '--path',
+      directory,
+      '--write',
+    ]);
+    expect(addWrite.status).toBe(0);
+    expect(addWrite.stdout).toContain('Profile selection preview');
+    expect((await readConfig(directory)).technology.backend).toEqual(['node']);
+
+    const removePreview = runCli([
+      'profile',
+      'remove',
+      'PROFILE-NODE-BACKEND',
+      '--area',
+      'backend',
+      '--path',
+      directory,
+      '--json',
+    ]);
+    expect(removePreview.status).toBe(0);
+    expect(JSON.parse(removePreview.stdout)).toMatchObject({ action: 'remove', written: false });
+    expect((await readConfig(directory)).technology.backend).toEqual(['node']);
+
+    const removeWrite = runCli([
+      'profile',
+      'remove',
+      'PROFILE-NODE-BACKEND',
+      '--area',
+      'backend',
+      '--path',
+      directory,
+      '--write',
+    ]);
+    expect(removeWrite.status).toBe(0);
+    expect((await readConfig(directory)).technology.backend).toEqual([]);
+  });
+
+  it('refuses to remove an unselected profile', async () => {
+    const directory = await createProject({
+      ...validConfig(),
+      technology: { ...validConfig().technology, backend: [] },
+    });
+    const result = runCli([
+      'profile',
+      'remove',
+      'PROFILE-NODE-BACKEND',
+      '--area',
+      'backend',
+      '--path',
+      directory,
+      '--write',
+    ]);
+
+    expect(result.status).toBe(1);
+    expect(result.stderr).toContain('not selected');
+    expect((await readConfig(directory)).technology.backend).toEqual([]);
+  });
+
+  it('rejects unknown profiles and missing project configurations during profile changes', async () => {
+    const directory = await createProject(validConfig());
+    const unknown = runCli([
+      'profile',
+      'add',
+      'PROFILE-MISSING',
+      '--area',
+      'backend',
+      '--path',
+      directory,
+      '--write',
+    ]);
+    expect(unknown.status).toBe(1);
+    expect(unknown.stderr).toContain('Unknown profile');
+    expect((await readConfig(directory)).technology.backend).toEqual(['node']);
+
+    const missing = await emptyDirectory();
+    const noProject = runCli([
+      'profile',
+      'add',
+      'PROFILE-NODE-BACKEND',
+      '--area',
+      'backend',
+      '--path',
+      missing,
+      '--write',
+    ]);
+    expect(noProject.status).toBe(1);
+    expect(noProject.stderr).toContain('(missing)');
+  });
+
+  it('validates documentation links with a versioned JSON report', async () => {
+    const directory = await emptyDirectory();
+    await mkdir(join(directory, 'docs'));
+    await writeFile(join(directory, 'README.md'), '[Guide](docs/guide.md)\\n', 'utf8');
+    await writeFile(join(directory, 'docs/guide.md'), '# Guide\\n', 'utf8');
+
+    const result = runCli(['docs', 'validate', '--path', directory, '--json']);
+
+    expect(result.status).toBe(0);
+    expect(JSON.parse(result.stdout)).toEqual({
+      contractVersion: '1.0.0',
+      reportType: 'documentation-validation',
+      ok: true,
+      filesChecked: 2,
+      issues: [],
+    });
+  });
+
+  it('fails documentation validation for unresolved links', async () => {
+    const directory = await emptyDirectory();
+    await mkdir(join(directory, 'docs'));
+    await writeFile(join(directory, 'docs/guide.md'), '[Missing](missing.md)\\n', 'utf8');
+
+    const result = runCli(['docs', 'validate', '--path', directory, '--json']);
+
+    expect(result.status).toBe(1);
+    const report = JSON.parse(result.stdout) as {
+      ok: boolean;
+      issues: Array<{ code: string; path: string }>;
+    };
+    expect(report.ok).toBe(false);
+    expect(report.issues).toEqual([
+      expect.objectContaining({ code: 'LINK_UNRESOLVED', path: 'docs/guide.md' }),
+    ]);
   });
 
   it('inspects the engineering foundation without writing', async () => {

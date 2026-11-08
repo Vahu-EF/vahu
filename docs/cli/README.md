@@ -8,6 +8,16 @@ The package is named `vahu` and the binary is `vahu`. It is not published yet.
 
 Prints the CLI package version. The short form is `-v`.
 
+### `vahu version`
+
+Prints the same package version as `vahu --version`. `--json` returns a
+versioned `version` report.
+
+```bash
+vahu version
+vahu version --json
+```
+
 ### `vahu --help`
 
 Lists commands, descriptions, and options.
@@ -30,6 +40,54 @@ configuration emits structured issues and exits with status `1`.
 ```bash
 vahu project inspect
 vahu project status --path examples/backend-project --json
+```
+
+### `vahu project configure`
+
+Updates Project Identity fields in an existing configuration. It previews
+before/after values by default; `--write` is required to save. A real identity
+change resets identity approval to pending and readiness to incomplete. A
+no-op does not rewrite the file or reset approval. Optional lifecycle and long
+description can be removed with their `--clear-*` options. Other configuration
+sections, including brand, design system, technology, repositories, and agents,
+are unchanged; use their dedicated commands to configure those stages.
+
+```bash
+vahu project configure --description "Updated service description" --json
+vahu project configure --lifecycle maintenance --write
+vahu project configure --clear-lifecycle --clear-long-description --write
+```
+
+The JSON report uses `reportType: "project-configuration-change"` and
+`contractVersion: "1.0.0"`. Invalid fields are rejected without writing.
+
+### `vahu agents list`, `inspect`, and `sync`
+
+List or inspect the canonical agent definitions. `--path` selects a different
+catalog; by default the commands use the definitions bundled with the CLI. The
+built CLI therefore works outside the source checkout. Definitions are parsed
+with the canonical agent schema; invalid catalog files cause a non-zero exit.
+JSON uses `reportType: "agent-list"` or `"agent-inspection"`, with
+`contractVersion: "1.0.0"`.
+
+```bash
+vahu agents list
+vahu agents list --json
+vahu agents inspect AGENT-REVIEWER --json
+```
+
+`list` and `inspect` are read-only. `sync` renders the generic adapter's
+provider-neutral `AGENTS.md`, previews the complete proposed file by default, and
+writes only with `--write`. JSON uses `reportType: "agent-sync"` and includes
+the preview when not writing. It refuses to replace a target that is a symlink,
+not a regular file, or lacks the generated-file marker. A marked file is replaced
+as a whole; manual edits inside it are not merged or preserved, so review the
+preview carefully before choosing `--write`. Provider-specific adapters are not
+available, and this command does not claim compatibility with vendor file formats.
+
+```bash
+vahu agents sync --agent AGENT-REVIEWER
+vahu agents sync --agent AGENT-IMPLEMENTER --agent AGENT-REVIEWER --write
 ```
 
 ### `vahu profile list` and `vahu profile validate`
@@ -125,7 +183,7 @@ vahu design --status pending-approval --source existing --path docs/design-syste
 vahu design approve
 vahu technology --area backend --add "node, postgresql"
 vahu technology --area backend --remove node
-vahu repositories --strategy hybrid --notes "API and docs live apart." --location api=.
+vahu repositories --strategy hybrid --notes "API and docs live apart." --location api=. --owner api=platform
 vahu foundation
 vahu readiness [--record]
 ```
@@ -133,13 +191,30 @@ vahu readiness [--record]
 - `brand`: `not-applicable` needs a reason; `approved` needs at least one asset.
 - `design`: approval is refused without an existing or generated source and a
   path. Marking it not applicable clears both.
-- `technology`: selects values per area. Profile definitions are available via `vahu profile list/validate`; applying or removing profile selections through the CLI is not implemented.
-- `repositories`: strategy, notes, and `name=path-or-url` locations. Ownership is
-  stored in the configuration but has no flag yet.
+- `technology`: selects values per area. Profile definitions are available via `vahu profile list/validate`. `vahu profile add/remove <profile-id> --area <area>` previews the underlying technology change; pass `--write` to save it. This does not store a separate selected-profile ID or compose profile guidance.
+- `repositories`: strategy, notes, `name=path-or-url` locations, and optional
+  `--owner name=team` assignments. Each owner assignment must reference a
+  configured location; duplicate or unknown names are rejected without writing.
 - `foundation`: detects scripts, workflows, docs, and an environment example from
   files and writes nothing.
 - `readiness`: prints blocking issues and recommendations; `--record` stores the
   computed status and check time. It exits `1` while something blocks.
+
+### `vahu docs validate`
+
+Checks local links in root Markdown and Markdown under `docs/`, `examples/`,
+`templates/`, `architecture/`, `packages/framework/`, `apps/cli/`, and
+`apps/website/`. It
+ignores remote URLs, code samples, and missing optional directories, but fails
+on unresolved local links or links that escape the repository root. `--path`
+selects the repository root and `--json` prints a versioned report.
+
+```bash
+vahu docs validate
+vahu docs validate --path ../another-repository --json
+```
+
+The same check runs as `pnpm validate:docs` and is part of `pnpm check`.
 
 ### `vahu migrate`
 
@@ -156,12 +231,32 @@ is reported and left alone, and a file that does not match its declared schema
 is never rewritten. `vahu validate` recommends this command but does not block on
 an older schema version.
 
+### `vahu profile add` and `vahu profile remove`
+
+These commands add or remove the profile's technology in the matching project
+area. They preview by default; `--write` is required to save. Use `--catalog` to
+select a profile catalog and `--path` for the project directory. JSON uses the
+`profile-selection-change` report type.
+
+```bash
+vahu profile add PROFILE-NODE-BACKEND --area backend --path .
+vahu profile add PROFILE-NODE-BACKEND --area backend --path . --write
+vahu profile remove PROFILE-NODE-BACKEND --area backend --path . --write
+```
+
+The command refuses unknown profiles, mismatched areas/project types, unmet
+prerequisites, conflicts, unselected removals, and removal of prerequisites
+needed by another selected profile. The project schema stores technologies, not
+profile IDs, so the command does not record profile provenance or compose
+profile guidance into generated content.
+
 ## Planned, not implemented
 
-Profile listing and validation are implemented; profile `add` and `remove` are
-not. Agent configuration/sync, quality-check execution, docs validation, update,
-and an independent `version` subcommand are not implemented. The commands are
-described in the roadmap, not implied by the Phase 6 milestone.
+Agent configuration, provider-specific adapters, merge-aware synchronization,
+quality-check execution, and framework update are not implemented. Generic
+`agents sync` is preview-first and replaces only VAHU-marked output with explicit
+`--write`; manual edits inside a marked file are not merged. The remaining
+commands are described in the roadmap, not implied by the Phase 6 milestone.
 
 Project onboarding commands include brand, design, technology, repository
 strategy, foundation inspection, and readiness, as recorded in

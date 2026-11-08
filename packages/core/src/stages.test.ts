@@ -156,11 +156,12 @@ describe('technology selection', () => {
 });
 
 describe('repositories and readiness', () => {
-  it('records a strategy, notes, and locations', () => {
+  it('records a strategy, notes, locations, and their owners', () => {
     const result = applyRepositories(config(), {
       strategy: 'multi-repository',
       notes: 'API and web repositories.',
       locations: [{ name: 'api', path: '.' }],
+      owners: { api: 'platform' },
     });
 
     expect(result.ok).toBe(true);
@@ -168,8 +169,17 @@ describe('repositories and readiness', () => {
       expect(result.config.repositories).toEqual({
         strategy: 'multi-repository',
         notes: 'API and web repositories.',
-        locations: [{ name: 'api', path: '.' }],
+        locations: [{ name: 'api', path: '.', owner: 'platform' }],
       });
+    }
+  });
+
+  it('rejects ownership assignments for unknown repository locations', () => {
+    const result = applyRepositories(config(), { owners: { missing: 'platform' } });
+
+    expect(result.ok).toBe(false);
+    if (!result.ok) {
+      expect(result.issues[0]?.code).toBe('REPOSITORY_LOCATION_UNKNOWN');
     }
   });
 

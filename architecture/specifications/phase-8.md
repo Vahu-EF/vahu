@@ -1,7 +1,7 @@
 # Phase 8 specification — Release, Distribution & Compatibility
 
 - **Status:** In Progress — verified release candidates and the compatibility policy implemented
-- **Owner approval:** This Phase 8 first milestone and spec approved by the VAHU project owner on 2026-11-07
+- **Owner approval:** Phase 8 first milestone approved by the VAHU project owner on 2026-11-07; four-package candidate set approved on 2026-11-08
 - **Decision:** [ADR-0013](../decisions/ADR-0013-verified-release-candidates.md), accepted 2026-11-07
 - **Canonical for:** Phase 8 release implementation status
 
@@ -12,10 +12,11 @@ published, and state the compatibility promises a published version would carry.
 
 ## Approved first milestone
 
-The approved increment prepares and verifies npm candidates for the three
-packages that already have a consumer: `vahu`, `@vahu-ef/core`, and
-`@vahu-ef/schemas`. Nothing is published, no GitHub Release is created, and no
-standalone executable is produced.
+The approved increment prepares and verifies npm candidates for the four
+packages that have a consumer: `vahu`, `@vahu-ef/adapters`, `@vahu-ef/core`, and
+`@vahu-ef/schemas`. The adapter package is included because `vahu agents sync`
+uses its generic renderer. Nothing is published, no GitHub Release is created,
+and no standalone executable is produced.
 
 ### Verified release candidate
 
@@ -26,11 +27,11 @@ candidates a reviewer downloads are the ones the checker accepted.
 
 | Check              | Behavior                                                                                                           |
 | ------------------ | ------------------------------------------------------------------------------------------------------------------ |
-| Package set        | Exactly `vahu`, `@vahu-ef/core`, and `@vahu-ef/schemas`; others rejected                                           |
+| Package set        | Exactly `vahu`, `@vahu-ef/adapters`, `@vahu-ef/core`, and `@vahu-ef/schemas`; others rejected                      |
 | Private packages   | A tarball marked `private: true` is rejected                                                                       |
 | Manifest identity  | Name, version, semver shape, and license field are required                                                        |
 | Baseline files     | `package.json`, `README.md`, and `LICENSE` in every tarball                                                        |
-| Required content   | CLI entry point plus the bundled profile catalog, type declarations, and the six JSON schemas                      |
+| Required content   | CLI entry point plus bundled agent/profile catalogs, adapter/core type declarations, and the six JSON schemas      |
 | Entry points       | Every `main`, `types`, `module`, `exports`, and `bin` target exists inside the archive                             |
 | Workspace protocol | A packed `workspace:` range fails the candidate                                                                    |
 | Internal versions  | `@vahu-ef/*` ranges must equal the version of the candidate they point at                                          |
@@ -81,14 +82,15 @@ and a missing entry point.
 
 ## Acceptance state
 
-| Criterion | State | Evidence |
-| -------------------------------------------------- | ------- | ------------------------------------------------------------------------------ || Releases are reproducible | Partial | Deterministic packing and fixed archive mtime; declaration output is not byte-stable, so rebuilds can change checksums |
-| Published artifacts match tested source revisions | Partial | The workflow packs the revision that passed `pnpm check`; nothing is published |
-| Package contents are inspected before publication | Met | Validator rejects bad contents and writes auditable checksums |
-| Supported binaries run on their declared platforms | Not met | The CLI is Node-only; no standalone executables exist |
-| Release workflow cannot publish accidentally | Met | Manual dispatch, read-only token, and no publication step |
-| npm package publication | Not met | Not requested or performed; needs explicit release approval and credentials |
-| Versioning and compatibility policy documented | Met | `docs/contributing/versioning-and-compatibility.md` |
+| Criterion                                          | State   | Evidence                                                                                                               |
+| -------------------------------------------------- | ------- | ---------------------------------------------------------------------------------------------------------------------- |
+| Releases are reproducible                          | Partial | Deterministic packing and fixed archive mtime; declaration output is not byte-stable, so rebuilds can change checksums |
+| Published artifacts match tested source revisions  | Partial | The workflow packs the revision that passed `pnpm check`; nothing is published                                         |
+| Package contents are inspected before publication  | Met     | Validator rejects bad contents and writes auditable checksums                                                          |
+| Supported binaries run on their declared platforms | Not met | The CLI is Node-only; no standalone executables exist                                                                  |
+| Release workflow cannot publish accidentally       | Met     | Manual dispatch, read-only token, and no publication step                                                              |
+| npm package publication                            | Not met | Not requested or performed; needs explicit release approval and credentials                                            |
+| Versioning and compatibility policy documented     | Met     | `docs/contributing/versioning-and-compatibility.md`                                                                    |
 
 ## Out of scope and limitations
 

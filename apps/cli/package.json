@@ -39,6 +39,7 @@
     "typecheck": "tsc -p tsconfig.json --noEmit"
   },
   "dependencies": {
+    "@vahu-ef/adapters": "workspace:*",
     "@vahu-ef/core": "workspace:*",
     "commander": "^15.0.0"
   }

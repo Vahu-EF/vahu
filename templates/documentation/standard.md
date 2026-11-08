@@ -7,7 +7,7 @@
 - **Approval:** Pending | Approved by [name or role] on YYYY-MM-DD
 - **Version:** 0.1.0
 - **Applies to:** [projects, packages, or roles affected by this standard]
-- **Related:** [related standard](relative-link.md), [related ADR](relative-link.md)
+- **Related:** [P1-01: Architecture principles](../../packages/framework/core/architecture-principles.md), [ADR index](../../architecture/decisions/README.md)
 
 ## Purpose
 

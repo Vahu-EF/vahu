@@ -3,8 +3,8 @@
 ## Status
 
 **Prepared and verified, not published.** No npm package has been published and no
-GitHub Release exists. `pnpm release:pack` produces a checked candidate; nothing
-in this repository uploads it to a registry.
+GitHub Release exists. `pnpm release:pack` produces a checked candidate; npm
+publishing is an explicit opt-in in the manual release workflow.
 
 ## Verified release candidate
 
@@ -20,11 +20,11 @@ directory without repacking. Both commands exit non-zero when a check fails;
 
 The candidate is rejected when any of the following is true:
 
-- the package set is not exactly `vahu`, `@vahu-ef/core`, and `@vahu-ef/schemas`;
+- the package set is not exactly `vahu`, `@vahu-ef/adapters`, `@vahu-ef/core`, and `@vahu-ef/schemas`;
 - an artifact is marked `private`, has no readable manifest, no version, no
   license field, or no `README.md`/`LICENSE`;
-- expected content is missing: the CLI entry point, the bundled profile catalog,
-  type declarations, or the JSON schemas;
+- expected content is missing: the CLI entry point, bundled agent/profile
+  catalogs, adapter/core type declarations, or the JSON schemas;
 - a `main`, `types`, `module`, `exports`, or `bin` target is absent from the
   archive;
 - a dependency range still uses the `workspace:` protocol, or an `@vahu-ef/*`
@@ -75,13 +75,13 @@ The schema version is `1.1.0` and is independent of the CLI version.
 | `vahu`              | CLI binary                | Verified candidate; not published |
 | `@vahu-ef/core`     | Reusable validation logic | Verified candidate; not published |
 | `@vahu-ef/schemas`  | Configuration contracts   | Verified candidate; not published |
-| `@vahu-ef/adapters` | Agent rendering boundary  | Not part of the candidate         |
+| `@vahu-ef/adapters` | Agent rendering boundary  | Verified candidate; not published |
 | `@vahu-ef/website`  | Static site               | Private; never published          |
 | `@vahu-ef/cli`      | Potential scoped alias    | Not used; name check only         |
 
-`@vahu-ef/adapters` is excluded because it has no published consumer yet, and
-`@vahu-ef/website` is a private application. Revisit the candidate set before a
-release that gives either package a public consumer.
+`@vahu-ef/adapters` is included because the CLI uses its generic renderer for
+preview-first agent synchronization. `@vahu-ef/website` remains a private
+application and is never part of the candidate set.
 
 ## GitHub Releases
 
@@ -92,10 +92,13 @@ A release would contain:
 - release notes and a changelog entry;
 - installation and upgrade instructions.
 
-`.github/workflows/release.yml` is manual and artifact-only. It runs `pnpm check`,
+`.github/workflows/release.yml` is manually dispatched. It runs `pnpm check`,
 packs through the validator, verifies the checksum manifest, and uploads the
-candidate. It has read-only repository permissions and does not publish to npm or
-create a GitHub Release.
+candidate. Publishing is a separate, explicit `publish_npm: true` choice that
+downloads that exact artifact, re-verifies checksums and npm version availability,
+and publishes the tarballs with provenance from a GitHub-hosted runner. The
+publish job needs a repository Actions secret named `NPM_TOKEN` and OIDC
+`id-token: write`; it does not create a GitHub Release.
 
 ## Standalone executables
 
@@ -108,8 +111,8 @@ TypeScript is not a standalone binary strategy, and no executable is claimed.
 Before the first publication, the owners must confirm:
 
 - the npm organization and package ownership;
-- how provenance or trusted publishing is configured, and the release workflow
-  secret names (never values in the repository);
+- the repository Actions secret `NPM_TOKEN` must be configured without exposing
+  its value; the explicit publish job uses GitHub OIDC to generate provenance;
 - the legal copyright notice;
 - supported Node.js and operating-system versions;
 - executable packaging and signing policy;

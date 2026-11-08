@@ -1,4 +1,5 @@
 import { existsSync } from 'node:fs';
+import type { Dirent } from 'node:fs';
 import { readdir } from 'node:fs/promises';
 import { dirname, join, resolve } from 'node:path';
 
@@ -154,7 +155,7 @@ export function unresolvedRelativeLinks(file: string, content: string): string[]
 }
 
 export async function markdownFiles(directory: string): Promise<string[]> {
-  let entries;
+  let entries: Dirent[];
   try {
     entries = await readdir(directory, { withFileTypes: true });
   } catch {

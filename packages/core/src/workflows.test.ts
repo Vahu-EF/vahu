@@ -1,4 +1,5 @@
 import { mkdtemp, mkdir, rm, writeFile } from 'node:fs/promises';
+import { fileURLToPath } from 'node:url';
 import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 import { afterEach, describe, expect, it } from 'vitest';
@@ -57,7 +58,7 @@ const pass = {
 
 describe('workflow catalog', () => {
   it('validates the canonical workflows and gates committed to the framework', async () => {
-    const root = new URL('../../framework/workflows', import.meta.url).pathname;
+    const root = fileURLToPath(new URL('../../framework/workflows', import.meta.url));
     const catalog = await loadWorkflowCatalog(root);
 
     expect(catalog.ok).toBe(true);

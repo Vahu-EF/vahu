@@ -186,7 +186,8 @@ export interface ConfigIssue {
 }
 
 export type ParseProjectConfigResult =
-  { ok: true; data: ProjectConfig } | { ok: false; issues: ConfigIssue[] };
+  | { ok: true; data: ProjectConfig }
+  | { ok: false; issues: ConfigIssue[] };
 
 export function parseProjectConfig(input: unknown): ParseProjectConfigResult {
   const result = projectConfigSchema.safeParse(input);

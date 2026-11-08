@@ -71,7 +71,8 @@ export interface ContentIssue {
 }
 
 export type ParseContentItemResult =
-  { ok: true; data: ContentItem } | { ok: false; issues: ContentIssue[] };
+  | { ok: true; data: ContentItem }
+  | { ok: false; issues: ContentIssue[] };
 
 export function parseContentItem(input: unknown): ParseContentItemResult {
   const result = contentItemSchema.safeParse(input);

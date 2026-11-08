@@ -27,6 +27,8 @@ export {
   type ContentOverride,
   type ContentReport,
 } from './content.js';
+export { validateDocumentation, type DocumentationReport } from './documentation.js';
+export { loadAgentCatalog, type AgentCatalog } from './agents.js';
 export { validateFramework, type FrameworkReport } from './framework.js';
 export { detectFoundation, type FoundationReport } from './foundation.js';
 export {

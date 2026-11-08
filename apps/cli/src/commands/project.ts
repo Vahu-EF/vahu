@@ -27,7 +27,7 @@ import {
   type ValidationResult,
 } from '@vahu-ef/core';
 import type { ProjectConfig } from '@vahu-ef/schemas';
-import { collect, parseRepositorySpecs, splitList } from '../core/inputs.js';
+import { collect, parseRepositoryOwners, parseRepositorySpecs, splitList } from '../core/inputs.js';
 import {
   formatBrand,
   formatDesignSystem,
@@ -70,6 +70,7 @@ interface RepositoriesOptions extends TargetOptions {
   strategy?: string;
   notes?: string;
   location: string[];
+  owner: string[];
 }
 
 interface ReadinessOptions extends TargetOptions {
@@ -255,13 +256,15 @@ function registerRepositories(program: Command): void {
       collect,
       [],
     )
+    .option('--owner <spec>', 'Repository owner as name=owner. Repeatable.', collect, [])
     .option('--path <directory>', 'Project directory.', process.cwd())
     .option('--json', 'Print a machine-readable result.')
     .action(async (options: RepositoriesOptions) => {
       const hasInput =
         options.strategy !== undefined ||
         options.notes !== undefined ||
-        options.location.length > 0;
+        options.location.length > 0 ||
+        options.owner.length > 0;
 
       if (!hasInput) {
         await showSection(options, (config) => config.repositories, formatRepositories);
@@ -282,10 +285,19 @@ function registerRepositories(program: Command): void {
         return;
       }
 
+      const owners = parseRepositoryOwners(options.owner);
+      if (owners === null) {
+        fail(
+          'Repository owners must look like name=owner, with each location provided at most once.',
+        );
+        return;
+      }
+
       const input: RepositoriesInput = {
         ...(isRepositoryStrategy(options.strategy) ? { strategy: options.strategy } : {}),
         ...(options.notes !== undefined ? { notes: options.notes } : {}),
         ...(locations !== undefined ? { locations } : {}),
+        ...(Object.keys(owners).length > 0 ? { owners } : {}),
       };
 
       await applyAndSave(

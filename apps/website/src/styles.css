@@ -26,7 +26,7 @@ body {
   margin: 0;
   background: var(--paper);
   color: var(--ink);
-  font-family: 'Avenir Next', Avenir, 'Segoe UI', sans-serif;
+  font-family: "Avenir Next", Avenir, "Segoe UI", sans-serif;
   font-size: 16px;
   line-height: 1.65;
   -webkit-font-smoothing: antialiased;
@@ -167,7 +167,7 @@ p {
 h1,
 h2,
 h3 {
-  font-family: Georgia, 'Times New Roman', serif;
+  font-family: Georgia, "Times New Roman", serif;
   font-weight: 500;
 }
 
@@ -485,7 +485,7 @@ h1 span {
   background: #1f2d27;
   color: #f4f3e9;
   font:
-    0.84rem/1.85 ui-monospace,
+    0.84rem / 1.85 ui-monospace,
     SFMono-Regular,
     Consolas,
     monospace;

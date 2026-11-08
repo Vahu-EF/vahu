@@ -97,10 +97,12 @@ export interface WorkflowIssue {
 }
 
 export type ParseWorkflowResult =
-  { ok: true; data: WorkflowDefinition } | { ok: false; issues: WorkflowIssue[] };
+  | { ok: true; data: WorkflowDefinition }
+  | { ok: false; issues: WorkflowIssue[] };
 
 export type ParseQualityGateResult =
-  { ok: true; data: QualityGateDefinition } | { ok: false; issues: WorkflowIssue[] };
+  | { ok: true; data: QualityGateDefinition }
+  | { ok: false; issues: WorkflowIssue[] };
 
 export function parseWorkflowDefinition(input: unknown): ParseWorkflowResult {
   const result = workflowDefinitionSchema.safeParse(input);

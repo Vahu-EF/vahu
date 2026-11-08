@@ -64,7 +64,8 @@ export interface ProfileIssue {
 }
 
 export type ParseProfileResult =
-  { ok: true; data: TechnologyProfile } | { ok: false; issues: ProfileIssue[] };
+  | { ok: true; data: TechnologyProfile }
+  | { ok: false; issues: ProfileIssue[] };
 
 export function parseTechnologyProfile(input: unknown): ParseProfileResult {
   const result = technologyProfileSchema.safeParse(input);
