@@ -24,9 +24,10 @@
     "validate:standards": "node scripts/validation/validate-standards.mjs",
     "validate:profiles": "node scripts/validation/validate-profiles.mjs",
     "validate:workflows": "node scripts/validation/validate-workflows.mjs",
+    "validate:docs": "node --import tsx scripts/validation/validate-docs.mjs",
     "release:pack": "tsx scripts/release/validate-artifacts.ts --pack",
     "release:validate": "tsx scripts/release/validate-artifacts.ts",
-    "check": "pnpm format:check && pnpm lint && pnpm typecheck && pnpm test && pnpm build && pnpm validate:workspace && pnpm validate:standards && pnpm validate:profiles && pnpm validate:workflows"
+    "check": "pnpm format:check && pnpm lint && pnpm typecheck && pnpm test && pnpm build && pnpm validate:workspace && pnpm validate:standards && pnpm validate:profiles && pnpm validate:workflows && pnpm validate:docs"
   },
   "devDependencies": {
     "@biomejs/biome": "^2.6.6",

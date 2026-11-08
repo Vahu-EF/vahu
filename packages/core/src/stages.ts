@@ -208,18 +208,40 @@ export interface RepositoriesInput {
   strategy?: RepositoryStrategy;
   notes?: string;
   locations?: RepositoryLocation[];
+  owners?: Record<string, string>;
 }
 
-/** Updates the repository strategy, notes, and locations. */
+/** Updates the repository strategy, notes, locations, and location owners. */
 export function applyRepositories(config: ProjectConfig, input: RepositoriesInput): StageResult {
   const notes = input.notes !== undefined ? input.notes.trim() : (config.repositories.notes ?? '');
+  const locations = input.locations ?? config.repositories.locations;
+  const owners = input.owners ?? {};
+  const unknownOwner = Object.keys(owners).find(
+    (name) => !locations.some((location) => location.name === name),
+  );
+
+  if (unknownOwner !== undefined) {
+    return {
+      ok: false,
+      issues: [
+        {
+          code: 'REPOSITORY_LOCATION_UNKNOWN',
+          path: 'repositories.locations',
+          message: `Owner assignment "${unknownOwner}" must refer to a configured repository location.`,
+        },
+      ],
+    };
+  }
 
   return finish(config, {
     ...config,
     repositories: {
       strategy: input.strategy ?? config.repositories.strategy,
       ...(notes.length > 0 ? { notes } : {}),
-      locations: input.locations ?? config.repositories.locations,
+      locations: locations.map((location) => ({
+        ...location,
+        ...(owners[location.name] !== undefined ? { owner: owners[location.name] } : {}),
+      })),
     },
   });
 }

@@ -1,7 +1,8 @@
 import { existsSync } from 'node:fs';
-import { join } from 'node:path';
+import { dirname, join } from 'node:path';
+import { fileURLToPath } from 'node:url';
 
-const root = new URL('../../', import.meta.url).pathname;
+const root = join(dirname(fileURLToPath(import.meta.url)), '../..');
 const coreEntry = join(root, 'packages/core/dist/index.js');
 
 if (!existsSync(coreEntry)) {

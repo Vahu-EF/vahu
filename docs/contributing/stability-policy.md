@@ -27,6 +27,7 @@ implemented it. Anything else is experimental by default.
 | `vahu doctor`, `readiness`, `foundation`          | Stable       | Documented and integration-tested                                  |
 | `project inspect/status`, `profile list/validate` | Stable       | Versioned JSON reports with failure tests                          |
 | `brand`, `design`, `technology`, `repositories`   | Stable       | Approval rules enforced and tested                                 |
+| `docs validate`                                   | Experimental | Versioned link report; local links only, no remote URL checking    |
 | Project configuration schema `1.1.0`              | Stable       | Validated; `1.0.0` readable through a documented migration         |
 | JSON report `contractVersion` `1.0.0`             | Stable       | Additive changes only within the version                           |
 | `@vahu-ef/core` exports                           | Experimental | Documented at a high level; no per-export support matrix yet       |
@@ -41,10 +42,10 @@ implemented it. Anything else is experimental by default.
 
 ## What "supported" means
 
-- **Supported platform:** Linux and macOS are exercised in CI. Windows is
-  supported on a best-effort basis: the tests are written to be portable, but no
-  Windows CI job runs today, so a Windows-only defect is a bug, not a promise
-  violation.
+- **Supported platform:** The CI matrix is configured for Ubuntu, macOS, and
+  Windows on Node.js 22 and 24. Until each hosted matrix job has passed, only
+  Ubuntu on the local Node.js 24 environment is verified by this workspace; do
+  not treat configuration as completed platform evidence.
 - **Supported Node.js:** 22 and newer, `engines.node >= 22.0.0`. CI runs Node.js 24. A defect on a supported version is a bug.
 - **Support window:** `main` is the only supported line while the project is
   pre-`1.0.0`. No version has been published, so there is no maintenance window

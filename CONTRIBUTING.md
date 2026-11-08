@@ -6,7 +6,8 @@ small, well-tested changes are more useful than large speculative additions.
 ## Before you start
 
 1. Read [`VAHU.md`](VAHU.md) for the product foundation.
-2. Read the relevant [architecture decision](architecture/decisions/).
+2. Read the relevant [architecture decision](architecture/decisions/) and
+   [governance policy](docs/contributing/governance.md).
 3. Check [the current status](README.md#project-status) so you do not assume a
    planned feature already exists.
 4. Open an issue for a substantial change before writing a large patch.

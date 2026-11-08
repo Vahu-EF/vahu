@@ -2,15 +2,17 @@ import { access, mkdtemp, mkdir, readFile, readdir, rm, writeFile } from 'node:f
 import { tmpdir } from 'node:os';
 import { join, resolve } from 'node:path';
 import { spawnSync } from 'node:child_process';
+import { createRequire } from 'node:module';
 import { afterEach, describe, expect, it } from 'vitest';
 
 const repoRoot = resolve(import.meta.dirname, '../../..');
 const cliPath = join(repoRoot, 'apps/cli/src/index.ts');
-const tsxPath = join(repoRoot, 'node_modules/.bin/tsx');
+const require = createRequire(import.meta.url);
+const tsxCliPath = require.resolve('tsx/cli');
 const tempDirectories: string[] = [];
 
 function runCli(args: string[], cwd = repoRoot) {
-  return spawnSync(tsxPath, [cliPath, ...args], {
+  return spawnSync(process.execPath, [tsxCliPath, cliPath, ...args], {
     cwd,
     encoding: 'utf8',
   });
@@ -332,12 +334,56 @@ describe('vahu CLI', () => {
       'API and documentation live apart.',
       '--location',
       'api=.',
+      '--location',
+      'docs=https://example.com/docs',
+      '--owner',
+      'api=platform',
+      '--owner',
+      'docs=documentation team',
     ]);
 
     expect(result.status).toBe(0);
     const config = await readConfig(directory);
     expect(config.repositories.strategy).toBe('hybrid');
-    expect(config.repositories.locations).toEqual([{ name: 'api', path: '.' }]);
+    expect(config.repositories.locations).toEqual([
+      { name: 'api', path: '.', owner: 'platform' },
+      { name: 'docs', url: 'https://example.com/docs', owner: 'documentation team' },
+    ]);
+  });
+
+  it('updates repository ownership for an existing location and rejects unknown or duplicate assignments', async () => {
+    const directory = await createProject({
+      ...validConfig(),
+      repositories: {
+        strategy: 'monorepo',
+        locations: [{ name: 'api', path: 'apps/api' }],
+      },
+    });
+
+    const updated = runCli(['repositories', '--path', directory, '--owner', 'api=platform']);
+    expect(updated.status).toBe(0);
+    expect((await readConfig(directory)).repositories.locations).toEqual([
+      { name: 'api', path: 'apps/api', owner: 'platform' },
+    ]);
+
+    const refused = runCli(['repositories', '--path', directory, '--owner', 'web=frontend']);
+    expect(refused.status).toBe(1);
+    expect(refused.stderr).toContain('must refer to a configured repository location');
+
+    const duplicate = runCli([
+      'repositories',
+      '--path',
+      directory,
+      '--owner',
+      'api=platform',
+      '--owner',
+      'api=another-team',
+    ]);
+    expect(duplicate.status).toBe(1);
+    expect(duplicate.stderr).toContain('provided at most once');
+    expect((await readConfig(directory)).repositories.locations).toEqual([
+      { name: 'api', path: 'apps/api', owner: 'platform' },
+    ]);
   });
 
   it('reports readiness and records the status only when asked', async () => {
@@ -476,6 +522,163 @@ describe('vahu CLI', () => {
     expect(report.reportType).toBe('profile-validation');
     expect(report.ok).toBe(true);
     expect(report.profilesChecked).toBe(3);
+  });
+
+  it('previews profile changes and writes them only when explicitly requested', async () => {
+    const projectConfig = validConfig();
+    projectConfig.technology.backend = [];
+    const directory = await createProject(projectConfig);
+
+    const addPreview = runCli([
+      'profile',
+      'add',
+      'PROFILE-NODE-BACKEND',
+      '--area',
+      'backend',
+      '--path',
+      directory,
+      '--json',
+    ]);
+    expect(addPreview.status).toBe(0);
+    expect(JSON.parse(addPreview.stdout)).toMatchObject({
+      contractVersion: '1.0.0',
+      reportType: 'profile-selection-change',
+      action: 'add',
+      written: false,
+      changed: true,
+      technology: 'node',
+      area: 'backend',
+    });
+    expect((await readConfig(directory)).technology.backend).toEqual([]);
+
+    const addWrite = runCli([
+      'profile',
+      'add',
+      'PROFILE-NODE-BACKEND',
+      '--area',
+      'backend',
+      '--path',
+      directory,
+      '--write',
+    ]);
+    expect(addWrite.status).toBe(0);
+    expect(addWrite.stdout).toContain('Profile selection preview');
+    expect((await readConfig(directory)).technology.backend).toEqual(['node']);
+
+    const removePreview = runCli([
+      'profile',
+      'remove',
+      'PROFILE-NODE-BACKEND',
+      '--area',
+      'backend',
+      '--path',
+      directory,
+      '--json',
+    ]);
+    expect(removePreview.status).toBe(0);
+    expect(JSON.parse(removePreview.stdout)).toMatchObject({ action: 'remove', written: false });
+    expect((await readConfig(directory)).technology.backend).toEqual(['node']);
+
+    const removeWrite = runCli([
+      'profile',
+      'remove',
+      'PROFILE-NODE-BACKEND',
+      '--area',
+      'backend',
+      '--path',
+      directory,
+      '--write',
+    ]);
+    expect(removeWrite.status).toBe(0);
+    expect((await readConfig(directory)).technology.backend).toEqual([]);
+  });
+
+  it('refuses to remove an unselected profile', async () => {
+    const directory = await createProject({
+      ...validConfig(),
+      technology: { ...validConfig().technology, backend: [] },
+    });
+    const result = runCli([
+      'profile',
+      'remove',
+      'PROFILE-NODE-BACKEND',
+      '--area',
+      'backend',
+      '--path',
+      directory,
+      '--write',
+    ]);
+
+    expect(result.status).toBe(1);
+    expect(result.stderr).toContain('not selected');
+    expect((await readConfig(directory)).technology.backend).toEqual([]);
+  });
+
+  it('rejects unknown profiles and missing project configurations during profile changes', async () => {
+    const directory = await createProject(validConfig());
+    const unknown = runCli([
+      'profile',
+      'add',
+      'PROFILE-MISSING',
+      '--area',
+      'backend',
+      '--path',
+      directory,
+      '--write',
+    ]);
+    expect(unknown.status).toBe(1);
+    expect(unknown.stderr).toContain('Unknown profile');
+    expect((await readConfig(directory)).technology.backend).toEqual(['node']);
+
+    const missing = await emptyDirectory();
+    const noProject = runCli([
+      'profile',
+      'add',
+      'PROFILE-NODE-BACKEND',
+      '--area',
+      'backend',
+      '--path',
+      missing,
+      '--write',
+    ]);
+    expect(noProject.status).toBe(1);
+    expect(noProject.stderr).toContain('(missing)');
+  });
+
+  it('validates documentation links with a versioned JSON report', async () => {
+    const directory = await emptyDirectory();
+    await mkdir(join(directory, 'docs'));
+    await writeFile(join(directory, 'README.md'), '[Guide](docs/guide.md)\\n', 'utf8');
+    await writeFile(join(directory, 'docs/guide.md'), '# Guide\\n', 'utf8');
+
+    const result = runCli(['docs', 'validate', '--path', directory, '--json']);
+
+    expect(result.status).toBe(0);
+    expect(JSON.parse(result.stdout)).toEqual({
+      contractVersion: '1.0.0',
+      reportType: 'documentation-validation',
+      ok: true,
+      filesChecked: 2,
+      issues: [],
+    });
+  });
+
+  it('fails documentation validation for unresolved links', async () => {
+    const directory = await emptyDirectory();
+    await mkdir(join(directory, 'docs'));
+    await writeFile(join(directory, 'docs/guide.md'), '[Missing](missing.md)\\n', 'utf8');
+
+    const result = runCli(['docs', 'validate', '--path', directory, '--json']);
+
+    expect(result.status).toBe(1);
+    const report = JSON.parse(result.stdout) as {
+      ok: boolean;
+      issues: Array<{ code: string; path: string }>;
+    };
+    expect(report.ok).toBe(false);
+    expect(report.issues).toEqual([
+      expect.objectContaining({ code: 'LINK_UNRESOLVED', path: 'docs/guide.md' }),
+    ]);
   });
 
   it('inspects the engineering foundation without writing', async () => {

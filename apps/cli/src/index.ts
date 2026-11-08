@@ -10,6 +10,7 @@ import { registerMigrateCommand } from './commands/migrate.js';
 import { registerProjectStageCommands } from './commands/project.js';
 import { registerProjectInfoCommands } from './commands/project-info.js';
 import { registerProfileCommands } from './commands/profile.js';
+import { registerDocumentationCommands } from './commands/documentation.js';
 import { formatDoctor, formatValidation } from './core/output.js';
 
 const require = createRequire(import.meta.url);
@@ -62,6 +63,7 @@ export function createProgram(): Command {
   registerProjectStageCommands(program);
   registerProjectInfoCommands(program);
   registerProfileCommands(program);
+  registerDocumentationCommands(program);
 
   return program;
 }

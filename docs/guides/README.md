@@ -21,4 +21,4 @@ For each issue:
 4. Keep approvals explicit; do not change a status merely to make validation
    green.
 
-The five committed example configurations are validated by the CLI integration suite. Profile listing and validation are available; applying profiles, synchronizing agents, and executing workflow gates are not implemented.
+The five committed example configurations are validated by the CLI integration suite. Profile listing/validation and preview-first add/remove of technology selections are available; profile IDs are not stored and profile guidance is not composed into project files. Agent synchronization and workflow-gate execution are not implemented.

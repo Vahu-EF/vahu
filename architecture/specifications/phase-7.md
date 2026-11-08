@@ -39,8 +39,9 @@ content by a test; the normal website build remains deterministic.
 
 ### Documentation and examples
 
-- CLI docs describe the read-only project/profile commands and versioned JSON
-  contracts; they distinguish profile listing/validation from profile selection.
+- CLI docs describe read-only project reports, versioned JSON contracts, and
+  preview-first profile technology add/remove; they distinguish technology
+  selection from profile-ID persistence and content composition.
 - Getting-started, framework-status, technology-profile, docs-index, and examples
   pages reflect the current repository rather than Phase 0-only planned status.
 - The five committed `.vahu/project.json` examples are validated by the CLI

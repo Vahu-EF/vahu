@@ -10,8 +10,9 @@ adapters for different AI coding agents.
 VAHU is not a prompt collection and it is not tied to one AI provider. The
 framework content must remain useful without the CLI.
 
-> **Status:** Phases 1–5 complete; Phases 6–9 in progress. This repository is being
-> actively developed. There is no npm release or GitHub Release yet.
+> **Status:** Phase 1 is complete; Phases 2–9 are in progress. Phase-level
+> evidence and unfinished items are tracked in the
+> [roadmap register](architecture/specifications/unfinished-work.md). This repository is actively developed; there is no npm release or GitHub Release yet.
 
 ## Why VAHU exists
 
@@ -41,21 +42,21 @@ The core principles are:
 
 ## Core capabilities
 
-| Capability                     | Status      | What exists now                                                                         |
-| ------------------------------ | ----------- | --------------------------------------------------------------------------------------- |
-| Framework foundation           | Implemented | `VAHU.md`, monorepo boundaries, documentation skeleton, architectural decisions         |
-| Project configuration schema   | Implemented | Versioned Zod schema and JSON Schema; `1.1.0` reads `1.0.0` via migration               |
-| CLI foundation                 | Implemented | Onboarding commands plus read-only `project inspect/status` and `profile list/validate` |
-| Validation and readiness rules | Implemented | Identity, design-system, brand, repository, technology, and readiness checks            |
-| Core engineering standards     | Implemented | 15 Phase 1 standards, all accepted                                                      |
-| Framework content model        | In Progress | Draft metadata, discovery, and composition contract with a validator                    |
-| Technology profiles            | In Progress | Validated profile schema, three profiles, and a composition gate                        |
-| Agent adapters                 | In Progress | Canonical agent schema and generic adapter; no provider adapter is claimed              |
-| Project onboarding             | Implemented | Identity, brand, design, technology, repository, foundation, and readiness commands     |
-| Engineering workflows          | In Progress | 14 lifecycle definitions, 13 gates, and a non-executing evidence evaluator              |
-| Full documentation engine      | Planned     | Not implemented                                                                         |
-| Website                        | In Progress | Updated static overview and quick start; Pages is not published                         |
-| Release verification           | In Progress | Verified npm candidates with checksums; nothing published                               |
+| Capability                     | Status      | What exists now                                                                                                                  |
+| ------------------------------ | ----------- | -------------------------------------------------------------------------------------------------------------------------------- |
+| Framework foundation           | Implemented | `VAHU.md`, monorepo boundaries, documentation skeleton, architectural decisions                                                  |
+| Project configuration schema   | Implemented | Versioned Zod schema and JSON Schema; `1.1.0` reads `1.0.0` via migration                                                        |
+| CLI foundation                 | Implemented | Onboarding, read-only project reports, profile list/validate/add/remove, and documentation validation                            |
+| Validation and readiness rules | Implemented | Identity, design-system, brand, repository, technology, and readiness checks                                                     |
+| Core engineering standards     | Implemented | 15 Phase 1 standards, all accepted                                                                                               |
+| Framework content model        | In Progress | Draft metadata, discovery, and composition contract with a validator                                                             |
+| Technology profiles            | In Progress | Validated profile schema, three profiles, and a composition gate                                                                 |
+| Agent adapters                 | In Progress | Canonical agent schema and generic adapter; no provider adapter is claimed                                                       |
+| Project onboarding             | In Progress | Identity, brand, design recording, technology, repository ownership, foundation, and readiness; design analysis/proposals remain |
+| Engineering workflows          | In Progress | 14 lifecycle definitions, 13 gates, and a non-executing evidence evaluator                                                       |
+| Full documentation engine      | Planned     | Not implemented                                                                                                                  |
+| Website                        | In Progress | Updated static overview and quick start; Pages is not published                                                                  |
+| Release verification           | In Progress | Verified npm candidates with checksums; nothing published                                                                        |
 
 ## Architecture overview
 
@@ -151,7 +152,7 @@ vahu brand --status <status> [--logo <ref>] [--colors <list>] [--notes <text>]
 vahu design [--status <status>] [--source <source>] [--path <path>]
 vahu design approve
 vahu technology --area <area> [--add <list>] [--remove <list>]
-vahu repositories [--strategy <strategy>] [--notes <text>] [--location <spec>]
+vahu repositories [--strategy <strategy>] [--notes <text>] [--location <name=path-or-url>]... [--owner <name=owner>]...
 vahu foundation [--path <directory>]
 vahu readiness [--record] [--path <directory>]
 vahu migrate [--path <directory>] [--write]
@@ -159,6 +160,9 @@ vahu project inspect [--path <directory>] [--json]
 vahu project status [--path <directory>] [--json]
 vahu profile list [--path <catalog-directory>] [--json]
 vahu profile validate [--path <catalog-directory>] [--json]
+vahu profile add <profile-id> [--area <area>] [--path <directory>] [--write] [--json]
+vahu profile remove <profile-id> [--area <area>] [--path <directory>] [--write] [--json]
+vahu docs validate [--path <repository-root>] [--json]
 ```
 
 `project inspect/status` report the project configuration and computed readiness
@@ -173,8 +177,12 @@ explicit approval that `validate` requires. The onboarding commands record brand
 design-system, technology, repository, and readiness decisions, and `foundation`
 inspects detected engineering facts without writing. `migrate` reads a `1.0.0`
 configuration and rewrites it at the current schema version only when asked.
-Profile listing and validation are implemented; profile selection and mutation
-are not. Agent configuration/sync and docs commands are also **not implemented**.
+Profile listing, validation, and preview-first technology add/remove are
+implemented. Add/remove changes the project's technology values and requires
+`--write` to persist; the schema does not store profile IDs or compose their
+guidance into generated content. `vahu docs validate` checks local Markdown
+links and also runs as part of `pnpm check`. Agent configuration/sync commands
+remain **not implemented**.
 Workflow definitions and quality gates are validated by
 `pnpm validate:workflows`, but there is no CLI workflow runner and the core
 evaluator does not execute commands.
@@ -192,7 +200,7 @@ The schema is defined in `packages/schemas/src/project.ts` and generated as
 [the configuration guide](docs/concepts/project-configuration.md) and the
 [backend-only example](examples/backend-project/.vahu/project.json).
 
-Important onboarding rules implemented in Phase 0:
+Important onboarding rules implemented so far:
 
 - Project Identity must be approved.
 - `vahu init` writes a `pending` identity and never approves it; only
@@ -214,8 +222,9 @@ file is the current source of truth.
 
 VAHU does not prescribe a stack. Technology profiles describe one category at a time, so a project can combine
 backend, frontend, mobile, database, and infrastructure choices without adopting
-unrelated rules. The current CLI can list and validate profiles; profile
-selection and composition into project configuration are not implemented.
+unrelated rules. The CLI can list and validate profiles and preview or write
+the corresponding technology selection. The schema does not retain selected
+profile IDs, and composition into project or agent content is not implemented.
 
 Agent configuration is written once as a canonical JSON definition under
 `packages/framework/agents/` and rendered by an adapter. The `generic` adapter
@@ -229,9 +238,10 @@ Phase 0 includes:
 
 - strict TypeScript configuration;
 - Biome formatting and lint checks;
-- Vitest tests for schemas, validation logic, CLI behavior, and the standards
-  validator;
-- workspace-boundary and standards-content validation scripts;
+- Vitest tests for schemas, validation logic, CLI behavior, and framework
+  validators;
+- workspace-boundary, standards-content, workflow, profile, and documentation
+  validation scripts;
 - GitHub Actions for CI, lint, security analysis, and dependency review;
 - a security policy with private vulnerability reporting guidance.
 
@@ -271,14 +281,16 @@ Architecture principles](packages/framework/core/architecture-principles.md) on
 2026-11-06, and the remaining 13 on 2026-11-07. P1-15 provides the
 `pnpm validate:standards` check, which runs in `pnpm check` and CI.
 
-Phase 2 (Project Identity & Onboarding) is implemented and recorded in [the
+Phase 2 (Project Identity & Onboarding) is in progress: repository-location
+ownership is implemented, while design-system analysis/proposals remain. See [the
 Phase 2 specification](architecture/specifications/phase-2.md). Phase 3 (Agent
 Ecosystem & Adapters) and Phase 4 (Technology Profiles) have their canonical
 contracts and initial implementations. Phase 5 (Engineering Workflows & Quality
-Gates) is implemented; see [its specification](architecture/specifications/phase-5.md)
-for the evaluator's scope and limitations. Phase 6 (CLI Productization) is in progress; its first read-only project and
+Gates) is in progress; the lifecycle workflows and evaluator exist, but command
+execution and independent evidence attestation do not. See [its specification](architecture/specifications/phase-5.md)
+for scope and limitations. Phase 6 (CLI Productization) is in progress; its first read-only project and
 profile commands are documented in [the Phase 6
-specification](architecture/specifications/phase-6.md). Phase 7 (Documentation,
+specification](architecture/specifications/phase-6.md), including preview-first profile technology changes. Phase 7 (Documentation,
 Website & Examples) has begun with a public overview, updated guides, and
 validated example configurations; the [Phase 7
 specification](architecture/specifications/phase-7.md) records what remains.
@@ -293,6 +305,7 @@ specification](architecture/specifications/phase-9.md) records what remains.
 
 The phase plan for Phases 1–9 is in [the
 roadmap](architecture/specifications/roadmap.md), with the current state table,
-content-model scope, and remaining phases. Provider-specific agent adapters,
-workflow execution, the remaining Phase 6 CLI commands, publication, standalone
-executables, and the production website remain future work.
+content-model scope, and [consolidated unfinished-work register](architecture/specifications/unfinished-work.md). Provider-specific agent adapters,
+workflow execution, remaining Phase 6 CLI commands, publication, standalone
+executables, design-system analysis/proposals, and the production website remain
+future work.

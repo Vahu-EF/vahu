@@ -28,9 +28,10 @@ vahu migrate [options]
 vahu brand [options]
 vahu design [options]
 vahu technology [options]
-vahu repositories [options]
+vahu repositories [--strategy <strategy>] [--notes <text>] [--location <name=path-or-url>]... [--owner <name=owner>]... [--path <directory>] [--json]
 vahu foundation [options]
 vahu readiness [options]
+vahu docs validate [--path <repository-root>] [--json]
 ```
 
 `project inspect/status` are read-only and report computed readiness and
@@ -39,9 +40,12 @@ catalog; `--path` selects a different directory. A built CLI bundles the profile
 snapshot and can list it outside the source repository. All these commands
 support human-readable output by default and versioned JSON using `--json`.
 
-Missing project configuration and invalid profile data return a non-zero exit
-status. These commands do not edit project selections, generate agent files, or
-run quality gates.
+Missing project configuration, invalid profile data, and unresolved local
+Markdown links return a non-zero exit status. `docs validate` checks Markdown in
+the repository documentation trees without modifying files. Repository owners
+can be recorded with repeatable `--owner name=team` options; each name must match
+a configured `--location` (or an existing location in the project). These
+commands do not generate agent files or run quality gates.
 
 ## Install from source
 

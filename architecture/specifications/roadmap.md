@@ -5,7 +5,7 @@
 **Organization:** https://github.com/Vahu-EF  
 **Repository:** https://github.com/Vahu-EF/vahu  
 **Tagline:** Build Better Software, With Better Agents.  
-**Document status:** Phases 0–5 complete; Phases 6–9 in progress
+**Document status:** Phase 0–1 complete; Phases 2–9 in progress
 **Scope:** Phases 1–9. Phase 0 is recorded in [`phase-0.md`](phase-0.md) and the
 foundation document [`VAHU.md`](../../VAHU.md).  
 **Companion specifications:** [`phase-0.md`](phase-0.md), [`phase-1.md`](phase-1.md), [`phase-2.md`](phase-2.md), [`phase-3.md`](phase-3.md), [`phase-4.md`](phase-4.md), [`phase-5.md`](phase-5.md), [`phase-6.md`](phase-6.md), [`phase-7.md`](phase-7.md), [`phase-8.md`](phase-8.md), [`phase-9.md`](phase-9.md)
@@ -76,20 +76,20 @@ Phase 1. To avoid two competing definitions of Phase 1, the canonical Phase 1
 specification [`phase-1.md`](phase-1.md) owns the standards content and this
 roadmap owns the content model that wraps it.
 
-| Area                                             | State                                                              | Where                                                           |
-| ------------------------------------------------ | ------------------------------------------------------------------ | --------------------------------------------------------------- |
-| Phase 0 foundation                               | Complete                                                           | [`phase-0.md`](phase-0.md)                                      |
-| Phase 1 standards content                        | 15 work packages accepted (2026-11-06 and 2026-11-07)              | [`phase-1.md`](phase-1.md)                                      |
-| Phase 1 content metadata, composition, discovery | Draft contract implemented                                         | [`CONTENT_MODEL.md`](../../packages/framework/CONTENT_MODEL.md) |
-| Phase 1 structural validation                    | Standard pages, content model, decision index                      | `pnpm validate:standards`                                       |
-| Phase 2                                          | Approved 2026-11-07; stages 1–8 implemented (3 and 6 partial)      | [`phase-2.md`](phase-2.md)                                      |
-| Phase 3                                          | Approved 2026-11-07; generic adapter implemented                   | [`phase-3.md`](phase-3.md)                                      |
-| Phase 4                                          | Approved 2026-11-07; three profiles and the gate implemented       | [`phase-4.md`](phase-4.md)                                      |
-| Phase 5                                          | Approved 2026-11-07; workflow contracts and evaluator implemented  | [`phase-5.md`](phase-5.md)                                      |
-| Phase 6                                          | Approved 2026-11-07; first four read-only CLI commands implemented | [`phase-6.md`](phase-6.md)                                      |
-| Phase 7                                          | Approved 2026-11-07; public docs and website first milestone       | [`phase-7.md`](phase-7.md)                                      |
-| Phase 8                                          | Approved 2026-11-07; verified candidates, nothing published        | [`phase-8.md`](phase-8.md)                                      |
-| Phase 9                                          | Approved 2026-11-07; local write safety and stability policy       | [`phase-9.md`](phase-9.md)                                      |
+| Area                                             | State                                                                          | Where                                                           |
+| ------------------------------------------------ | ------------------------------------------------------------------------------ | --------------------------------------------------------------- |
+| Phase 0 foundation                               | Complete                                                                       | [`phase-0.md`](phase-0.md)                                      |
+| Phase 1 standards content                        | 15 work packages accepted (2026-11-06 and 2026-11-07)                          | [`phase-1.md`](phase-1.md)                                      |
+| Phase 1 content metadata, composition, discovery | Draft contract implemented                                                     | [`CONTENT_MODEL.md`](../../packages/framework/CONTENT_MODEL.md) |
+| Phase 1 structural validation                    | Standard pages, content model, decision index                                  | `pnpm validate:standards`                                       |
+| Phase 2                                          | Approved 2026-11-07; Stage 6 complete; Stage 3 partial                         | [`phase-2.md`](phase-2.md)                                      |
+| Phase 3                                          | Approved 2026-11-07; generic adapter implemented                               | [`phase-3.md`](phase-3.md)                                      |
+| Phase 4                                          | Approved 2026-11-07; three profiles and the gate implemented                   | [`phase-4.md`](phase-4.md)                                      |
+| Phase 5                                          | Approved 2026-11-07; workflow contracts and evaluator implemented              | [`phase-5.md`](phase-5.md)                                      |
+| Phase 6                                          | Approved 2026-11-07; project/profile reports, docs links, CI matrix configured | [`phase-6.md`](phase-6.md)                                      |
+| Phase 7                                          | Approved 2026-11-07; public docs and website first milestone                   | [`phase-7.md`](phase-7.md)                                      |
+| Phase 8                                          | Approved 2026-11-07; verified candidates, nothing published                    | [`phase-8.md`](phase-8.md)                                      |
+| Phase 9                                          | Approved 2026-11-07; local write safety and stability policy                   | [`phase-9.md`](phase-9.md)                                      |
 
 Read this table before assigning any phase. Do not re-implement content that
 already exists, and do not assume the metadata model is settled.
@@ -262,10 +262,10 @@ start from scratch.
 
 ## Status
 
-Approved by the VAHU project owner on 2026-11-07. Stage 1 (Project Identity) is
-implemented; Stages 2–8 have not started. The scope below is the approved scope,
-and [`phase-2.md`](phase-2.md) records how each stage is implemented and what
-remains. Nothing outside that scope is in scope without a new approval.
+Approved by the VAHU project owner on 2026-11-07. Stages 1, 2, 4, 5, 7, and 8
+are implemented; Stage 3 is partial and Stage 6 repository ownership support is
+now implemented. The approved scope and evidence are recorded in
+[`phase-2.md`](phase-2.md).
 
 ## Objective
 
@@ -352,7 +352,7 @@ Support:
 - Single repository.
 - Hybrid arrangements.
 
-Capture repository paths, ownership, boundaries, and relationships without assuming all projects are in one workspace.
+Capture repository paths, optional ownership, boundaries, and relationships without assuming all projects are in one workspace.
 
 ### Stage 7: Engineering Foundation
 
@@ -1133,14 +1133,17 @@ Use the following template when assigning an individual phase to a coding agent:
 
 # 8. Immediate Next Steps
 
-Phases 0–5 are complete. Phases 6–9 are approved and partially implemented; their
-specifications record what each increment covers. The next steps are:
+Phases 0–9 have approved scopes or milestones, but the project is not complete.
+Current evidence and remaining work are summarized in
+[`unfinished-work.md`](unfinished-work.md), with phase-level details in each
+companion specification. Complete work incrementally, re-check the recorded
+status after each verified change, and do not infer phase acceptance from a
+passing check.
 
-1. Finish the remaining approved increments: profile mutation, agent commands,
-   workflow execution, publication, standalone executables, cross-platform tests,
-   and governance documents.
-2. Obtain a separate, explicit release approval before publishing any package or
-   creating a GitHub Release.
+Public deployment, npm publication, GitHub Releases, standalone binary
+publication/signing, and other irreversible external actions remain explicitly
+approval-gated. Implementing local release preparation does not authorize
+publishing.
 
 **Do not publish packages or create releases without explicit authorization.**
 

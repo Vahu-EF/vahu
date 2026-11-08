@@ -1,6 +1,6 @@
 # Phase 2 specification — Project Identity & Onboarding
 
-- **Status:** In Progress — Stages 1, 2, 4, 5, 7, 8 implemented; Stages 3 and 6 partial
+- **Status:** In Progress — Stages 1, 2, 4, 5, 6, 7, 8 implemented; Stage 3 partial
 - **Depends on:** Phase 0 foundation, accepted Phase 1 standards, approved Phase 2 scope
 - **Owner approval:** Phase 2 approved by the VAHU project owner on 2026-11-07
 - **Canonical for:** the onboarding implementation contract
@@ -28,7 +28,7 @@ and what remains.
 | 3     | Design system          | Partial: recording and approval, no token analysis or generation |
 | 4     | Design approval        | Implemented: approval needs a source and a path                  |
 | 5     | Technology selection   | Implemented: per-area selection, no profile catalog yet          |
-| 6     | Repository strategy    | Partial: strategy, notes, locations; ownership not captured      |
+| 6     | Repository strategy    | Implemented: strategy, notes, locations, and optional owners     |
 | 7     | Engineering foundation | Implemented as inspection; detected facts are not stored         |
 | 8     | Project readiness      | Implemented: report and opt-in record of status and time         |
 
@@ -167,9 +167,15 @@ vahu repositories --strategy hybrid --notes "API and docs live apart." \
   --location api=. --location docs=https://github.com/example/docs
 ```
 
-Strategy, notes, and locations are captured. The schema also stores an optional
-`owner` per location, but no command sets it yet, so repository ownership is the
-one Stage 6 item still missing from the CLI.
+Strategy, notes, locations, and optional per-location owners are captured. Use
+`--owner name=owner` once per repository location; assignments must name an
+existing location, and malformed or unknown assignments are rejected without
+writing.
+
+```bash
+vahu repositories --path . --location api=apps/api --owner api=platform
+vahu repositories --path . --owner docs=documentation-team
+```
 
 ### Stage 7 — Engineering foundation
 
@@ -228,14 +234,14 @@ approve` cleared it. Interactive behaviour is not covered by an automated test.
 | Design-system recording and approval               | Met     | `vahu design`, `vahu design approve`                            |
 | Design-system analysis and generation              | Not met | Stage 3 remainder; no token inspection or proposal              |
 | Technology selection per area                      | Met     | `vahu technology`                                               |
-| Repository strategy, notes, and locations          | Partial | `vahu repositories`; owner has no flag yet                      |
+| Repository strategy, notes, locations, and owners  | Met     | `vahu repositories --location name=path --owner name=team`      |
 | Engineering-foundation inspection                  | Met     | `vahu foundation`; detected facts are not stored                |
 | Readiness report and opt-in record                 | Met     | `vahu readiness [--record]`                                     |
 
 ## Non-goals
 
-These stages do not generate brand assets, analyse design tokens, propose or
-generate a design system, validate technology profiles, set repository
-ownership, store foundation facts, or add a hosted service. They also never mark
-a project ready on their own. Generation, profiles, and any stored foundation
-facts belong to later phases and need their own decisions.
+Stage 3 still does not generate brand assets, analyse design tokens, propose or
+generate a design system. The implemented CLI also does not validate technology
+profiles or store detected foundation facts. It never marks a project ready on
+its own. Design-system analysis/proposals and stored foundation facts remain
+tracked work.

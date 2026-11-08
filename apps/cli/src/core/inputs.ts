@@ -41,3 +41,28 @@ export function parseRepositorySpecs(specs: readonly string[]): RepositoryLocati
 
   return locations;
 }
+
+/** Parses repeated `name=owner` assignments, or `null` when one is malformed. */
+export function parseRepositoryOwners(specs: readonly string[]): Record<string, string> | null {
+  const owners: Record<string, string> = {};
+
+  for (const spec of specs) {
+    const separator = spec.indexOf('=');
+    if (separator <= 0) {
+      return null;
+    }
+
+    const name = spec.slice(0, separator).trim();
+    const owner = spec.slice(separator + 1).trim();
+    if (name.length === 0 || owner.length === 0) {
+      return null;
+    }
+
+    if (Object.hasOwn(owners, name)) {
+      return null;
+    }
+    owners[name] = owner;
+  }
+
+  return owners;
+}

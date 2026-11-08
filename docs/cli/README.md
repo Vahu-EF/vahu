@@ -125,7 +125,7 @@ vahu design --status pending-approval --source existing --path docs/design-syste
 vahu design approve
 vahu technology --area backend --add "node, postgresql"
 vahu technology --area backend --remove node
-vahu repositories --strategy hybrid --notes "API and docs live apart." --location api=.
+vahu repositories --strategy hybrid --notes "API and docs live apart." --location api=. --owner api=platform
 vahu foundation
 vahu readiness [--record]
 ```
@@ -133,13 +133,30 @@ vahu readiness [--record]
 - `brand`: `not-applicable` needs a reason; `approved` needs at least one asset.
 - `design`: approval is refused without an existing or generated source and a
   path. Marking it not applicable clears both.
-- `technology`: selects values per area. Profile definitions are available via `vahu profile list/validate`; applying or removing profile selections through the CLI is not implemented.
-- `repositories`: strategy, notes, and `name=path-or-url` locations. Ownership is
-  stored in the configuration but has no flag yet.
+- `technology`: selects values per area. Profile definitions are available via `vahu profile list/validate`. `vahu profile add/remove <profile-id> --area <area>` previews the underlying technology change; pass `--write` to save it. This does not store a separate selected-profile ID or compose profile guidance.
+- `repositories`: strategy, notes, `name=path-or-url` locations, and optional
+  `--owner name=team` assignments. Each owner assignment must reference a
+  configured location; duplicate or unknown names are rejected without writing.
 - `foundation`: detects scripts, workflows, docs, and an environment example from
   files and writes nothing.
 - `readiness`: prints blocking issues and recommendations; `--record` stores the
   computed status and check time. It exits `1` while something blocks.
+
+### `vahu docs validate`
+
+Checks local links in root Markdown and Markdown under `docs/`, `examples/`,
+`templates/`, `architecture/`, `packages/framework/`, `apps/cli/`, and
+`apps/website/`. It
+ignores remote URLs, code samples, and missing optional directories, but fails
+on unresolved local links or links that escape the repository root. `--path`
+selects the repository root and `--json` prints a versioned report.
+
+```bash
+vahu docs validate
+vahu docs validate --path ../another-repository --json
+```
+
+The same check runs as `pnpm validate:docs` and is part of `pnpm check`.
 
 ### `vahu migrate`
 
@@ -156,11 +173,29 @@ is reported and left alone, and a file that does not match its declared schema
 is never rewritten. `vahu validate` recommends this command but does not block on
 an older schema version.
 
+### `vahu profile add` and `vahu profile remove`
+
+These commands add or remove the profile's technology in the matching project
+area. They preview by default; `--write` is required to save. Use `--catalog` to
+select a profile catalog and `--path` for the project directory. JSON uses the
+`profile-selection-change` report type.
+
+```bash
+vahu profile add PROFILE-NODE-BACKEND --area backend --path .
+vahu profile add PROFILE-NODE-BACKEND --area backend --path . --write
+vahu profile remove PROFILE-NODE-BACKEND --area backend --path . --write
+```
+
+The command refuses unknown profiles, mismatched areas/project types, unmet
+prerequisites, conflicts, unselected removals, and removal of prerequisites
+needed by another selected profile. The project schema stores technologies, not
+profile IDs, so the command does not record profile provenance or compose
+profile guidance into generated content.
+
 ## Planned, not implemented
 
-Profile listing and validation are implemented; profile `add` and `remove` are
-not. Agent configuration/sync, quality-check execution, docs validation, update,
-and an independent `version` subcommand are not implemented. The commands are
+Agent configuration/sync, quality-check execution, framework update, and an
+independent `version` subcommand are not implemented. The commands are
 described in the roadmap, not implied by the Phase 6 milestone.
 
 Project onboarding commands include brand, design, technology, repository
