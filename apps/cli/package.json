@@ -41,6 +41,6 @@
   "dependencies": {
     "@vahu-ef/adapters": "workspace:*",
     "@vahu-ef/core": "workspace:*",
-    "commander": "^15.0.0"
+    "commander": "^15.1.0"
   }
 }
