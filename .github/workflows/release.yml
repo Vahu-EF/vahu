@@ -79,7 +79,7 @@ jobs:
         run: npm install --global npm@^11.15.0
 
       - name: Download verified release candidate
-        uses: actions/download-artifact@v7
+        uses: actions/download-artifact@v8
         with:
           name: vahu-release-candidate
           path: artifacts
