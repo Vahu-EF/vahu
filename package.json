@@ -30,12 +30,12 @@
     "check": "pnpm format:check && pnpm lint && pnpm typecheck && pnpm test && pnpm build && pnpm validate:workspace && pnpm validate:standards && pnpm validate:profiles && pnpm validate:workflows && pnpm validate:docs"
   },
   "devDependencies": {
-    "@biomejs/biome": "^2.6.6",
+    "@biomejs/biome": "^2.6.8",
     "@changesets/cli": "^3.0.3",
-    "@types/node": "^24.10.1",
+    "@types/node": "^26.6.6",
     "tsup": "^9.0.0",
     "tsx": "^4.23.15",
-    "typescript": "^6.0.3",
+    "typescript": "^7.0.2",
     "vitest": "^5.1.0"
   }
 }
